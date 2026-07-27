@@ -1,0 +1,343 @@
+// Masarat SaaS Platform — Prisma Schema
+// All entities follow tenant isolation (Constitution I)
+// Generated: 2026-07-27
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+// ─────────────────────────────────────────────
+// Enums
+// ─────────────────────────────────────────────
+
+enum TenantType {
+  university
+  company
+  hospital
+  other
+}
+
+enum Gender {
+  male
+  female
+}
+
+enum StationType {
+  pickup
+  dropoff
+  both
+}
+
+enum ShiftType {
+  morning
+  evening
+}
+
+enum FormFieldType {
+  text
+  number
+  select
+  multiselect
+}
+
+enum UserRole {
+  super_admin
+  admin
+  user
+  driver
+  employee
+}
+
+// ─────────────────────────────────────────────
+// 1. Tenants (المؤسسات)
+// ─────────────────────────────────────────────
+
+model Tenant {
+  id         String     @id @default(uuid()) @db.Uuid
+  name       String     @db.VarChar(255)
+  code       String     @unique @db.VarChar(50)
+  logo       String?    @db.Text
+  type       TenantType
+  is_active  Boolean    @default(true)
+  created_at DateTime   @default(now())
+  updated_at DateTime   @updatedAt
+
+  // Relations
+  users            User[]
+  passengers       Passenger[]
+  vehicles         Vehicle[]
+  drivers          Driver[]
+  lookup_types     LookupType[]
+  lookup_values    LookupValue[]
+  forms            Form[]
+  form_responses   FormResponse[]
+  stations         Station[]
+  user_roles       UserRoles[]
+
+  @@map("tenants")
+}
+
+// ─────────────────────────────────────────────
+// 2. Users (المستخدمون)
+// ─────────────────────────────────────────────
+
+model User {
+  id            String   @id @default(uuid()) @db.Uuid
+  tenant_id     String   @db.Uuid
+  user_name     String   @db.VarChar(100)
+  full_name     String   @db.VarChar(255)
+  phone_number  String   @db.VarChar(50)
+  password      String   @db.VarChar(255)
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  // Relations
+  tenant     Tenant      @relation(fields: [tenant_id], references: [id])
+  user_roles UserRoles[]
+  driver     Driver?
+  passengers Passenger[]
+
+  @@unique([tenant_id, user_name])
+  @@map("users")
+}
+
+// ─────────────────────────────────────────────
+// 3. User Roles (أدوار المستخدمين)
+// ─────────────────────────────────────────────
+
+model UserRoles {
+  user_id     String   @db.Uuid
+  role        UserRole
+  tenant_id   String   @db.Uuid
+  assigned_at DateTime @default(now())
+
+  // Relations
+  user   User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  tenant Tenant @relation(fields: [tenant_id], references: [id])
+
+  @@id([user_id, role, tenant_id])
+  @@map("user_roles")
+}
+
+// ─────────────────────────────────────────────
+// 4. Stations (المحطات — هجينة: عالمية + خاصة)
+// Constitution IV: tenant_id = NULL → global, value → private
+// ─────────────────────────────────────────────
+
+model Station {
+  id           String      @id @default(uuid()) @db.Uuid
+  tenant_id    String?     @db.Uuid   // NULL = global station (Super Admin)
+  name         String      @db.VarChar(255)
+  location_lat Decimal     @db.Decimal(10, 8)
+  location_lng Decimal     @db.Decimal(11, 8)
+  type         StationType
+  created_at   DateTime    @default(now())
+  updated_at   DateTime    @updatedAt
+
+  // Relations
+  tenant                    Tenant?     @relation(fields: [tenant_id], references: [id])
+  passengers_start_station  Passenger[] @relation("StartStation")
+  passengers_end_station    Passenger[] @relation("EndStation")
+
+  @@map("stations")
+}
+
+// ─────────────────────────────────────────────
+// 5. Passengers (الركاب / الطلاب)
+// ─────────────────────────────────────────────
+
+model Passenger {
+  id                       String   @id @default(uuid()) @db.Uuid
+  tenant_id                String   @db.Uuid
+  user_id                  String?  @db.Uuid
+  full_name                String   @db.VarChar(255)
+  contact_number           String   @db.VarChar(50)
+  gender                   Gender
+  extra_details            Json?    // JSONB: dynamic form data with value_ids
+  default_start_station_id String?  @db.Uuid
+  default_end_station_id   String?  @db.Uuid
+  created_at               DateTime @default(now())
+  updated_at               DateTime @updatedAt
+
+  // Relations
+  tenant         Tenant         @relation(fields: [tenant_id], references: [id])
+  user           User?          @relation(fields: [user_id], references: [id])
+  start_station  Station?       @relation("StartStation", fields: [default_start_station_id], references: [id])
+  end_station    Station?       @relation("EndStation", fields: [default_end_station_id], references: [id])
+  form_responses FormResponse[]
+
+  // Constitution II: contact_number is unique per tenant (upsert key)
+  @@unique([tenant_id, contact_number])
+  @@map("passengers")
+}
+
+// ─────────────────────────────────────────────
+// 6. Vehicles (المركبات)
+// ─────────────────────────────────────────────
+
+model Vehicle {
+  id           String   @id @default(uuid()) @db.Uuid
+  tenant_id    String   @db.Uuid
+  plate_number String   @db.VarChar(50)
+  type         String   @db.VarChar(100)
+  capacity     Int
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  // Relations
+  tenant      Tenant              @relation(fields: [tenant_id], references: [id])
+  assignments VehicleAssignment[]
+
+  @@unique([tenant_id, plate_number])
+  @@map("vehicles")
+}
+
+// ─────────────────────────────────────────────
+// 7. Drivers (السائقون)
+// ─────────────────────────────────────────────
+
+model Driver {
+  id             String   @id @default(uuid()) @db.Uuid
+  tenant_id      String   @db.Uuid
+  user_id        String   @unique @db.Uuid
+  license_number String   @db.VarChar(100)
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+
+  // Relations
+  tenant      Tenant              @relation(fields: [tenant_id], references: [id])
+  user        User                @relation(fields: [user_id], references: [id])
+  assignments VehicleAssignment[]
+
+  @@map("drivers")
+}
+
+// ─────────────────────────────────────────────
+// 8. Vehicle Assignments (تعيينات المركبات)
+// ─────────────────────────────────────────────
+
+model VehicleAssignment {
+  id              String    @id @default(uuid()) @db.Uuid
+  vehicle_id      String    @db.Uuid
+  driver_id       String    @db.Uuid
+  shift_type      ShiftType
+  assignment_date DateTime  @db.Date
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+
+  // Relations
+  vehicle Vehicle @relation(fields: [vehicle_id], references: [id])
+  driver  Driver  @relation(fields: [driver_id], references: [id])
+
+  // Conflict prevention: one driver per vehicle per shift per date
+  @@unique([vehicle_id, shift_type, assignment_date])
+  @@unique([driver_id, shift_type, assignment_date])
+  @@map("vehicle_assignments")
+}
+
+// ─────────────────────────────────────────────
+// 9. Lookup Types (فئات البيانات المرجعية)
+// ─────────────────────────────────────────────
+
+model LookupType {
+  id                String  @id @default(uuid()) @db.Uuid
+  tenant_id         String? @db.Uuid  // NULL = system-defined global type
+  category_code     String  @db.VarChar(100)
+  is_system_defined Boolean @default(false)
+
+  // Relations
+  tenant        Tenant?       @relation(fields: [tenant_id], references: [id])
+  lookup_values LookupValue[]
+  form_fields   FormField[]
+
+  @@unique([tenant_id, category_code])
+  @@map("lookup_types")
+}
+
+// ─────────────────────────────────────────────
+// 10. Lookup Values (قيم البيانات المرجعية)
+// ─────────────────────────────────────────────
+
+model LookupValue {
+  id              String  @id @default(uuid()) @db.Uuid
+  category_id     String  @db.Uuid
+  tenant_id       String? @db.Uuid
+  value_name      String  @db.VarChar(255)
+  parent_value_id String? @db.Uuid
+
+  // Relations
+  lookup_type  LookupType    @relation(fields: [category_id], references: [id])
+  tenant       Tenant?       @relation(fields: [tenant_id], references: [id])
+  parent       LookupValue?  @relation("LookupHierarchy", fields: [parent_value_id], references: [id])
+  children     LookupValue[] @relation("LookupHierarchy")
+
+  @@map("lookup_values")
+}
+
+// ─────────────────────────────────────────────
+// 11. Forms (النماذج)
+// ─────────────────────────────────────────────
+
+model Form {
+  id          String   @id @default(uuid()) @db.Uuid
+  tenant_id   String   @db.Uuid
+  title       String   @db.VarChar(255)
+  description String?  @db.Text
+  is_active   Boolean  @default(true)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  // Constitution II: Form URL embeds tenant_id for public access
+  // Relations
+  tenant         Tenant         @relation(fields: [tenant_id], references: [id])
+  form_fields    FormField[]
+  form_responses FormResponse[]
+
+  @@map("forms")
+}
+
+// ─────────────────────────────────────────────
+// 12. Form Fields (حقول النماذج)
+// ─────────────────────────────────────────────
+
+model FormField {
+  id             String        @id @default(uuid()) @db.Uuid
+  form_id        String        @db.Uuid
+  field_label    String        @db.VarChar(255)
+  field_type     FormFieldType
+  is_required    Boolean       @default(false)
+  lookup_type_id String?       @db.Uuid
+  sort_order     Int           @default(0)
+
+  // Relations
+  form        Form        @relation(fields: [form_id], references: [id], onDelete: Cascade)
+  lookup_type LookupType? @relation(fields: [lookup_type_id], references: [id])
+
+  @@map("form_fields")
+}
+
+// ─────────────────────────────────────────────
+// 13. Form Responses (إجابات النماذج)
+// ─────────────────────────────────────────────
+
+model FormResponse {
+  id            String   @id @default(uuid()) @db.Uuid
+  form_id       String   @db.Uuid
+  tenant_id     String   @db.Uuid
+  passenger_id  String?  @db.Uuid
+  response_data Json                // JSONB: submitted field values
+  submitted_at  DateTime @default(now())
+
+  // Relations
+  form      Form       @relation(fields: [form_id], references: [id])
+  tenant    Tenant     @relation(fields: [tenant_id], references: [id])
+  passenger Passenger? @relation(fields: [passenger_id], references: [id])
+
+  @@map("form_responses")
+}
