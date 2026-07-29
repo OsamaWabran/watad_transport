@@ -98,7 +98,7 @@ model User {
   updated_at    DateTime @updatedAt
 
   // Relations
-  tenant     Tenant      @relation(fields: [tenant_id], references: [id])
+  tenant     Tenant      @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
   user_roles UserRoles[]
   driver     Driver?
   passengers Passenger[]
@@ -119,7 +119,7 @@ model UserRoles {
 
   // Relations
   user   User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  tenant Tenant @relation(fields: [tenant_id], references: [id])
+  tenant Tenant @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
 
   @@id([user_id, role, tenant_id])
   @@map("user_roles")
@@ -141,7 +141,7 @@ model Station {
   updated_at   DateTime    @updatedAt
 
   // Relations
-  tenant                    Tenant?     @relation(fields: [tenant_id], references: [id])
+  tenant                    Tenant?     @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
   passengers_start_station  Passenger[] @relation("StartStation")
   passengers_end_station    Passenger[] @relation("EndStation")
 
@@ -166,8 +166,8 @@ model Passenger {
   updated_at               DateTime @updatedAt
 
   // Relations
-  tenant         Tenant         @relation(fields: [tenant_id], references: [id])
-  user           User?          @relation(fields: [user_id], references: [id])
+  tenant         Tenant         @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
+  user           User?          @relation(fields: [user_id], references: [id], onDelete: SetNull)
   start_station  Station?       @relation("StartStation", fields: [default_start_station_id], references: [id])
   end_station    Station?       @relation("EndStation", fields: [default_end_station_id], references: [id])
   form_responses FormResponse[]
@@ -191,7 +191,7 @@ model Vehicle {
   updated_at   DateTime @updatedAt
 
   // Relations
-  tenant      Tenant              @relation(fields: [tenant_id], references: [id])
+  tenant      Tenant              @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
   assignments VehicleAssignment[]
 
   @@unique([tenant_id, plate_number])
@@ -211,8 +211,8 @@ model Driver {
   updated_at     DateTime @updatedAt
 
   // Relations
-  tenant      Tenant              @relation(fields: [tenant_id], references: [id])
-  user        User                @relation(fields: [user_id], references: [id])
+  tenant      Tenant              @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
+  user        User                @relation(fields: [user_id], references: [id], onDelete: Cascade)
   assignments VehicleAssignment[]
 
   @@map("drivers")
@@ -232,8 +232,8 @@ model VehicleAssignment {
   updated_at      DateTime  @updatedAt
 
   // Relations
-  vehicle Vehicle @relation(fields: [vehicle_id], references: [id])
-  driver  Driver  @relation(fields: [driver_id], references: [id])
+  vehicle Vehicle @relation(fields: [vehicle_id], references: [id], onDelete: Cascade)
+  driver  Driver  @relation(fields: [driver_id], references: [id], onDelete: Cascade)
 
   // Conflict prevention: one driver per vehicle per shift per date
   @@unique([vehicle_id, shift_type, assignment_date])
@@ -252,7 +252,7 @@ model LookupType {
   is_system_defined Boolean @default(false)
 
   // Relations
-  tenant        Tenant?       @relation(fields: [tenant_id], references: [id])
+  tenant        Tenant?       @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
   lookup_values LookupValue[]
   form_fields   FormField[]
 
@@ -272,8 +272,8 @@ model LookupValue {
   parent_value_id String? @db.Uuid
 
   // Relations
-  lookup_type  LookupType    @relation(fields: [category_id], references: [id])
-  tenant       Tenant?       @relation(fields: [tenant_id], references: [id])
+  lookup_type  LookupType    @relation(fields: [category_id], references: [id], onDelete: Cascade)
+  tenant       Tenant?       @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
   parent       LookupValue?  @relation("LookupHierarchy", fields: [parent_value_id], references: [id])
   children     LookupValue[] @relation("LookupHierarchy")
 
@@ -295,7 +295,7 @@ model Form {
 
   // Constitution II: Form URL embeds tenant_id for public access
   // Relations
-  tenant         Tenant         @relation(fields: [tenant_id], references: [id])
+  tenant         Tenant         @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
   form_fields    FormField[]
   form_responses FormResponse[]
 
@@ -335,9 +335,9 @@ model FormResponse {
   submitted_at  DateTime @default(now())
 
   // Relations
-  form      Form       @relation(fields: [form_id], references: [id])
-  tenant    Tenant     @relation(fields: [tenant_id], references: [id])
-  passenger Passenger? @relation(fields: [passenger_id], references: [id])
+  form      Form       @relation(fields: [form_id], references: [id], onDelete: Cascade)
+  tenant    Tenant     @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
+  passenger Passenger? @relation(fields: [passenger_id], references: [id], onDelete: SetNull)
 
   @@map("form_responses")
 }

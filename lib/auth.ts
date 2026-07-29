@@ -30,71 +30,72 @@ export const authOptions: NextAuthOptions = {
         let tenantId: string | null = null;
         let tenantCode: string | undefined = undefined;
 
-        if (tenant_code && tenant_code.trim() !== "") {
-          const tenant = await prisma.tenant.findUnique({
-            where: { code: tenant_code.trim() },
-          });
+        try {
+          if (tenant_code && tenant_code.trim() !== "") {
+            const tenant = await prisma.tenant.findUnique({
+              where: { code: tenant_code.trim() },
+            });
 
-          if (!tenant) {
-            throw new Error("كود المؤسسة غير صحيح");
+            if (!tenant) {
+              throw new Error("كود المؤسسة غير صحيح");
+            }
+
+            if (!tenant.is_active) {
+              throw new Error("حساب هذه المؤسسة غير مفعل");
+            }
+
+            tenantId = tenant.id;
+            tenantCode = tenant.code;
           }
 
-          if (!tenant.is_active) {
-            throw new Error("حساب هذه المؤسسة غير مفعل");
+          let user;
+          if (tenantId) {
+            user = await prisma.user.findFirst({
+              where: {
+                tenant_id: tenantId,
+                user_name: user_name.trim(),
+              },
+              include: {
+                user_roles: true,
+                tenant: true,
+              },
+            });
+          } else {
+            user = await prisma.user.findFirst({
+              where: {
+                user_name: user_name.trim(),
+              },
+              include: {
+                user_roles: true,
+                tenant: true,
+              },
+            });
           }
 
-          tenantId = tenant.id;
-          tenantCode = tenant.code;
+          if (user) {
+            const isPasswordValid = await bcrypt.compare(password, user.password);
+            if (!isPasswordValid) {
+              throw new Error("بيانات الدخول غير صحيحة");
+            }
+
+            const roles = user.user_roles.map((ur) => ur.role);
+
+            return {
+              id: user.id,
+              user_name: user.user_name,
+              full_name: user.full_name,
+              phone_number: user.phone_number,
+              tenant_id: user.tenant_id,
+              tenant_code: tenantCode || user.tenant.code,
+              roles,
+            };
+          }
+        } catch (dbError: any) {
+          console.error("Auth DB Error:", dbError.message);
+          throw dbError;
         }
 
-        let user;
-        if (tenantId) {
-          user = await prisma.user.findFirst({
-            where: {
-              tenant_id: tenantId,
-              user_name: user_name.trim(),
-            },
-            include: {
-              user_roles: true,
-              tenant: true,
-            },
-          });
-        } else {
-          user = await prisma.user.findFirst({
-            where: {
-              user_name: user_name.trim(),
-            },
-            include: {
-              user_roles: true,
-              tenant: true,
-            },
-          });
-        }
-
-        if (!user) {
-          throw new Error("بيانات الدخول غير صحيحة");
-        }
-
-        if (user.tenant && !user.tenant.is_active) {
-          throw new Error("حساب هذه المؤسسة غير مفعل");
-        }
-
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) {
-          throw new Error("بيانات الدخول غير صحيحة");
-        }
-
-        const roles = user.user_roles.map((ur) => ur.role);
-
-        return {
-          id: user.id,
-          user_name: user.user_name,
-          full_name: user.full_name,
-          phone_number: user.phone_number,
-          tenant_id: user.tenant_id,
-          tenant_code: tenantCode || user.tenant.code,
-          roles,
-        };
+        throw new Error("بيانات الدخول غير صحيحة");
       },
     }),
   ],
