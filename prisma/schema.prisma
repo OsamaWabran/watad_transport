@@ -54,6 +54,25 @@ enum UserRole {
   employee
 }
 
+enum FormPurpose {
+  passenger_registration
+  driver_registration
+  employee_registration
+  other
+}
+
+enum AccountStatus {
+  Pending
+  Active
+  Rejected
+}
+
+enum RegistrationSource {
+  form
+  mobile_app
+  manual
+}
+
 // ─────────────────────────────────────────────
 // 1. Tenants (المؤسسات)
 // ─────────────────────────────────────────────
@@ -153,20 +172,25 @@ model Station {
 // ─────────────────────────────────────────────
 
 model Passenger {
-  id                       String   @id @default(uuid()) @db.Uuid
-  tenant_id                String   @db.Uuid
-  user_id                  String?  @db.Uuid
-  full_name                String   @db.VarChar(255)
-  contact_number           String   @db.VarChar(50)
+  id                       String             @id @default(uuid()) @db.Uuid
+  tenant_id                String             @db.Uuid
+  user_id                  String?            @db.Uuid
+  full_name                String             @db.VarChar(255)
+  contact_number           String             @db.VarChar(50)
   gender                   Gender
-  extra_details            Json?    // JSONB: dynamic form data with value_ids
-  default_start_station_id String?  @db.Uuid
-  default_end_station_id   String?  @db.Uuid
-  created_at               DateTime @default(now())
-  updated_at               DateTime @updatedAt
+  account_status           AccountStatus      @default(Pending)
+  form_id                  String?            @db.Uuid
+  registration_source      RegistrationSource @default(form)
+  rejection_reason         String?            @db.Text
+  extra_details            Json?              // JSONB: dynamic form data with value_ids
+  default_start_station_id String?            @db.Uuid
+  default_end_station_id   String?            @db.Uuid
+  created_at               DateTime           @default(now())
+  updated_at               DateTime           @updatedAt
 
   // Relations
   tenant         Tenant         @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
+  form           Form?          @relation(fields: [form_id], references: [id], onDelete: SetNull)
   user           User?          @relation(fields: [user_id], references: [id], onDelete: SetNull)
   start_station  Station?       @relation("StartStation", fields: [default_start_station_id], references: [id])
   end_station    Station?       @relation("EndStation", fields: [default_end_station_id], references: [id])
@@ -286,19 +310,22 @@ model LookupValue {
 // ─────────────────────────────────────────────
 
 model Form {
-  id          String   @id @default(uuid()) @db.Uuid
-  tenant_id   String   @db.Uuid
-  title       String   @db.VarChar(255)
-  description String?  @db.Text
-  is_active   Boolean  @default(true)
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  id               String      @id @default(uuid()) @db.Uuid
+  tenant_id        String      @db.Uuid
+  title            String      @db.VarChar(255)
+  description      String?     @db.Text
+  purpose          FormPurpose @default(other)
+  public_link_hash String      @unique
+  is_active        Boolean     @default(true)
+  created_at       DateTime    @default(now())
+  updated_at       DateTime    @updatedAt
 
   // Constitution II: Form URL embeds tenant_id for public access
   // Relations
   tenant         Tenant         @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
   form_fields    FormField[]
   form_responses FormResponse[]
+  passengers     Passenger[]
 
   @@map("forms")
 }
@@ -308,13 +335,15 @@ model Form {
 // ─────────────────────────────────────────────
 
 model FormField {
-  id             String        @id @default(uuid()) @db.Uuid
-  form_id        String        @db.Uuid
-  field_label    String        @db.VarChar(255)
-  field_type     FormFieldType
-  is_required    Boolean       @default(false)
-  lookup_type_id String?       @db.Uuid
-  sort_order     Int           @default(0)
+  id               String        @id @default(uuid()) @db.Uuid
+  form_id          String        @db.Uuid
+  field_label      String        @db.VarChar(255)
+  field_type       FormFieldType
+  json_key_mapping String        @db.VarChar(100)
+  is_required      Boolean       @default(false)
+  is_active        Boolean       @default(true)
+  lookup_type_id   String?       @db.Uuid
+  sort_order       Int           @default(0)
 
   // Relations
   form        Form        @relation(fields: [form_id], references: [id], onDelete: Cascade)

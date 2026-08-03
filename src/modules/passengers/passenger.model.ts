@@ -101,6 +101,34 @@ export class PassengerModel {
     }) as Promise<PassengerWithRelations[]>;
   }
 
+  static async findPending(tenant_id: string, source?: string): Promise<PassengerWithRelations[]> {
+    const where: any = { tenant_id, account_status: "Pending" };
+    if (source) {
+      where.registration_source = source;
+    }
+    return prisma.passenger.findMany({
+      where,
+      include: passengerInclude,
+      orderBy: { created_at: "desc" },
+    }) as Promise<PassengerWithRelations[]>;
+  }
+
+  static async updateStatus(
+    tenant_id: string,
+    id: string,
+    status: "Active" | "Rejected",
+    reason?: string
+  ): Promise<PassengerWithRelations> {
+    return prisma.passenger.update({
+      where: { id, tenant_id },
+      data: {
+        account_status: status,
+        rejection_reason: reason || null,
+      },
+      include: passengerInclude,
+    }) as Promise<PassengerWithRelations>;
+  }
+
   static async create(data: CreatePassengerDTO): Promise<PassengerWithRelations> {
     return prisma.passenger.create({
       data: {

@@ -77,6 +77,24 @@ export class FormController {
     }
   }
 
+  static async submitPublicForm(request: NextRequest) {
+    try {
+      const body = await request.json();
+      let form_id = body.form_id;
+      if (body.form_hash) {
+        const form = await import("@/src/modules/forms/form.model").then(m => m.FormModel.findByHash(body.form_hash));
+        if (!form) throw new AppError("النموذج غير موجود أو الرابط منتهي", 404);
+        form_id = form.id;
+      }
+      if (!form_id) throw new AppError("معرف النموذج أو الرابط مطلوب", 400);
+
+      const result = await FormService.submitForm(form_id, body);
+      return successResponse(result, "تم تسليم النموذج بنجاح", 201);
+    } catch (error) {
+      return handleApiError(error);
+    }
+  }
+
   // Get Form Responses endpoint
   static async getResponses(request: NextRequest, id: string) {
     try {
