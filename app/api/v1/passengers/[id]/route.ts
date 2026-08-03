@@ -9,6 +9,14 @@ export async function GET(
   return PassengerController.getPassengerById(request, id);
 }
 
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+  return PassengerController.updatePassenger(request, id);
+}
+
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }

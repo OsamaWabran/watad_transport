@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { AppError } from "@/lib/api-response";
 import { Gender, Passenger } from "@/app/generated/prisma/client";
 
 export interface CreatePassengerDTO {
@@ -121,36 +122,47 @@ export class PassengerModel {
     id: string,
     data: UpdatePassengerDTO
   ): Promise<PassengerWithRelations> {
-    return prisma.passenger.update({
-      where: { id },
-      data: {
-        ...(data.user_id !== undefined && { user_id: data.user_id }),
-        ...(data.full_name !== undefined && { full_name: data.full_name.trim() }),
-        ...(data.contact_number !== undefined && {
-          contact_number: data.contact_number.trim(),
-        }),
-        ...(data.gender !== undefined && { gender: data.gender }),
-        ...(data.extra_details !== undefined && {
-          extra_details: data.extra_details as any,
-        }),
-        ...(data.default_start_station_id !== undefined && {
-          default_start_station_id: data.default_start_station_id,
-        }),
-        ...(data.default_end_station_id !== undefined && {
-          default_end_station_id: data.default_end_station_id,
-        }),
-      },
-      include: passengerInclude,
-    }) as Promise<PassengerWithRelations>;
+    return prisma.$transaction(async (tx) => {
+      const existing = await tx.passenger.findFirst({ where: { id, tenant_id } });
+      if (!existing) throw new AppError("الراكب غير موجود", 404);
+
+      return tx.passenger.update({
+        where: { id },
+        data: {
+          ...(data.user_id !== undefined && { user_id: data.user_id }),
+          ...(data.full_name !== undefined && { full_name: data.full_name.trim() }),
+          ...(data.contact_number !== undefined && {
+            contact_number: data.contact_number.trim(),
+          }),
+          ...(data.gender !== undefined && { gender: data.gender }),
+          ...(data.extra_details !== undefined && {
+            extra_details: data.extra_details as any,
+          }),
+          ...(data.default_start_station_id !== undefined && {
+            default_start_station_id: data.default_start_station_id || null,
+          }),
+          ...(data.default_end_station_id !== undefined && {
+            default_end_station_id: data.default_end_station_id || null,
+          }),
+        },
+        include: passengerInclude,
+      }) as Promise<PassengerWithRelations>;
+    });
   }
 
   static async delete(
     tenant_id: string,
     id: string
   ): Promise<PassengerWithRelations> {
-    return prisma.passenger.delete({
-      where: { id },
-      include: passengerInclude,
-    }) as Promise<PassengerWithRelations>;
+    return prisma.$transaction(async (tx) => {
+      const existing = await tx.passenger.findFirst({
+        where: { id, tenant_id },
+        include: passengerInclude,
+      });
+      if (!existing) throw new AppError("الراكب غير موجود", 404);
+
+      await tx.passenger.delete({ where: { id } });
+      return existing as PassengerWithRelations;
+    });
   }
 }

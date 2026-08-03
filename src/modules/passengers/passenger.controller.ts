@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { Gender } from "@/app/generated/prisma/client";
 import { AppError, handleApiError, successResponse } from "@/lib/api-response";
-import { getTenantIdFromRequest } from "@/lib/tenant";
+import { getTenantIdFromAuth } from "@/lib/tenant";
 import { PassengerService } from "./passenger.service";
 
 export class PassengerController {
@@ -11,7 +11,7 @@ export class PassengerController {
   static async listPassengers(request: NextRequest) {
     try {
       const searchParams = request.nextUrl.searchParams;
-      const tenant_id = this.resolveTenantId(
+      const tenant_id = await this.resolveTenantId(
         request,
         searchParams.get("tenant_id") || undefined
       );
@@ -36,7 +36,7 @@ export class PassengerController {
   static async createPassenger(request: NextRequest) {
     try {
       const body = await request.json();
-      const tenant_id = this.resolveTenantId(request, body.tenant_id);
+      const tenant_id = await this.resolveTenantId(request, body.tenant_id);
       const passenger = await PassengerService.createPassenger({
         ...body,
         tenant_id,
@@ -52,7 +52,7 @@ export class PassengerController {
    */
   static async getPassengerById(request: NextRequest, id: string) {
     try {
-      const tenant_id = this.resolveTenantId(
+      const tenant_id = await this.resolveTenantId(
         request,
         request.nextUrl.searchParams.get("tenant_id") || undefined
       );
@@ -69,7 +69,7 @@ export class PassengerController {
   static async updatePassenger(request: NextRequest, id: string) {
     try {
       const body = await request.json();
-      const tenant_id = this.resolveTenantId(request, body.tenant_id);
+      const tenant_id = await this.resolveTenantId(request, body.tenant_id);
       const passenger = await PassengerService.updatePassenger(tenant_id, id, body);
       return successResponse(passenger, "تم تحديث بيانات الراكب بنجاح");
     } catch (error) {
@@ -83,7 +83,7 @@ export class PassengerController {
   static async deletePassenger(request: NextRequest, id: string) {
     try {
       const body = await request.json().catch(() => ({}));
-      const tenant_id = this.resolveTenantId(
+      const tenant_id = await this.resolveTenantId(
         request,
         body.tenant_id || request.nextUrl.searchParams.get("tenant_id") || undefined
       );
@@ -94,8 +94,8 @@ export class PassengerController {
     }
   }
 
-  private static resolveTenantId(request: NextRequest, fallback?: string): string {
-    const tenantId = getTenantIdFromRequest(request) || fallback;
+  private static async resolveTenantId(request: NextRequest, fallback?: string): Promise<string> {
+    const tenantId = (await getTenantIdFromAuth(request)) || fallback;
     if (!tenantId) {
       throw new AppError("سياق المؤسسة مطلوب لهذه العملية", 400);
     }
