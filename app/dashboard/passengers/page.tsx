@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus, Search, UserCheck, Phone, MapPin, Eye, Edit, Trash2, Filter, FileText } from "lucide-react";
+import { Plus, Search, UserCheck, Phone, MapPin, Eye, Edit, Trash2, Filter, FileText, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -440,7 +440,14 @@ export default function PassengersPage() {
 
       {/* Modal View Passenger Details */}
       <Dialog open={detailsModalOpen} onOpenChange={setDetailsModalOpen}>
-        <DialogContent className="sm:max-w-[550px]" dir="rtl">
+        <DialogContent className="sm:max-w-[550px] relative" dir="rtl">
+          <button
+            onClick={() => setDetailsModalOpen(false)}
+            className="absolute left-4 top-4 rounded-full p-1.5 opacity-70 bg-slate-100 hover:bg-slate-200 hover:opacity-100 focus:outline-none transition-all z-10"
+          >
+            <X className="h-4 w-4 text-slate-700" />
+            <span className="sr-only">إغلاق</span>
+          </button>
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <FileText className="w-5 h-5 text-blue-600" />
@@ -449,40 +456,46 @@ export default function PassengersPage() {
           </DialogHeader>
 
           {selectedPassenger && (
-            <div className="space-y-4 py-2 text-sm">
-              <div className="grid grid-cols-2 gap-4 p-3 bg-slate-50 rounded-lg">
-                <div>
-                  <span className="text-xs text-slate-500 block">الاسم</span>
-                  <span className="font-bold text-slate-900">{selectedPassenger.full_name}</span>
+            <div className="space-y-6 py-2 text-sm">
+              <div className="flex flex-col md:flex-row gap-4 p-4 bg-gradient-to-br from-blue-50/50 to-slate-50 rounded-xl border border-blue-100/50 shadow-sm relative overflow-hidden">
+                <div className="absolute -left-4 -top-4 w-16 h-16 bg-blue-100 rounded-full blur-2xl opacity-60 pointer-events-none" />
+                <div className="flex-1 space-y-1">
+                  <span className="text-xs font-semibold text-blue-600/70 block uppercase tracking-wider">الاسم</span>
+                  <span className="font-bold text-slate-900 text-lg flex items-center gap-2">
+                    <UserCheck className="w-5 h-5 text-blue-500" />
+                    {selectedPassenger.full_name}
+                  </span>
                 </div>
-                <div>
-                  <span className="text-xs text-slate-500 block">رقم التواصل</span>
-                  <span className="font-bold text-slate-900 dir-ltr text-right block">
+                <div className="flex-1 space-y-1 border-t md:border-t-0 md:border-r border-slate-200/60 pt-3 md:pt-0 md:pr-4">
+                  <span className="text-xs font-semibold text-slate-500 block uppercase tracking-wider">رقم التواصل</span>
+                  <span className="font-bold text-slate-900 flex items-center gap-2 dir-ltr w-fit">
+                    <Phone className="w-4 h-4 text-slate-400" />
                     {selectedPassenger.contact_number}
                   </span>
                 </div>
               </div>
 
               <div>
-                <h4 className="font-bold text-slate-800 mb-2 border-b border-slate-100 pb-1">
-                  البيانات الديناميكية والإجابات المسجلة (Extra Details):
-                </h4>
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="h-6 w-1 bg-blue-600 rounded-full"></div>
+                  <h4 className="font-bold text-slate-800 text-base">البيانات الإضافية (Extra Details)</h4>
+                </div>
 
-                {selectedPassenger.extra_details &&
-                Object.keys(selectedPassenger.extra_details).length > 0 ? (
-                  <div className="space-y-2 max-h-60 overflow-y-auto">
+                {selectedPassenger.extra_details && Object.keys(selectedPassenger.extra_details).length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-1 custom-scrollbar">
                     {Object.entries(selectedPassenger.extra_details).map(([k, v]) => (
-                      <div key={k} className="flex items-center justify-between p-2 rounded bg-slate-100/70">
-                        <span className="font-semibold text-slate-700">{k}:</span>
-                        <span className="text-slate-900 font-medium">
+                      <div key={k} className="flex flex-col p-3 rounded-lg bg-white border border-slate-200 shadow-sm hover:border-blue-300 hover:shadow-md transition-all duration-200 group">
+                        <span className="text-xs font-medium text-slate-500 mb-1 group-hover:text-blue-600 transition-colors">{k}</span>
+                        <span className="text-slate-900 font-semibold text-sm">
                           {Array.isArray(v) ? v.join("، ") : String(v)}
                         </span>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="text-xs text-slate-400 p-4 text-center border border-dashed rounded-lg">
-                    لا توجد بيانات ديناميكية إضافية مسجلة لهذا الراكب.
+                  <div className="flex flex-col items-center justify-center p-8 text-center bg-slate-50 rounded-xl border border-dashed border-slate-200">
+                    <FileText className="w-8 h-8 text-slate-300 mb-2" />
+                    <span className="text-sm font-medium text-slate-500">لا توجد بيانات إضافية مسجلة لهذا الراكب.</span>
                   </div>
                 )}
               </div>
