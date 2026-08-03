@@ -38,7 +38,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} ${notoSansArabic.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-arabic bg-slate-50 text-slate-900" suppressHydrationWarning>
+      <body className="min-h-full flex flex-col font-arabic bg-background text-foreground" suppressHydrationWarning>
         <SessionProvider>
           <TooltipProvider>{children}</TooltipProvider>
         </SessionProvider>
