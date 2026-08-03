@@ -6,8 +6,12 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // 1. Define Public Route Rules
+  const isPublicFormDefinitionRoute =
+    request.method === "GET" && /^\/api\/v1\/forms\/[^/]+$/.test(pathname);
+
   const isPublicFormRoute =
     pathname.startsWith("/forms/") ||
+    isPublicFormDefinitionRoute ||
     /^\/api\/v1\/forms\/[^/]+\/submit$/.test(pathname);
 
   const isPublicAuthRoute =
@@ -53,13 +57,16 @@ export async function middleware(request: NextRequest) {
   // 4. Role Authorization Checks
   const userRoles: string[] = (token.roles as string[]) || [];
   const isSuperAdmin = userRoles.includes("super_admin");
+  const tenantId = token.tenant_id as string | undefined;
 
   // Protect Tenant Management (Super Admin only)
-  const isTenantManagement =
-    pathname.startsWith("/tenants") ||
-    pathname.startsWith("/api/v1/tenants");
+  const isSuperAdminRoute =
+    pathname.startsWith("/dashboard/tenants") ||
+    pathname.startsWith("/api/v1/tenants") ||
+    pathname.startsWith("/dashboard/users") ||
+    pathname.startsWith("/api/v1/users");
 
-  if (isTenantManagement && !isSuperAdmin) {
+  if (isSuperAdminRoute && !isSuperAdmin) {
     if (isApiRoute) {
       return NextResponse.json(
         {
@@ -67,6 +74,33 @@ export async function middleware(request: NextRequest) {
           error: {
             code: "FORBIDDEN",
             message: "هذا الإجراء مخصص لمدير النظام (Super Admin) فقط.",
+          },
+        },
+        { status: 403 }
+      );
+    }
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
+
+  // Protect Tenant Admin Routes (Operational)
+  const isTenantAdminRoute =
+    pathname.startsWith("/dashboard/passengers") ||
+    pathname.startsWith("/api/v1/passengers") ||
+    pathname.startsWith("/dashboard/vehicles") ||
+    pathname.startsWith("/api/v1/vehicles") ||
+    pathname.startsWith("/dashboard/drivers") ||
+    pathname.startsWith("/api/v1/drivers");
+
+  // Only allow if user is NOT a super admin OR if they somehow need to access it?
+  // User asked to check role and Session.user.tenant_id. Let's assume tenant admins must have a valid tenant_id.
+  if (isTenantAdminRoute && (isSuperAdmin || !tenantId)) {
+    if (isApiRoute) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "FORBIDDEN",
+            message: "هذا الإجراء مخصص لإدارة المؤسسة فقط.",
           },
         },
         { status: 403 }

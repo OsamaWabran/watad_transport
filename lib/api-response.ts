@@ -71,6 +71,7 @@ export function errorResponse(
 ): NextResponse<ApiResponseBody> {
   const body: ApiResponseBody = {
     success: false,
+    message,
     error: {
       code,
       message,
