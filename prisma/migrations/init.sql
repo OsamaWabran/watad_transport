@@ -131,6 +131,7 @@ CREATE TABLE "lookup_types" (
     "id" UUID NOT NULL,
     "tenant_id" UUID,
     "category_code" VARCHAR(100) NOT NULL,
+    "category_name" VARCHAR(255) NOT NULL,
     "is_system_defined" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "lookup_types_pkey" PRIMARY KEY ("id")

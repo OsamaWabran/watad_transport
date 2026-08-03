@@ -18,7 +18,7 @@ async function seed() {
     // 1. System Tenant
     const systemRes = await client.query(
       `INSERT INTO tenants (id, name, code, type, is_active, created_at, updated_at)
-       VALUES (gen_random_uuid(), 'مسارات - النظام الرئيسي', 'SYSTEM', 'other', true, NOW(), NOW())
+       VALUES (gen_random_uuid(), 'مسارات - النظام الرئيسي', 'SYS', 'other', true, NOW(), NOW())
        ON CONFLICT (code) DO UPDATE SET name = EXCLUDED.name
        RETURNING id;`
     );

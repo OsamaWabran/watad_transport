@@ -30,11 +30,11 @@ async function main() {
 
   // ─── 1. System Tenant ───────────────────────────────────────
   const systemTenant = await prisma.tenant.upsert({
-    where: { code: "SYSTEM" },
+    where: { code: "SYS" },
     update: {},
     create: {
       name: "مسارات - النظام الرئيسي",
-      code: "SYSTEM",
+      code: "SYS",
       type: TenantType.other,
       is_active: true,
     },
@@ -113,7 +113,7 @@ async function main() {
   console.log("\n🎉 Seed completed successfully!\n");
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
   console.log("🔐 Login Credentials:");
-  console.log("  Super Admin → username: superadmin  | password: admin123 | tenant_code: SYSTEM");
+  console.log("  Super Admin → username: superadmin  | password: admin123 | tenant_code: SYS");
   console.log("  KSU Admin   → username: ksu_admin   | password: ksu123   | tenant_code: KSU");
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 }
