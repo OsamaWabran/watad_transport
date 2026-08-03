@@ -85,8 +85,8 @@ export default function PendingRequestsPage() {
                   </div>
                 )}
                 <div className="flex gap-2 pt-4">
-                  <Button onClick={() => handleApprove(p.id)} className="w-full bg-green-600 hover:bg-green-700">اعتماد</Button>
-                  <Button onClick={() => handleReject(p.id)} variant="destructive" className="w-full">رفض</Button>
+                  <Button onClick={() => handleApprove(p.id)} className="flex-1 bg-green-600 text-white hover:bg-green-700">اعتماد</Button>
+                  <Button onClick={() => handleReject(p.id)} variant="destructive" className="flex-1">رفض</Button>
                 </div>
               </CardContent>
             </Card>

@@ -83,7 +83,7 @@ export class PassengerModel {
   }
 
   static async findAll(filter: PassengerFilter): Promise<PassengerWithRelations[]> {
-    const where: any = { tenant_id: filter.tenant_id };
+    const where: any = { tenant_id: filter.tenant_id, account_status: "Active" };
     if (filter.gender) {
       where.gender = filter.gender;
     }
@@ -119,14 +119,19 @@ export class PassengerModel {
     status: "Active" | "Rejected",
     reason?: string
   ): Promise<PassengerWithRelations> {
-    return prisma.passenger.update({
-      where: { id, tenant_id },
-      data: {
-        account_status: status,
-        rejection_reason: reason || null,
-      },
-      include: passengerInclude,
-    }) as Promise<PassengerWithRelations>;
+    return prisma.$transaction(async (tx) => {
+      const existing = await tx.passenger.findFirst({ where: { id, tenant_id } });
+      if (!existing) throw new AppError("الراكب غير موجود", 404);
+
+      return tx.passenger.update({
+        where: { id },
+        data: {
+          account_status: status,
+          rejection_reason: reason || null,
+        },
+        include: passengerInclude,
+      }) as Promise<PassengerWithRelations>;
+    });
   }
 
   static async create(data: CreatePassengerDTO): Promise<PassengerWithRelations> {

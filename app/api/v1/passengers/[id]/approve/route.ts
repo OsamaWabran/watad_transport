@@ -3,7 +3,8 @@ import { PassengerController } from "@/src/modules/passengers/passenger.controll
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  return PassengerController.approvePassenger(request, params.id);
+  const { id } = await params;
+  return PassengerController.approvePassenger(request, id);
 }

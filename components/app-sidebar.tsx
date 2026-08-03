@@ -44,6 +44,7 @@ const superAdminNavigation = [
 const tenantAdminNavigation = [
   { name: "مركز التحكم", href: "/dashboard", icon: LayoutDashboard, group: "نظرة عامة" },
   { name: "الركاب والطلاب", href: "/dashboard/passengers", icon: UserCheck, group: "تشغيل النقل" },
+  { name: "الطلبات المعلقة", href: "/dashboard/passengers/requests", icon: Users, group: "تشغيل النقل" },
   { name: "أسطول المركبات", href: "/dashboard/vehicles", icon: Bus, group: "تشغيل النقل" },
   { name: "السائقين والورديات", href: "/dashboard/drivers", icon: Users, group: "تشغيل النقل" },
   { name: "المحطات الجغرافية", href: "/dashboard/stations", icon: MapPin, group: "تشغيل النقل" },
@@ -70,11 +71,11 @@ export function AppSidebar({ user, onSignOut, ...props }: AppSidebarProps) {
   const currentNavigation = user.isSuperAdmin ? superAdminNavigation : tenantAdminNavigation;
 
   const activeItem =
+    currentNavigation.find((item) => pathname === item.href) ??
     currentNavigation.find(
-      (item) =>
-        pathname === item.href ||
-        (item.href !== "/dashboard" && pathname.startsWith(item.href))
-    ) ?? currentNavigation[0];
+      (item) => item.href !== "/dashboard" && pathname.startsWith(item.href)
+    ) ??
+    currentNavigation[0];
 
   const filteredNavigation = React.useMemo(() => {
     if (!searchQuery.trim()) return currentNavigation;
