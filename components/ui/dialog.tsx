@@ -2,10 +2,18 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
-function Dialog({ open, children }: { open: boolean; children: React.ReactNode }) {
-  if (!open) return null
+function Dialog({
+  open,
+  onOpenChange,
+  children,
+}: {
+  open: boolean;
+  onOpenChange?: (open: boolean) => void;
+  children: React.ReactNode;
+}) {
+  if (!open) return null;
 
-  return <>{children}</>
+  return <>{children}</>;
 }
 
 function DialogContent({ className, ...props }: React.ComponentProps<"div">) {
