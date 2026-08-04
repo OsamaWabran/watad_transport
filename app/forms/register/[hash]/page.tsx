@@ -83,31 +83,33 @@ export default function PublicFormPage() {
         {error && <div className="bg-red-50 text-red-600 p-4 rounded-md mb-6">{error}</div>}
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-gray-700 border-b pb-2">البيانات الأساسية</h2>
-            
-            <div className="space-y-2">
-              <Label>الاسم الرباعي <span className="text-red-500">*</span></Label>
-              <Input required value={formData.full_name} onChange={e => setFormData({...formData, full_name: e.target.value})} />
-            </div>
+          {form?.purpose === 'passenger_registration' && (
+            <div className="space-y-4">
+              <h2 className="text-lg font-semibold text-gray-700 border-b pb-2">البيانات الأساسية</h2>
+              
+              <div className="space-y-2">
+                <Label>الاسم الرباعي <span className="text-red-500">*</span></Label>
+                <Input required value={formData.full_name} onChange={e => setFormData({...formData, full_name: e.target.value})} />
+              </div>
 
-            <div className="space-y-2">
-              <Label>رقم الجوال <span className="text-red-500">*</span></Label>
-              <Input required type="tel" value={formData.contact_number} onChange={e => setFormData({...formData, contact_number: e.target.value})} />
-            </div>
+              <div className="space-y-2">
+                <Label>رقم الجوال <span className="text-red-500">*</span></Label>
+                <Input required type="tel" value={formData.contact_number} onChange={e => setFormData({...formData, contact_number: e.target.value})} />
+              </div>
 
-            <div className="space-y-2">
-              <Label>الجنس <span className="text-red-500">*</span></Label>
-              <select 
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                value={formData.gender} 
-                onChange={e => setFormData({...formData, gender: e.target.value})}
-              >
-                <option value="male">ذكر</option>
-                <option value="female">أنثى</option>
-              </select>
+              <div className="space-y-2">
+                <Label>الجنس <span className="text-red-500">*</span></Label>
+                <select 
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  value={formData.gender} 
+                  onChange={e => setFormData({...formData, gender: e.target.value})}
+                >
+                  <option value="male">ذكر</option>
+                  <option value="female">أنثى</option>
+                </select>
+              </div>
             </div>
-          </div>
+          )}
 
           {form?.form_fields?.length > 0 && (
             <div className="space-y-4 pt-4">

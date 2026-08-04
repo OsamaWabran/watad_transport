@@ -9,7 +9,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 export default function FormBuilderPage() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [purpose, setPurpose] = useState("passenger_registration");
+  const [purposeType, setPurposeType] = useState("passenger_registration");
+  const [customPurpose, setCustomPurpose] = useState("");
   const [isActive, setIsActive] = useState(true);
   
   const [fields, setFields] = useState<any[]>([]);
@@ -54,7 +55,7 @@ export default function FormBuilderPage() {
           tenant_id: "c0c7a523-a5c9-4a0b-93f5-7e26d9c66af6", // Example hardcoded for MVP
           title,
           description,
-          purpose,
+          purpose: purposeType === "other" ? customPurpose : purposeType,
           is_active: isActive,
           fields: fields.map((f, i) => ({
             field_label: f.field_label,
@@ -101,15 +102,20 @@ export default function FormBuilderPage() {
           <div className="space-y-2">
             <Label>الغرض من النموذج</Label>
             <select 
-              value={purpose}
-              onChange={(e) => setPurpose(e.target.value)}
-              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
+              value={purposeType}
+              onChange={(e) => setPurposeType(e.target.value)}
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background mb-2"
             >
-              <option value="passenger_registration">تسجيل الركاب (الطلاب/الموظفين)</option>
-              <option value="driver_registration">تسجيل السائقين</option>
-              <option value="employee_registration">تسجيل الموظفين (إداري)</option>
-              <option value="other">أخرى</option>
+              <option value="passenger_registration">نموذج تسجيل ركاب (مع بيانات أساسية)</option>
+              <option value="other">نموذج مخصص (أغراض أخرى)</option>
             </select>
+            {purposeType === "other" && (
+              <Input 
+                value={customPurpose}
+                onChange={(e) => setCustomPurpose(e.target.value)}
+                placeholder="أدخل الغرض من النموذج (مثال: تقييم خدمة، تسجيل سائق، إلخ...)"
+              />
+            )}
           </div>
           <div className="flex items-center space-x-2 space-x-reverse pt-2">
             <input 

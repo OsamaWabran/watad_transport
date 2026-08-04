@@ -29,6 +29,7 @@ interface FormDetail {
   id: string;
   title: string;
   description?: string;
+  purpose: string;
   form_fields: any[];
 }
 
@@ -73,13 +74,14 @@ export default function FormResponsesPage({ params }: { params: Promise<{ id: st
   const exportToCSV = () => {
     if (responses.length === 0) return;
 
+    const isPassengerForm = form?.purpose === "passenger_registration";
     const dynamicKeys = form?.form_fields?.map((f) => f.field_label) || [];
-    const headers = ["اسم الراكب", "رقم التواصل", "الجنس", "تاريخ الإرسال", ...dynamicKeys];
+    
+    const headers = isPassengerForm 
+      ? ["اسم الراكب", "رقم التواصل", "الجنس", "تاريخ الإرسال", ...dynamicKeys]
+      : ["تاريخ الإرسال", ...dynamicKeys];
 
     const rows = filteredResponses.map((r) => {
-      const name = r.passenger?.full_name || r.response_data?.passenger_info?.full_name || "";
-      const phone = r.passenger?.contact_number || r.response_data?.passenger_info?.contact_number || "";
-      const gender = r.passenger?.gender || r.response_data?.passenger_info?.gender || "";
       const date = new Date(r.submitted_at).toLocaleString("ar-SA");
       const answers = r.response_data?.answers || {};
 
@@ -88,7 +90,14 @@ export default function FormResponsesPage({ params }: { params: Promise<{ id: st
         return Array.isArray(val) ? val.join(";") : val;
       });
 
-      return [name, phone, gender, date, ...dynamicValues];
+      if (isPassengerForm) {
+        const name = r.passenger?.full_name || r.response_data?.passenger_info?.full_name || "";
+        const phone = r.passenger?.contact_number || r.response_data?.passenger_info?.contact_number || "";
+        const gender = r.passenger?.gender || r.response_data?.passenger_info?.gender || "";
+        return [name, phone, gender, date, ...dynamicValues];
+      } else {
+        return [date, ...dynamicValues];
+      }
     });
 
     const csvContent =
@@ -164,9 +173,13 @@ export default function FormResponsesPage({ params }: { params: Promise<{ id: st
             <table className="w-full text-right text-sm">
               <thead className="bg-slate-50 text-xs font-bold text-slate-700 border-b border-slate-200">
                 <tr>
-                  <th className="p-4">اسم الطالب / الراكب</th>
-                  <th className="p-4">رقم التواصل</th>
-                  <th className="p-4">الجنس</th>
+                  {form?.purpose === "passenger_registration" && (
+                    <>
+                      <th className="p-4">اسم الطالب / الراكب</th>
+                      <th className="p-4">رقم التواصل</th>
+                      <th className="p-4">الجنس</th>
+                    </>
+                  )}
                   <th className="p-4">تاريخ التعبئة</th>
                   {form?.form_fields?.map((f) => (
                     <th key={f.id} className="p-4 bg-blue-50/50 text-blue-900">
@@ -184,21 +197,25 @@ export default function FormResponsesPage({ params }: { params: Promise<{ id: st
 
                   return (
                     <tr key={r.id} className="hover:bg-slate-50">
-                      <td className="p-4 font-bold text-slate-900 flex items-center gap-2">
-                        <User className="w-4 h-4 text-slate-400" />
-                        {name}
-                      </td>
-                      <td className="p-4 text-slate-700 dir-ltr text-right">
-                        <span className="inline-flex items-center gap-1">
-                          <Phone className="w-3.5 h-3.5 text-slate-400" />
-                          {phone}
-                        </span>
-                      </td>
-                      <td className="p-4">
-                        <Badge variant="outline" className={gender === "male" ? "text-blue-600" : "text-pink-600"}>
-                          {gender === "male" ? "ذكر" : "أنثى"}
-                        </Badge>
-                      </td>
+                      {form?.purpose === "passenger_registration" && (
+                        <>
+                          <td className="p-4 font-bold text-slate-900 flex items-center gap-2">
+                            <User className="w-4 h-4 text-slate-400" />
+                            {name}
+                          </td>
+                          <td className="p-4 text-slate-700 dir-ltr text-right">
+                            <span className="inline-flex items-center gap-1">
+                              <Phone className="w-3.5 h-3.5 text-slate-400" />
+                              {phone}
+                            </span>
+                          </td>
+                          <td className="p-4">
+                            <Badge variant="outline" className={gender === "male" ? "text-blue-600" : "text-pink-600"}>
+                              {gender === "male" ? "ذكر" : "أنثى"}
+                            </Badge>
+                          </td>
+                        </>
+                      )}
                       <td className="p-4 text-xs text-slate-500">
                         <span className="inline-flex items-center gap-1">
                           <Calendar className="w-3.5 h-3.5 text-slate-400" />

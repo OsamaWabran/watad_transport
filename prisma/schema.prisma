@@ -54,12 +54,12 @@ enum UserRole {
   employee
 }
 
-enum FormPurpose {
-  passenger_registration
-  driver_registration
-  employee_registration
-  other
-}
+// enum FormPurpose {
+//   passenger_registration
+//   driver_registration
+//   employee_registration
+//   other
+// }
 
 enum AccountStatus {
   Pending
@@ -314,7 +314,7 @@ model Form {
   tenant_id        String      @db.Uuid
   title            String      @db.VarChar(255)
   description      String?     @db.Text
-  purpose          FormPurpose @default(other)
+  purpose          String      @default("other") @db.VarChar(100)
   public_link_hash String      @unique
   is_active        Boolean     @default(true)
   created_at       DateTime    @default(now())

@@ -59,11 +59,28 @@ export class FormService {
       answers,
     } = submissionData;
 
+    const tenant_id = form.tenant_id;
+
+    if (form.purpose !== "passenger_registration") {
+      return import("@/lib/prisma").then(({ prisma }) => 
+        prisma.formResponse.create({
+          data: {
+            form_id: form.id,
+            tenant_id,
+            passenger_id: null,
+            response_data: { answers },
+          }
+        }).then(response => ({
+          response_id: response.id,
+          message: "تم تسجيل طلبك بنجاح.",
+        }))
+      );
+    }
+
     if (!full_name || full_name.trim() === "") throw new AppError("الاسم مطلوب", 400);
     if (!contact_number || contact_number.trim() === "") throw new AppError("رقم التواصل مطلوب", 400);
     if (!gender || !["male", "female"].includes(gender)) throw new AppError("الجنس مطلوب", 400);
 
-    const tenant_id = form.tenant_id;
     const clean_contact = contact_number.trim();
 
     return import("@/lib/prisma").then(({ prisma }) => 

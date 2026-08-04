@@ -29,6 +29,8 @@ export default function NewFormPage() {
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [purposeType, setPurposeType] = useState("passenger_registration");
+  const [customPurpose, setCustomPurpose] = useState("");
   const [isActive, setIsActive] = useState(true);
   const [fields, setFields] = useState<FormFieldItem[]>([
     {
@@ -130,6 +132,7 @@ export default function NewFormPage() {
         body: JSON.stringify({
           title,
           description,
+          purpose: purposeType === "other" ? customPurpose : purposeType,
           is_active: isActive,
           fields,
         }),
@@ -203,6 +206,29 @@ export default function NewFormPage() {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="purpose" className="font-semibold text-slate-800">
+              الغرض من النموذج
+            </Label>
+            <select 
+              id="purpose"
+              value={purposeType}
+              onChange={(e) => setPurposeType(e.target.value)}
+              className="flex h-10 w-full rounded-md border border-slate-300 bg-background px-3 py-2 text-sm focus:border-blue-500 focus:outline-none mb-2"
+            >
+              <option value="passenger_registration">نموذج تسجيل ركاب (مع بيانات أساسية)</option>
+              <option value="other">نموذج مخصص (أغراض أخرى)</option>
+            </select>
+            {purposeType === "other" && (
+              <Input 
+                value={customPurpose}
+                onChange={(e) => setCustomPurpose(e.target.value)}
+                placeholder="أدخل الغرض من النموذج (مثال: تقييم خدمة، تسجيل سائق، إلخ...)"
+                className="mt-2"
+              />
+            )}
           </div>
 
           <div className="flex items-center gap-3 pt-2">

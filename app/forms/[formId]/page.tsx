@@ -88,13 +88,15 @@ export default function PublicFormSubmissionPage({
     e.preventDefault();
     setErrorMsg(null);
 
-    if (!fullName.trim()) {
-      setErrorMsg("الرجاء إدخال اسم الطالب / الراكب");
-      return;
-    }
-    if (!contactNumber.trim()) {
-      setErrorMsg("الرجاء إدخال رقم التواصل");
-      return;
+    if (form?.purpose === "passenger_registration") {
+      if (!fullName.trim()) {
+        setErrorMsg("الرجاء إدخال اسم الطالب / الراكب");
+        return;
+      }
+      if (!contactNumber.trim()) {
+        setErrorMsg("الرجاء إدخال رقم التواصل");
+        return;
+      }
     }
 
     // Validate required dynamic fields
@@ -233,10 +235,11 @@ export default function PublicFormSubmissionPage({
         {/* Form Submission Body */}
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Base Passenger Section */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
-            <h3 className="font-extrabold text-slate-900 text-base border-b border-slate-100 pb-2">
-              البيانات الشخصية للطالب / الراكب
-            </h3>
+          {form?.purpose === "passenger_registration" && (
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
+              <h3 className="font-extrabold text-slate-900 text-base border-b border-slate-100 pb-2">
+                البيانات الشخصية للطالب / الراكب
+              </h3>
 
             <div className="space-y-1.5">
               <label className="block text-xs font-bold text-slate-700">
@@ -294,6 +297,7 @@ export default function PublicFormSubmissionPage({
               </div>
             </div>
           </div>
+          )}
 
           {/* Dynamic Fields Section */}
           {form?.form_fields && form.form_fields.length > 0 && (

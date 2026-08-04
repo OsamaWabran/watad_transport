@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { AppError } from "@/lib/api-response";
-import { Form, FormField, FormFieldType, FormResponse, FormPurpose } from "@/app/generated/prisma/client";
+import { Form, FormField, FormFieldType, FormResponse } from "@/app/generated/prisma/client";
 import crypto from "crypto";
 
 export interface CreateFormFieldDTO {
@@ -21,7 +21,7 @@ export interface CreateFormDTO {
   tenant_id: string;
   title: string;
   description?: string;
-  purpose?: FormPurpose;
+  purpose?: string;
   is_active?: boolean;
   fields?: CreateFormFieldDTO[];
 }
@@ -29,7 +29,7 @@ export interface CreateFormDTO {
 export interface UpdateFormDTO {
   title?: string;
   description?: string;
-  purpose?: FormPurpose;
+  purpose?: string;
   is_active?: boolean;
   fields?: UpdateFormFieldDTO[];
 }
