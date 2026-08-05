@@ -337,6 +337,11 @@ export default function PassengersPage() {
           </DialogHeader>
 
           <form onSubmit={handleSavePassenger} className="space-y-4 py-2">
+            {formData.default_start_station_id && formData.default_end_station_id && formData.default_start_station_id === formData.default_end_station_id && (
+              <div className="rounded-md border border-amber-200 bg-amber-50 p-3 text-xs font-semibold text-amber-800">
+                تحذير: محطة الطلوع ومحطة النزول متطابقتان، يرجى التأكد من دقة الاختيار.
+              </div>
+            )}
             <div className="space-y-2">
               <Label htmlFor="full_name">اسم الراكب بالكامل *</Label>
               <Input

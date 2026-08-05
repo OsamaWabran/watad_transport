@@ -1,268 +1,362 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import {
-  Building2,
-  Globe2,
-  MapPin,
-  Navigation,
-  Plus,
-  RefreshCw,
-  Search,
-  School,
-} from "lucide-react";
-
-import { Badge } from "@/components/ui/badge";
+import { useEffect, useState } from "react";
+import { Plus, Search, MapPin, Edit, Trash2, Shield, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select } from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 
-const stations = [
-  {
-    id: "ST-G-001",
-    name: "محطة البوابة الرئيسية",
-    type: "global",
-    scope: "عامة",
-    lat: "24.713552",
-    lng: "46.675296",
-    passengers: 126,
-  },
-  {
-    id: "ST-T-014",
-    name: "كلية الهندسة",
-    type: "tenant",
-    scope: "جامعة الملك سعود",
-    lat: "24.725822",
-    lng: "46.624128",
-    passengers: 72,
-  },
-  {
-    id: "ST-T-021",
-    name: "السكن الجامعي",
-    type: "tenant",
-    scope: "جامعة الملك سعود",
-    lat: "24.731440",
-    lng: "46.619310",
-    passengers: 94,
-  },
-];
+function getApiErrorMessage(response: any, fallback: string) {
+  return response?.error?.message || response?.message || fallback;
+}
+
+interface StationItem {
+  id: string;
+  tenant_id: string | null;
+  name: string;
+  location_lat: number;
+  location_lng: number;
+  type: "pickup" | "dropoff" | "both";
+  created_at: string;
+}
 
 export default function StationsPage() {
-  const [search, setSearch] = useState("");
-  const [scopeFilter, setScopeFilter] = useState("all");
-  const [open, setOpen] = useState(false);
+  const [stations, setStations] = useState<StationItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [userRole, setUserRole] = useState<string[]>([]);
+  const isSuperAdmin = userRole.includes("super_admin");
 
-  const filteredStations = useMemo(() => {
-    return stations.filter((station) => {
-      const term = search.trim().toLowerCase();
-      const matchesSearch =
-        !term ||
-        station.name.toLowerCase().includes(term) ||
-        station.scope.toLowerCase().includes(term);
-      const matchesScope = scopeFilter === "all" || station.type === scopeFilter;
+  // Filters
+  const [searchTerm, setSearchTerm] = useState("");
 
-      return matchesSearch && matchesScope;
+  // Modals
+  const [formModalOpen, setFormModalOpen] = useState(false);
+
+  const [formData, setFormData] = useState({
+    name: "",
+    location_lat: "",
+    location_lng: "",
+    type: "both" as "pickup" | "dropoff" | "both",
+    tenant_id: undefined as string | null | undefined, // null means global
+  });
+  const [editId, setEditId] = useState<string | null>(null);
+
+  // For simplicity, we just fetch /api/v1/stations which returns hybrid (global + tenant)
+  const fetchStations = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch("/api/v1/stations");
+      const data = await res.json();
+      if (data.success) {
+        setStations(data.data);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchSession = async () => {
+    try {
+      const res = await fetch("/api/auth/session");
+      const session = await res.json();
+      if (session?.roles) {
+        setUserRole(session.roles);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchSession();
+    fetchStations();
+  }, []);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+  };
+
+  const filteredStations = stations.filter(s => s.name.includes(searchTerm));
+
+  const handleOpenCreate = () => {
+    setEditId(null);
+    setFormData({
+      name: "",
+      location_lat: "",
+      location_lng: "",
+      type: "both",
+      tenant_id: undefined,
     });
-  }, [search, scopeFilter]);
+    setFormModalOpen(true);
+  };
 
-  const globalCount = stations.filter((station) => station.type === "global").length;
-  const tenantCount = stations.filter((station) => station.type === "tenant").length;
-  const passengerCount = stations.reduce((sum, station) => sum + station.passengers, 0);
+  const handleOpenEdit = (s: StationItem) => {
+    setEditId(s.id);
+    setFormData({
+      name: s.name,
+      location_lat: s.location_lat.toString(),
+      location_lng: s.location_lng.toString(),
+      type: s.type,
+      tenant_id: s.tenant_id,
+    });
+    setFormModalOpen(true);
+  };
+
+  const handleSaveStation = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const url = editId ? `/api/v1/stations/${editId}` : "/api/v1/stations";
+      const method = editId ? "PUT" : "POST";
+
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setFormModalOpen(false);
+        fetchStations();
+      } else {
+        alert(getApiErrorMessage(data, "حدث خطأ أثناء حفظ بيانات المحطة"));
+      }
+    } catch (err) {
+      alert("تعذر الاتصال بالخادم");
+    }
+  };
+
+  const handleDeleteStation = async (id: string) => {
+    if (!confirm("هل أنت تأكد من رغبتك في حذف هذه المحطة؟")) return;
+    try {
+      const res = await fetch(`/api/v1/stations/${id}`, { method: "DELETE" });
+      const data = await res.json();
+      if (data.success) {
+        fetchStations();
+      } else {
+        alert(getApiErrorMessage(data, "فشل الحذف"));
+      }
+    } catch (err) {
+      alert("حدث خطأ أثناء الحذف");
+    }
+  };
 
   return (
     <div className="space-y-6">
-      <Card className="flex flex-col gap-4 border-slate-200/80 p-6 sm:flex-row sm:items-center sm:justify-between">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <MapPin className="h-6 w-6 text-blue-600" />
-            <h1 className="text-xl font-bold text-slate-900">إدارة المحطات</h1>
-          </div>
-          <p className="text-xs text-slate-500">
-            إدارة المحطات العامة والخاصة وتحديد الإحداثيات الجغرافية للطلاب والرحلات
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-extrabold text-slate-900">إدارة المحطات</h1>
+          <p className="mt-1 text-sm text-slate-500">
+            أماكن صعود ونزول الطلاب والمركبات
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button type="button" variant="outline" size="icon-lg" title="تحديث البيانات">
-            <RefreshCw className="h-4 w-4" />
-          </Button>
-          <Button type="button" onClick={() => setOpen(true)} className="bg-blue-600 text-white hover:bg-blue-700">
-            <Plus className="h-4 w-4" />
-            <span>إضافة محطة</span>
-          </Button>
-        </div>
-      </Card>
 
-      <div className="grid gap-4 sm:grid-cols-3">
-        <Card className="flex items-center justify-between border-slate-200/80 p-5">
-          <div>
-            <span className="block text-xs font-semibold text-slate-500">محطات عامة</span>
-            <span className="mt-1 block text-2xl font-black text-slate-900">{globalCount}</span>
-          </div>
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-blue-100 bg-blue-50 text-blue-600">
-            <Globe2 className="h-5 w-5" />
-          </div>
-        </Card>
-        <Card className="flex items-center justify-between border-slate-200/80 p-5">
-          <div>
-            <span className="block text-xs font-semibold text-slate-500">محطات المؤسسة</span>
-            <span className="mt-1 block text-2xl font-black text-slate-900">{tenantCount}</span>
-          </div>
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-indigo-100 bg-indigo-50 text-indigo-600">
-            <School className="h-5 w-5" />
-          </div>
-        </Card>
-        <Card className="flex items-center justify-between border-slate-200/80 p-5">
-          <div>
-            <span className="block text-xs font-semibold text-slate-500">ركاب مرتبطون</span>
-            <span className="mt-1 block text-2xl font-black text-slate-900">{passengerCount}</span>
-          </div>
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-emerald-100 bg-emerald-50 text-emerald-600">
-            <Navigation className="h-5 w-5" />
-          </div>
-        </Card>
+        <Button onClick={handleOpenCreate} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
+          <Plus className="w-4 h-4" />
+          <span>إضافة محطة جديدة</span>
+        </Button>
       </div>
 
-      <Card className="flex flex-col items-center justify-between gap-3 border-slate-200/80 p-4 sm:flex-row">
-        <div className="relative w-full sm:w-96">
-          <Search className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-          <Input
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            placeholder="بحث باسم المحطة أو نطاقها..."
-            className="bg-slate-50 pr-9"
-          />
-        </div>
-        <Select value={scopeFilter} onChange={(event) => setScopeFilter(event.target.value)} className="w-full bg-slate-50 sm:w-52">
-          <option value="all">كل المحطات</option>
-          <option value="global">عامة</option>
-          <option value="tenant">خاصة بالمؤسسة</option>
-        </Select>
-      </Card>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+        <form onSubmit={handleSearch} className="flex items-center gap-2 flex-1 max-w-md">
+          <div className="relative flex-1">
+            <Search className="absolute right-3 top-2.5 h-4 w-4 text-slate-400" />
+            <Input
+              placeholder="بحث بالاسم..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pr-9"
+            />
+          </div>
+        </form>
+      </div>
 
-      <div className="grid gap-6 lg:grid-cols-12">
-        <Card className="overflow-hidden border-slate-200/80 lg:col-span-8">
+      <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+        {loading ? (
+          <div className="py-12 text-center text-sm text-slate-500">جاري تحميل المحطات...</div>
+        ) : filteredStations.length === 0 ? (
+          <div className="py-12 text-center text-sm text-slate-500">لا توجد محطات مسجلة حالياً</div>
+        ) : (
           <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-slate-50">
-                  <TableHead>اسم المحطة</TableHead>
-                  <TableHead>النطاق</TableHead>
-                  <TableHead>نوع المحطة</TableHead>
-                  <TableHead>الإحداثيات</TableHead>
-                  <TableHead>ركاب مرتبطون</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredStations.map((station) => (
-                  <TableRow key={station.id}>
-                    <TableCell className="font-bold text-slate-900">
-                      <span className="inline-flex items-center gap-2">
-                        <MapPin className="h-4 w-4 text-blue-600" />
-                        {station.name}
-                      </span>
-                    </TableCell>
-                    <TableCell className="text-xs text-slate-600">{station.scope}</TableCell>
-                    <TableCell>
-                      {station.type === "global" ? (
-                        <Badge variant="blue" shape="pill">
-                          <Globe2 className="h-3.5 w-3.5" />
-                          عامة
+            <table className="w-full text-right text-sm">
+              <thead className="bg-slate-50 text-xs font-bold text-slate-700 border-b border-slate-200">
+                <tr>
+                  <th className="p-4">اسم المحطة</th>
+                  <th className="p-4">النوع</th>
+                  <th className="p-4">الإحداثيات</th>
+                  <th className="p-4">نطاق المحطة</th>
+                  <th className="p-4 text-left">الإجراءات</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {filteredStations.map((s) => (
+                  <tr key={s.id} className="hover:bg-slate-50">
+                    <td className="p-4 font-bold text-slate-900 flex items-center gap-2">
+                      <MapPin className="w-4 h-4 text-emerald-600" />
+                      {s.name}
+                    </td>
+                    <td className="p-4">
+                      <Badge variant="outline" className={s.type === 'pickup' ? 'text-blue-600 border-blue-200 bg-blue-50' : s.type === 'dropoff' ? 'text-red-600 border-red-200 bg-red-50' : 'text-purple-600 border-purple-200 bg-purple-50'}>
+                        {s.type === 'pickup' ? 'انطلاق فقط' : s.type === 'dropoff' ? 'وصول فقط' : 'انطلاق ووصول'}
+                      </Badge>
+                    </td>
+                    <td className="p-4 text-slate-600 dir-ltr text-right">
+                      {s.location_lat}, {s.location_lng}
+                    </td>
+                    <td className="p-4">
+                      {s.tenant_id === null ? (
+                        <Badge variant="secondary" className="bg-indigo-100 text-indigo-700 gap-1 border-indigo-200">
+                          <Globe className="w-3 h-3" />
+                          عالمية
                         </Badge>
                       ) : (
-                        <Badge variant="indigo" shape="pill">
-                          <Building2 className="h-3.5 w-3.5" />
-                          مؤسسة
+                        <Badge variant="secondary" className="bg-slate-100 text-slate-700 gap-1 border-slate-200">
+                          <Shield className="w-3 h-3" />
+                          خاصة
                         </Badge>
                       )}
-                    </TableCell>
-                    <TableCell className="font-mono text-xs text-slate-500">
-                      {station.lat}, {station.lng}
-                    </TableCell>
-                    <TableCell className="font-mono text-xs font-semibold text-slate-700">
-                      {station.passengers}
-                    </TableCell>
-                  </TableRow>
+                    </td>
+                    <td className="p-4 text-left">
+                      {(!s.tenant_id && !isSuperAdmin) ? (
+                        <span className="text-xs text-slate-400">للقراءة فقط</span>
+                      ) : (
+                        <div className="flex items-center justify-end gap-1">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleOpenEdit(s)}
+                            className="p-1.5 text-slate-600 hover:text-emerald-600"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDeleteStation(s.id)}
+                            className="p-1.5 text-slate-600 hover:text-red-600"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
                 ))}
-              </TableBody>
-            </Table>
+              </tbody>
+            </table>
           </div>
-        </Card>
-
-        <Card className="border-slate-200/80 p-5 lg:col-span-4">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="font-bold text-slate-900">خريطة تشغيلية</h2>
-            <Badge variant="secondary">عرض تمثيلي</Badge>
-          </div>
-          <div className="relative min-h-72 overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#e2e8f0_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f0_1px,transparent_1px)] bg-[size:34px_34px]" />
-            {stations.map((station, index) => (
-              <div
-                key={station.id}
-                className="absolute flex -translate-x-1/2 -translate-y-1/2 items-center gap-1 rounded-full border border-white bg-blue-600 px-2 py-1 text-[10px] font-bold text-white shadow-sm"
-                style={{
-                  right: `${22 + index * 24}%`,
-                  top: `${28 + index * 18}%`,
-                }}
-              >
-                <MapPin className="h-3 w-3" />
-                {station.name}
-              </div>
-            ))}
-          </div>
-        </Card>
+        )}
       </div>
 
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
+      <Dialog open={formModalOpen} onOpenChange={setFormModalOpen}>
+        <DialogContent className="sm:max-w-[450px]" dir="rtl">
           <DialogHeader>
-            <DialogTitle>إضافة محطة</DialogTitle>
-            <DialogDescription>حدد اسم المحطة ونطاقها وإحداثياتها الجغرافية.</DialogDescription>
+            <DialogTitle>{editId ? "تعديل بيانات المحطة" : "إضافة محطة جديدة"}</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 p-6">
-            <div>
-              <Label className="mb-1 block">اسم المحطة</Label>
-              <Input placeholder="مثال: كلية الهندسة" />
+
+          <form onSubmit={handleSaveStation} className="space-y-4 py-2">
+            <div className="space-y-2">
+              <Label htmlFor="name">اسم المحطة *</Label>
+              <Input
+                id="name"
+                placeholder="أدخل اسم المحطة..."
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                required
+              />
             </div>
-            <div>
-              <Label className="mb-1 block">النطاق</Label>
-              <Select defaultValue="tenant">
-                <option value="global">محطة عامة</option>
-                <option value="tenant">محطة خاصة بالمؤسسة</option>
-              </Select>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <Label className="mb-1 block">خط العرض</Label>
-                <Input placeholder="24.725822" />
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="lat">خط العرض (Lat) *</Label>
+                <Input
+                  id="lat"
+                  type="number"
+                  step="0.00000001"
+                  placeholder="24.7136"
+                  value={formData.location_lat}
+                  onChange={(e) => setFormData({ ...formData, location_lat: e.target.value })}
+                  required
+                  className="dir-ltr text-right"
+                />
               </div>
-              <div>
-                <Label className="mb-1 block">خط الطول</Label>
-                <Input placeholder="46.624128" />
+              <div className="space-y-2">
+                <Label htmlFor="lng">خط الطول (Lng) *</Label>
+                <Input
+                  id="lng"
+                  type="number"
+                  step="0.00000001"
+                  placeholder="46.6753"
+                  value={formData.location_lng}
+                  onChange={(e) => setFormData({ ...formData, location_lng: e.target.value })}
+                  required
+                  className="dir-ltr text-right"
+                />
               </div>
             </div>
-          </div>
-          <DialogFooter className="px-6 pb-6">
-            <Button type="button" variant="ghost" onClick={() => setOpen(false)}>إلغاء</Button>
-            <Button type="button" className="bg-blue-600 text-white hover:bg-blue-700">حفظ</Button>
-          </DialogFooter>
+
+            <div className="space-y-2">
+              <Label>نوع المحطة *</Label>
+              <select
+                className="w-full rounded-md border border-slate-300 p-2 text-sm focus:outline-none"
+                value={formData.type}
+                onChange={(e) => setFormData({ ...formData, type: e.target.value as any })}
+                required
+              >
+                <option value="both">انطلاق ووصول</option>
+                <option value="pickup">انطلاق فقط</option>
+                <option value="dropoff">وصول فقط</option>
+              </select>
+            </div>
+
+            {isSuperAdmin && (
+              <div className="space-y-2 p-3 bg-indigo-50 border border-indigo-100 rounded-md">
+                <Label className="text-indigo-900 font-semibold flex items-center gap-2">
+                  <Globe className="w-4 h-4" />
+                  نطاق المحطة (صلاحية Super Admin)
+                </Label>
+                <div className="flex flex-col gap-2 mt-2">
+                  <label className="flex items-center gap-2 text-sm cursor-pointer">
+                    <input
+                      type="radio"
+                      name="tenant_id"
+                      checked={formData.tenant_id !== null}
+                      onChange={() => setFormData({ ...formData, tenant_id: undefined })}
+                    />
+                    محطة خاصة بالمؤسسة الحالية (إن وجد سياق)
+                  </label>
+                  <label className="flex items-center gap-2 text-sm cursor-pointer">
+                    <input
+                      type="radio"
+                      name="tenant_id"
+                      checked={formData.tenant_id === null}
+                      onChange={() => setFormData({ ...formData, tenant_id: null })}
+                    />
+                    محطة عالمية (تظهر لجميع المؤسسات)
+                  </label>
+                </div>
+              </div>
+            )}
+
+            <DialogFooter className="mt-4 gap-2">
+              <Button type="button" variant="outline" onClick={() => setFormModalOpen(false)}>
+                إلغاء
+              </Button>
+              <Button type="submit" className="bg-emerald-600 hover:bg-emerald-700 text-white">
+                حفظ
+              </Button>
+            </DialogFooter>
+          </form>
         </DialogContent>
       </Dialog>
     </div>

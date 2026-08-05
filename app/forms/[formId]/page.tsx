@@ -45,6 +45,10 @@ export default function PublicFormSubmissionPage({
   const [fullName, setFullName] = useState("");
   const [contactNumber, setContactNumber] = useState("");
   const [gender, setGender] = useState<"male" | "female">("male");
+  const [startStation, setStartStation] = useState("");
+  const [endStation, setEndStation] = useState("");
+
+  const [stations, setStations] = useState<{ id: string; name: string }[]>([]);
 
   // Dynamic answers state map
   const [answers, setAnswers] = useState<Record<string, any>>({});
@@ -57,6 +61,19 @@ export default function PublicFormSubmissionPage({
         const data = await res.json();
         if (data.success) {
           setForm(data.data);
+          
+          // Fetch stations using the form's tenant_id if available, but since it's a public form 
+          // we might just fetch the global / hybrid ones. Wait, the API requires tenant_id from context.
+          // Let's call /api/v1/stations. If it needs a tenant ID, we might have to pass it via query, but let's assume it works.
+          try {
+            const stRes = await fetch(`/api/v1/stations?tenant_id=${data.data.tenant_id}`);
+            const stData = await stRes.json();
+            if (stData.success) {
+              setStations(stData.data);
+            }
+          } catch (stErr) {
+            console.error("Failed to fetch stations", stErr);
+          }
         } else {
           setErrorMsg(data.message || "النموذج المطلوب غير موجود");
         }
@@ -124,6 +141,8 @@ export default function PublicFormSubmissionPage({
           full_name: fullName.trim(),
           contact_number: contactNumber.trim(),
           gender,
+          default_start_station_id: startStation || null,
+          default_end_station_id: endStation || null,
           answers,
         }),
       });
@@ -191,6 +210,8 @@ export default function PublicFormSubmissionPage({
               setSubmitted(false);
               setFullName("");
               setContactNumber("");
+              setStartStation("");
+              setEndStation("");
               setAnswers({});
             }}
             className="mt-4 text-xs font-bold text-blue-600 hover:underline"
@@ -237,6 +258,12 @@ export default function PublicFormSubmissionPage({
             <h3 className="font-extrabold text-slate-900 text-base border-b border-slate-100 pb-2">
               البيانات الشخصية للطالب / الراكب
             </h3>
+
+            {startStation && endStation && startStation === endStation && (
+              <div className="rounded-md border border-amber-200 bg-amber-50 p-3 text-xs font-semibold text-amber-800 mb-2">
+                تحذير: محطة الطلوع ومحطة النزول متطابقتان، يرجى التأكد من دقة الاختيار.
+              </div>
+            )}
 
             <div className="space-y-1.5">
               <label className="block text-xs font-bold text-slate-700">
@@ -292,6 +319,42 @@ export default function PublicFormSubmissionPage({
                   أنثى
                 </label>
               </div>
+            </div>
+
+            <div className="space-y-1.5 pt-2 border-t border-slate-100">
+              <label className="block text-xs font-bold text-slate-700">
+                محطة الانطلاق (اختياري)
+              </label>
+              <select
+                value={startStation}
+                onChange={(e) => setStartStation(e.target.value)}
+                className="w-full h-11 rounded-lg border border-slate-300 px-3.5 text-sm focus:border-blue-600 focus:outline-none bg-white"
+              >
+                <option value="">-- اختر المحطة --</option>
+                {stations.map((st) => (
+                  <option key={st.id} value={st.id}>
+                    {st.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="block text-xs font-bold text-slate-700">
+                محطة الوصول (اختياري)
+              </label>
+              <select
+                value={endStation}
+                onChange={(e) => setEndStation(e.target.value)}
+                className="w-full h-11 rounded-lg border border-slate-300 px-3.5 text-sm focus:border-blue-600 focus:outline-none bg-white"
+              >
+                <option value="">-- اختر المحطة --</option>
+                {stations.map((st) => (
+                  <option key={st.id} value={st.id}>
+                    {st.name}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 
