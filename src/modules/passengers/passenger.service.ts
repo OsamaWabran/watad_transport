@@ -106,6 +106,30 @@ export class PassengerService {
     return PassengerModel.delete(tenant_id, id);
   }
 
+  static async getPendingPassengers(tenant_id: string, source?: string): Promise<PassengerWithRelations[]> {
+    this.validateTenantId(tenant_id);
+    return PassengerModel.findPending(tenant_id, source);
+  }
+
+  static async approvePassenger(tenant_id: string, id: string): Promise<PassengerWithRelations> {
+    this.validateTenantId(tenant_id);
+    const passenger = await this.getPassengerById(tenant_id, id);
+    if (passenger.account_status !== "Pending") {
+      throw new AppError("لا يمكن اعتماد راكب إلا إذا كانت حالته معلقة", 400);
+    }
+    return PassengerModel.updateStatus(tenant_id, id, "Active");
+  }
+
+  static async rejectPassenger(tenant_id: string, id: string, reason: string): Promise<PassengerWithRelations> {
+    this.validateTenantId(tenant_id);
+    this.validateRequired(reason, "سبب الرفض مطلوب");
+    const passenger = await this.getPassengerById(tenant_id, id);
+    if (passenger.account_status !== "Pending") {
+      throw new AppError("لا يمكن رفض راكب إلا إذا كانت حالته معلقة", 400);
+    }
+    return PassengerModel.updateStatus(tenant_id, id, "Rejected", reason);
+  }
+
   private static validateTenantId(tenant_id?: string) {
     if (!tenant_id || tenant_id.trim() === "") {
       throw new AppError("سياق المؤسسة مطلوب لهذه العملية", 400);

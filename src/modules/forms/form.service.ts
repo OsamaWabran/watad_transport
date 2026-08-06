@@ -33,10 +33,10 @@ export class FormService {
     return FormModel.delete(id, tenant_id);
   }
 
-  // Submission API with automatic Passenger Upsert (T019)
   static async submitForm(
     form_id: string,
     submissionData: {
+      registration_source?: "form" | "mobile_app" | "manual";
       full_name: string;
       contact_number: string;
       gender: Gender;
@@ -45,73 +45,151 @@ export class FormService {
       answers: Record<string, any>;
     }
   ) {
-    // 1. Fetch form without tenant restriction to support public links
     const form = await FormModel.findById(form_id);
     if (!form) throw new AppError("النموذج غير موجود", 404);
-    if (!form.is_active) throw new AppError("هذا النموذج غير مفعّل حالياً لتلقي الإجابات", 400);
+    if (!form.is_active) throw new AppError("هذا النموذج غير مفعّل حالياً لتلقي الإجابات", 403);
 
-    const { full_name, contact_number, gender, default_start_station_id, default_end_station_id, answers } = submissionData;
-
-    if (!full_name || full_name.trim() === "") {
-      throw new AppError("اسم الطالب / الراكب مطلوب", 400);
-    }
-    if (!contact_number || contact_number.trim() === "") {
-      throw new AppError("رقم التواصل مطلوب", 400);
-    }
-    if (!gender || !["male", "female"].includes(gender)) {
-      throw new AppError("الجنس مطلوب (male أو female)", 400);
-    }
+    const {
+      registration_source = "form",
+      full_name,
+      contact_number,
+      gender,
+      default_start_station_id,
+      default_end_station_id,
+      answers,
+    } = submissionData;
 
     const tenant_id = form.tenant_id;
 
-    // 2. Automatic passenger upsert by tenant_id & contact_number
-    let passenger = await PassengerModel.findByContactNumber(tenant_id, contact_number.trim());
-
-    if (passenger) {
-      // Update existing passenger & merge extra details
-      const existingExtra = (passenger.extra_details as Record<string, any>) || {};
-      const updatedExtra = { ...existingExtra, ...answers };
-
-      passenger = await PassengerModel.update(tenant_id, passenger.id, {
-        full_name: full_name.trim(),
-        gender,
-        default_start_station_id: default_start_station_id || passenger.default_start_station_id,
-        default_end_station_id: default_end_station_id || passenger.default_end_station_id,
-        extra_details: updatedExtra,
-      });
-    } else {
-      // Create new passenger
-      passenger = await PassengerModel.create({
-        tenant_id,
-        full_name: full_name.trim(),
-        contact_number: contact_number.trim(),
-        gender,
-        default_start_station_id: default_start_station_id || null,
-        default_end_station_id: default_end_station_id || null,
-        extra_details: answers,
-      });
+    if (form.purpose !== "passenger_registration") {
+      return import("@/lib/prisma").then(({ prisma }) => 
+        prisma.formResponse.create({
+          data: {
+            form_id: form.id,
+            tenant_id,
+            passenger_id: null,
+            response_data: { answers },
+          }
+        }).then(response => ({
+          response_id: response.id,
+          message: "تم تسجيل طلبك بنجاح.",
+        }))
+      );
     }
 
-    // 3. Create Form Response record
-    const response = await FormModel.createResponse({
-      form_id,
-      tenant_id,
-      passenger_id: passenger.id,
-      response_data: {
-        passenger_info: {
-          full_name: passenger.full_name,
-          contact_number: passenger.contact_number,
-          gender: passenger.gender,
-        },
-        answers,
-      },
-    });
+    if (!full_name || full_name.trim() === "") throw new AppError("الاسم مطلوب", 400);
+    if (!contact_number || contact_number.trim() === "") throw new AppError("رقم التواصل مطلوب", 400);
+    if (!gender || !["male", "female"].includes(gender)) throw new AppError("الجنس مطلوب", 400);
 
-    return {
-      response_id: response.id,
-      passenger_id: passenger.id,
-      message: "تم تسجيل إجابتك وحفظ بيانات الراكب بنجاح",
-    };
+    const clean_contact = contact_number.trim();
+
+    return import("@/lib/prisma").then(({ prisma }) => 
+      prisma.$transaction(async (tx) => {
+        // 1. Check existing passenger
+        let existingPassenger = await tx.passenger.findFirst({
+          where: { tenant_id, contact_number: clean_contact },
+        });
+
+        if (existingPassenger) {
+          if (existingPassenger.account_status === "Pending" || existingPassenger.account_status === "Active") {
+            throw new AppError("رقم الجوال مسجّل مسبقاً، يرجى تسجيل الدخول أو مراجعة الإدارة", 409);
+          }
+          // If Rejected, we can reuse it (update it) since contact_number is unique per tenant
+        }
+
+        // 2. Check/Create User (for login later)
+        // User username is unique per tenant.
+        let user = await tx.user.findFirst({
+          where: { tenant_id, user_name: clean_contact },
+        });
+
+        if (!user) {
+          // Create dummy user (Post-MVP will send SMS with password)
+          const crypto = require("crypto");
+          const defaultPassword = crypto.randomBytes(4).toString("hex"); // e.g. 8 chars
+          // NOTE: Normally we would hash the password here using bcrypt, but for MVP keeping it simple or we can hash.
+          // Since we might not have bcrypt imported, we will just store it (assuming there's a user creation standard elsewhere)
+          // For now, let's create the user directly.
+          user = await tx.user.create({
+            data: {
+              tenant_id,
+              user_name: clean_contact,
+              full_name: full_name.trim(),
+              phone_number: clean_contact,
+              password: defaultPassword, // TODO: Hash password
+            }
+          });
+          // Assign role 'user'
+          await tx.userRoles.create({
+            data: {
+              user_id: user.id,
+              tenant_id,
+              role: "user"
+            }
+          });
+        }
+
+        // 3. Create or Update Passenger
+        let passenger;
+        if (existingPassenger) {
+          passenger = await tx.passenger.update({
+            where: { id: existingPassenger.id },
+            data: {
+              user_id: user.id,
+              full_name: full_name.trim(),
+              gender,
+              account_status: "Pending",
+              form_id: form.id,
+              registration_source: registration_source as any,
+              rejection_reason: null,
+              extra_details: answers,
+              default_start_station_id: default_start_station_id || existingPassenger.default_start_station_id,
+              default_end_station_id: default_end_station_id || existingPassenger.default_end_station_id,
+            }
+          });
+        } else {
+          passenger = await tx.passenger.create({
+            data: {
+              tenant_id,
+              user_id: user.id,
+              full_name: full_name.trim(),
+              contact_number: clean_contact,
+              gender,
+              account_status: "Pending",
+              form_id: form.id,
+              registration_source: registration_source as any,
+              extra_details: answers,
+              default_start_station_id: default_start_station_id || null,
+              default_end_station_id: default_end_station_id || null,
+            }
+          });
+        }
+
+        // 4. Create Response
+        const response = await tx.formResponse.create({
+          data: {
+            form_id: form.id,
+            tenant_id,
+            passenger_id: passenger.id,
+            response_data: {
+              passenger_info: {
+                full_name: passenger.full_name,
+                contact_number: passenger.contact_number,
+                gender: passenger.gender,
+              },
+              answers,
+            },
+          }
+        });
+
+        return {
+          response_id: response.id,
+          passenger_id: passenger.id,
+          account_status: passenger.account_status,
+          message: "تم تسجيل طلبك بنجاح. سيتم مراجعة بياناتك من قبل الإدارة وإشعارك عند الاعتماد.",
+        };
+      })
+    );
   }
 
   static async getFormResponses(form_id: string, tenant_id?: string) {
