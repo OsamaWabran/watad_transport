@@ -25,6 +25,7 @@ interface FormDefinition {
   title: string;
   description?: string | null;
   is_active: boolean;
+  purpose?: string | null;
   form_fields: FormFieldItem[];
 }
 
