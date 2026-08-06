@@ -48,7 +48,7 @@ export default function PublicFormSubmissionPage({
   const [startStation, setStartStation] = useState("");
   const [endStation, setEndStation] = useState("");
 
-  const [stations, setStations] = useState<{ id: string; name: string }[]>([]);
+  const [stations, setStations] = useState<{ id: string; name: string; type: string }[]>([]);
 
   // Dynamic answers state map
   const [answers, setAnswers] = useState<Record<string, any>>({});
@@ -331,7 +331,9 @@ export default function PublicFormSubmissionPage({
                 className="w-full h-11 rounded-lg border border-slate-300 px-3.5 text-sm focus:border-blue-600 focus:outline-none bg-white"
               >
                 <option value="">-- اختر المحطة --</option>
-                {stations.map((st) => (
+                {stations
+                  .filter((st) => st.type === "pickup" || st.type === "both")
+                  .map((st) => (
                   <option key={st.id} value={st.id}>
                     {st.name}
                   </option>
@@ -349,7 +351,9 @@ export default function PublicFormSubmissionPage({
                 className="w-full h-11 rounded-lg border border-slate-300 px-3.5 text-sm focus:border-blue-600 focus:outline-none bg-white"
               >
                 <option value="">-- اختر المحطة --</option>
-                {stations.map((st) => (
+                {stations
+                  .filter((st) => st.type === "dropoff" || st.type === "both")
+                  .map((st) => (
                   <option key={st.id} value={st.id}>
                     {st.name}
                   </option>

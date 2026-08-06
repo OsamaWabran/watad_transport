@@ -49,14 +49,15 @@ export class StationController {
       const { tenantId, isSuperAdmin } = this.getUserContext(request);
       const body = await request.json();
 
-      // T026-b: Role-Based Authorization for Creation
-      if (body.tenant_id === null && !isSuperAdmin) {
-        throw new AppError("عذراً، فقط مدير النظام يمكنه إضافة محطة عالمية", 403);
-      }
-
-      // If tenant admin creates, force tenant_id to be theirs
-      if (!isSuperAdmin && tenantId) {
-        body.tenant_id = tenantId;
+      // Enforce tenant_id based on role
+      let finalTenantId: string | null = null;
+      
+      if (isSuperAdmin) {
+        finalTenantId = null; // Super Admin creates Global stations
+      } else if (tenantId) {
+        finalTenantId = tenantId; // Tenant Admin creates Private stations
+      } else {
+        throw new AppError("تعذر تحديد سياق المؤسسة", 400);
       }
 
       const station = await StationService.createStation({
@@ -64,7 +65,7 @@ export class StationController {
         location_lat: body.location_lat,
         location_lng: body.location_lng,
         type: body.type,
-        tenant_id: body.tenant_id !== undefined ? body.tenant_id : tenantId,
+        tenant_id: finalTenantId,
       });
 
       return successResponse(station, "تم إضافة المحطة بنجاح", 201);

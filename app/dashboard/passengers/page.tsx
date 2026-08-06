@@ -20,6 +20,7 @@ function getApiErrorMessage(response: any, fallback: string) {
 interface StationItem {
   id: string;
   name: string;
+  type: string;
 }
 
 interface PassengerItem {
@@ -405,7 +406,9 @@ export default function PassengersPage() {
                 disabled={stationsUnavailable}
               >
                 <option value="">-- اختر المحطة --</option>
-                {stations.map((st) => (
+                {stations
+                  .filter((st) => st.type === "pickup" || st.type === "both")
+                  .map((st) => (
                   <option key={st.id} value={st.id}>
                     {st.name}
                   </option>
@@ -423,7 +426,9 @@ export default function PassengersPage() {
                 disabled={stationsUnavailable}
               >
                 <option value="">-- اختر المحطة --</option>
-                {stations.map((st) => (
+                {stations
+                  .filter((st) => st.type === "dropoff" || st.type === "both")
+                  .map((st) => (
                   <option key={st.id} value={st.id}>
                     {st.name}
                   </option>

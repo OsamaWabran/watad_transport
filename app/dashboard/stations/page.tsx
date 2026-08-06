@@ -45,7 +45,6 @@ export default function StationsPage() {
     location_lat: "",
     location_lng: "",
     type: "both" as "pickup" | "dropoff" | "both",
-    tenant_id: undefined as string | null | undefined, // null means global
   });
   const [editId, setEditId] = useState<string | null>(null);
 
@@ -69,8 +68,8 @@ export default function StationsPage() {
     try {
       const res = await fetch("/api/auth/session");
       const session = await res.json();
-      if (session?.roles) {
-        setUserRole(session.roles);
+      if (session?.user?.roles) {
+        setUserRole(session.user.roles);
       }
     } catch (err) {
       console.error(err);
@@ -95,7 +94,6 @@ export default function StationsPage() {
       location_lat: "",
       location_lng: "",
       type: "both",
-      tenant_id: undefined,
     });
     setFormModalOpen(true);
   };
@@ -107,7 +105,6 @@ export default function StationsPage() {
       location_lat: s.location_lat.toString(),
       location_lng: s.location_lng.toString(),
       type: s.type,
-      tenant_id: s.tenant_id,
     });
     setFormModalOpen(true);
   };
@@ -319,34 +316,7 @@ export default function StationsPage() {
               </select>
             </div>
 
-            {isSuperAdmin && (
-              <div className="space-y-2 p-3 bg-indigo-50 border border-indigo-100 rounded-md">
-                <Label className="text-indigo-900 font-semibold flex items-center gap-2">
-                  <Globe className="w-4 h-4" />
-                  نطاق المحطة (صلاحية Super Admin)
-                </Label>
-                <div className="flex flex-col gap-2 mt-2">
-                  <label className="flex items-center gap-2 text-sm cursor-pointer">
-                    <input
-                      type="radio"
-                      name="tenant_id"
-                      checked={formData.tenant_id !== null}
-                      onChange={() => setFormData({ ...formData, tenant_id: undefined })}
-                    />
-                    محطة خاصة بالمؤسسة الحالية (إن وجد سياق)
-                  </label>
-                  <label className="flex items-center gap-2 text-sm cursor-pointer">
-                    <input
-                      type="radio"
-                      name="tenant_id"
-                      checked={formData.tenant_id === null}
-                      onChange={() => setFormData({ ...formData, tenant_id: null })}
-                    />
-                    محطة عالمية (تظهر لجميع المؤسسات)
-                  </label>
-                </div>
-              </div>
-            )}
+
 
             <DialogFooter className="mt-4 gap-2">
               <Button type="button" variant="outline" onClick={() => setFormModalOpen(false)}>
