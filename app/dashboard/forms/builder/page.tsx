@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,16 +16,14 @@ export default function FormBuilderPage() {
   const [fields, setFields] = useState<any[]>([]);
   const [lookupTypes, setLookupTypes] = useState<any[]>([]);
 
-  import("react").then(({ useEffect }) => {
-    useEffect(() => {
-      fetch("/api/v1/lookups/types?tenant_id=c0c7a523-a5c9-4a0b-93f5-7e26d9c66af6")
-        .then(res => res.json())
-        .then(json => {
-          if (json.success) setLookupTypes(json.data);
-        })
-        .catch(console.error);
-    }, []);
-  });
+  useEffect(() => {
+    fetch("/api/v1/lookups/types?tenant_id=c0c7a523-a5c9-4a0b-93f5-7e26d9c66af6")
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.success) setLookupTypes(json.data);
+      })
+      .catch(console.error);
+  }, []);
 
   const addField = () => {
     setFields([...fields, { 
@@ -79,13 +77,13 @@ export default function FormBuilderPage() {
   };
 
   return (
-    <div className="p-8 max-w-4xl mx-auto space-y-6" dir="rtl">
-      <div>
-        <h1 className="text-3xl font-bold">منشئ النماذج</h1>
-        <p className="text-gray-500">قم بإنشاء وتخصيص نماذج التسجيل الخاصة بمؤسستك</p>
+    <div className="mx-auto max-w-4xl space-y-6" dir="rtl">
+      <div className="rounded-2xl border border-transparent bg-white p-6 shadow-enterprise">
+        <h1 className="text-3xl font-bold text-[#1a1c1e]">منشئ النماذج</h1>
+        <p className="mt-1 text-sm text-[#707973]">قم بإنشاء وتخصيص نماذج التسجيل الخاصة بمؤسستك</p>
       </div>
 
-      <Card>
+      <Card className="rounded-2xl border-transparent bg-white shadow-enterprise">
         <CardHeader>
           <CardTitle>إعدادات النموذج</CardTitle>
           <CardDescription>المعلومات الأساسية للنموذج</CardDescription>
@@ -101,10 +99,10 @@ export default function FormBuilderPage() {
           </div>
           <div className="space-y-2">
             <Label>الغرض من النموذج</Label>
-            <select 
+            <select
               value={purposeType}
               onChange={(e) => setPurposeType(e.target.value)}
-              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background mb-2"
+              className="mb-2 flex h-10 w-full rounded-lg border-0 bg-[#f3f3f6] px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#003422]"
             >
               <option value="passenger_registration">نموذج تسجيل ركاب (مع بيانات أساسية)</option>
               <option value="other">نموذج مخصص (أغراض أخرى)</option>
@@ -129,14 +127,14 @@ export default function FormBuilderPage() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="rounded-2xl border-transparent bg-white shadow-enterprise">
         <CardHeader>
           <CardTitle>حقول النموذج (الأسئلة)</CardTitle>
           <CardDescription>قم بإضافة الحقول الديناميكية للنموذج</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {fields.map((field, idx) => (
-            <div key={field.id} className="p-4 border rounded-lg bg-gray-50 relative space-y-4">
+            <div key={field.id} className="relative space-y-4 rounded-xl border border-[#e2e2e5] bg-[#f8faf9] p-4">
               <Button 
                 variant="destructive" 
                 size="sm" 
@@ -145,7 +143,7 @@ export default function FormBuilderPage() {
               >
                 حذف
               </Button>
-              <h3 className="font-semibold text-gray-700">حقل #{idx + 1}</h3>
+              <h3 className="font-semibold text-[#404943]">حقل #{idx + 1}</h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -158,7 +156,7 @@ export default function FormBuilderPage() {
                   <select 
                     value={field.field_type}
                     onChange={e => updateField(field.id, "field_type", e.target.value)}
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                    className="flex h-10 w-full rounded-lg border-0 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#003422]"
                   >
                     <option value="text">نص قصير</option>
                     <option value="number">رقم</option>
@@ -177,7 +175,7 @@ export default function FormBuilderPage() {
                     <select 
                       value={field.lookup_type_id}
                       onChange={e => updateField(field.id, "lookup_type_id", e.target.value)}
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                      className="flex h-10 w-full rounded-lg border-0 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#003422]"
                     >
                       <option value="">اختر مصدر البيانات...</option>
                       {lookupTypes.map((lt: any) => (
@@ -200,13 +198,13 @@ export default function FormBuilderPage() {
             </div>
           ))}
 
-          <Button variant="outline" onClick={addField} className="w-full border-dashed">
+          <Button variant="outline" onClick={addField} className="w-full rounded-xl border-dashed border-[#99d3b6] text-[#003422] hover:bg-[#e7f8ef]">
             + إضافة حقل جديد
           </Button>
         </CardContent>
       </Card>
 
-      <Button onClick={saveForm} className="w-full text-lg h-12">حفظ النموذج وإصدار الرابط</Button>
+      <Button onClick={saveForm} className="h-12 w-full rounded-xl bg-[#003422] text-lg text-white hover:bg-[#0f4c36]">حفظ النموذج وإصدار الرابط</Button>
     </div>
   );
 }

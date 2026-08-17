@@ -49,12 +49,12 @@ export function NavUser({
             render={
               <SidebarMenuButton
                 size="lg"
-                className="data-open:bg-sidebar-accent data-open:text-sidebar-accent-foreground"
+                className="rounded-xl text-[#404943] data-open:bg-[#e7f8ef] data-open:text-[#005228] hover:bg-[#f3f3f6]"
               />
             }
           >
-            <Avatar className="h-8 w-8 rounded-lg border border-indigo-200 bg-indigo-100 text-indigo-700">
-              <AvatarFallback className="rounded-lg bg-indigo-100 text-xs font-bold text-indigo-700">
+            <Avatar className="h-8 w-8 rounded-lg border border-[#99d3b6] bg-[#b4efd1] text-[#005228]">
+              <AvatarFallback className="rounded-lg bg-[#b4efd1] text-xs font-bold text-[#005228]">
                 {user.avatarFallback}
               </AvatarFallback>
             </Avatar>

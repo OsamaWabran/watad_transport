@@ -180,30 +180,30 @@ export default function PassengersPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-4 rounded-2xl border border-transparent bg-white p-6 shadow-enterprise sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-extrabold text-slate-900">إدارة الركاب والطلاب</h1>
-          <p className="mt-1 text-sm text-slate-500">
+          <h1 className="text-2xl font-extrabold text-[#1a1c1e]">إدارة الركاب والطلاب</h1>
+          <p className="mt-1 text-sm text-[#707973]">
             سجل الطلاب المسجلين بالخدمة وإدارة محطات الانطلاق والوصول والبيانات التفصيلية
           </p>
         </div>
 
-        <Button onClick={handleOpenCreate} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+        <Button onClick={handleOpenCreate} className="gap-2 rounded-xl bg-[#003422] text-white shadow-enterprise hover:bg-[#0f4c36]">
           <Plus className="w-4 h-4" />
           <span>إضافة راكب جديد</span>
         </Button>
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="flex flex-col gap-4 rounded-2xl border border-transparent bg-white p-4 shadow-enterprise sm:flex-row sm:items-center sm:justify-between">
         <form onSubmit={handleSearch} className="flex items-center gap-2 flex-1 max-w-md">
           <div className="relative flex-1">
-            <Search className="absolute right-3 top-2.5 h-4 w-4 text-slate-400" />
+            <Search className="absolute right-3 top-2.5 h-4 w-4 text-[#707973]" />
             <Input
               placeholder="بحث بالاسم أو رقم التواصل..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pr-9"
+              className="border-0 bg-[#f3f3f6] pr-9 focus-visible:ring-[#003422]"
             />
           </div>
           <Button type="submit" variant="secondary" className="gap-1 text-xs">
@@ -212,13 +212,13 @@ export default function PassengersPage() {
         </form>
 
         <div className="flex items-center gap-3">
-          <span className="text-xs text-slate-500 font-semibold flex items-center gap-1">
+          <span className="flex items-center gap-1 text-xs font-semibold text-[#707973]">
             <Filter className="w-3.5 h-3.5" /> تصفية حسب الجنس:
           </span>
           <select
             value={genderFilter}
             onChange={(e) => setGenderFilter(e.target.value)}
-            className="h-9 rounded-md border border-slate-300 px-3 text-xs bg-white focus:outline-none"
+            className="h-9 rounded-lg border border-[#c0c9c2] bg-white px-3 text-xs outline-none focus:ring-2 focus:ring-[#003422]"
           >
             <option value="all">الكل</option>
             <option value="male">ذكر</option>
@@ -228,15 +228,15 @@ export default function PassengersPage() {
       </div>
 
       {/* Passengers Table */}
-      <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      <div className="overflow-hidden rounded-2xl border border-transparent bg-white shadow-enterprise">
         {loading ? (
-          <div className="py-12 text-center text-sm text-slate-500">جاري تحميل قائمة الركاب...</div>
+          <div className="py-12 text-center text-sm text-[#707973]">جاري تحميل قائمة الركاب...</div>
         ) : passengers.length === 0 ? (
-          <div className="py-12 text-center text-sm text-slate-500">لا يوجد ركاب مسجلين حالياً</div>
+          <div className="py-12 text-center text-sm text-[#707973]">لا يوجد ركاب مسجلين حالياً</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-right text-sm">
-              <thead className="bg-slate-50 text-xs font-bold text-slate-700 border-b border-slate-200">
+              <thead className="border-b border-[#e2e2e5] bg-[#f3f3f6] text-xs font-bold text-[#404943]">
                 <tr>
                   <th className="p-4">اسم الطالب / الراكب</th>
                   <th className="p-4">رقم التواصل</th>
@@ -246,16 +246,16 @@ export default function PassengersPage() {
                   <th className="p-4 text-left">الإجراءات</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-[#eeeef0]">
                 {passengers.map((p) => (
-                  <tr key={p.id} className="hover:bg-slate-50">
-                    <td className="p-4 font-bold text-slate-900 flex items-center gap-2">
-                      <UserCheck className="w-4 h-4 text-blue-600" />
+                  <tr key={p.id} className="hover:bg-[#f8faf9]">
+                    <td className="flex items-center gap-2 p-4 font-bold text-[#1a1c1e]">
+                      <UserCheck className="w-4 h-4 text-[#003422]" />
                       {p.full_name}
                     </td>
-                    <td className="p-4 text-slate-700 dir-ltr text-right">
+                    <td className="dir-ltr p-4 text-right text-[#404943]">
                       <span className="inline-flex items-center gap-1">
-                        <Phone className="w-3.5 h-3.5 text-slate-400" />
+                        <Phone className="w-3.5 h-3.5 text-[#707973]" />
                         {p.contact_number}
                       </span>
                     </td>
@@ -264,31 +264,31 @@ export default function PassengersPage() {
                         variant="outline"
                         className={
                           p.gender === "male"
-                            ? "bg-blue-50 text-blue-700 border-blue-200"
+                            ? "border-[#99d3b6] bg-[#e7f8ef] text-[#005228]"
                             : "bg-pink-50 text-pink-700 border-pink-200"
                         }
                       >
                         {p.gender === "male" ? "ذكر" : "أنثى"}
                       </Badge>
                     </td>
-                    <td className="p-4 text-xs text-slate-600">
+                    <td className="p-4 text-xs text-[#404943]">
                       {p.start_station?.name ? (
-                        <span className="flex items-center gap-1 font-semibold text-slate-800">
+                        <span className="flex items-center gap-1 font-semibold text-[#1a1c1e]">
                           <MapPin className="w-3.5 h-3.5 text-emerald-500" />
                           {p.start_station.name}
                         </span>
                       ) : (
-                        <span className="text-slate-400">غير حددة</span>
+                        <span className="text-[#707973]">غير محددة</span>
                       )}
                     </td>
-                    <td className="p-4 text-xs text-slate-600">
+                    <td className="p-4 text-xs text-[#404943]">
                       {p.end_station?.name ? (
-                        <span className="flex items-center gap-1 font-semibold text-slate-800">
+                        <span className="flex items-center gap-1 font-semibold text-[#1a1c1e]">
                           <MapPin className="w-3.5 h-3.5 text-red-500" />
                           {p.end_station.name}
                         </span>
                       ) : (
-                        <span className="text-slate-400">غير حددة</span>
+                        <span className="text-[#707973]">غير محددة</span>
                       )}
                     </td>
                     <td className="p-4 text-left">
@@ -300,7 +300,7 @@ export default function PassengersPage() {
                             setSelectedPassenger(p);
                             setDetailsModalOpen(true);
                           }}
-                          className="p-1.5 text-slate-600 hover:text-blue-600"
+                          className="p-1.5 text-[#404943] hover:bg-[#e7f8ef] hover:text-[#003422]"
                         >
                           <Eye className="w-4 h-4" />
                         </Button>
@@ -308,7 +308,7 @@ export default function PassengersPage() {
                           variant="ghost"
                           size="sm"
                           onClick={() => handleOpenEdit(p)}
-                          className="p-1.5 text-slate-600 hover:text-blue-600"
+                          className="p-1.5 text-[#404943] hover:bg-[#e7f8ef] hover:text-[#003422]"
                         >
                           <Edit className="w-4 h-4" />
                         </Button>
@@ -316,7 +316,7 @@ export default function PassengersPage() {
                           variant="ghost"
                           size="sm"
                           onClick={() => handleDeletePassenger(p.id)}
-                          className="p-1.5 text-slate-600 hover:text-red-600"
+                          className="p-1.5 text-[#404943] hover:bg-red-50 hover:text-red-600"
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
@@ -400,7 +400,7 @@ export default function PassengersPage() {
               <Label htmlFor="start_st">محطة الانطلاق الافتراضية</Label>
               <select
                 id="start_st"
-                className="w-full rounded-md border border-slate-300 p-2 text-sm focus:outline-none"
+                className="w-full rounded-lg border border-[#c0c9c2] bg-white p-2 text-sm outline-none focus:ring-2 focus:ring-[#003422]"
                 value={formData.default_start_station_id}
                 onChange={(e) => setFormData({ ...formData, default_start_station_id: e.target.value })}
                 disabled={stationsUnavailable}
@@ -420,7 +420,7 @@ export default function PassengersPage() {
               <Label htmlFor="end_st">محطة الوصول الافتراضية</Label>
               <select
                 id="end_st"
-                className="w-full rounded-md border border-slate-300 p-2 text-sm focus:outline-none"
+                className="w-full rounded-lg border border-[#c0c9c2] bg-white p-2 text-sm outline-none focus:ring-2 focus:ring-[#003422]"
                 value={formData.default_end_station_id}
                 onChange={(e) => setFormData({ ...formData, default_end_station_id: e.target.value })}
                 disabled={stationsUnavailable}
@@ -440,7 +440,7 @@ export default function PassengersPage() {
               <Button type="button" variant="outline" onClick={() => setFormModalOpen(false)}>
                 إلغاء
               </Button>
-              <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white">
+              <Button type="submit" className="bg-[#003422] text-white hover:bg-[#0f4c36]">
                 حفظ
               </Button>
             </DialogFooter>
@@ -453,33 +453,32 @@ export default function PassengersPage() {
         <DialogContent className="sm:max-w-[550px] relative" dir="rtl">
           <button
             onClick={() => setDetailsModalOpen(false)}
-            className="absolute left-4 top-4 rounded-full p-1.5 opacity-70 bg-slate-100 hover:bg-slate-200 hover:opacity-100 focus:outline-none transition-all z-10"
+            className="absolute left-4 top-4 z-10 rounded-full bg-[#eeeef0] p-1.5 opacity-70 transition-all hover:bg-[#e2e2e5] hover:opacity-100 focus:outline-none"
           >
-            <X className="h-4 w-4 text-slate-700" />
+            <X className="h-4 w-4 text-[#404943]" />
             <span className="sr-only">إغلاق</span>
           </button>
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <FileText className="w-5 h-5 text-blue-600" />
+              <FileText className="w-5 h-5 text-[#003422]" />
               تفاصيل الراكب الإضافية
             </DialogTitle>
           </DialogHeader>
 
           {selectedPassenger && (
             <div className="space-y-6 py-2 text-sm">
-              <div className="flex flex-col md:flex-row gap-4 p-4 bg-gradient-to-br from-blue-50/50 to-slate-50 rounded-xl border border-blue-100/50 shadow-sm relative overflow-hidden">
-                <div className="absolute -left-4 -top-4 w-16 h-16 bg-blue-100 rounded-full blur-2xl opacity-60 pointer-events-none" />
+              <div className="relative flex flex-col gap-4 overflow-hidden rounded-xl border border-[#99d3b6]/50 bg-gradient-to-br from-[#e7f8ef] to-[#f8faf9] p-4 shadow-enterprise md:flex-row">
                 <div className="flex-1 space-y-1">
-                  <span className="text-xs font-semibold text-blue-600/70 block uppercase tracking-wider">الاسم</span>
-                  <span className="font-bold text-slate-900 text-lg flex items-center gap-2">
-                    <UserCheck className="w-5 h-5 text-blue-500" />
+                  <span className="block text-xs font-semibold uppercase tracking-wider text-[#005228]/80">الاسم</span>
+                  <span className="flex items-center gap-2 text-lg font-bold text-[#1a1c1e]">
+                    <UserCheck className="w-5 h-5 text-[#003422]" />
                     {selectedPassenger.full_name}
                   </span>
                 </div>
-                <div className="flex-1 space-y-1 border-t md:border-t-0 md:border-r border-slate-200/60 pt-3 md:pt-0 md:pr-4">
-                  <span className="text-xs font-semibold text-slate-500 block uppercase tracking-wider">رقم التواصل</span>
-                  <span className="font-bold text-slate-900 flex items-center gap-2 dir-ltr w-fit">
-                    <Phone className="w-4 h-4 text-slate-400" />
+                <div className="flex-1 space-y-1 border-t border-[#e2e2e5] pt-3 md:border-r md:border-t-0 md:pr-4 md:pt-0">
+                  <span className="block text-xs font-semibold uppercase tracking-wider text-[#707973]">رقم التواصل</span>
+                  <span className="dir-ltr flex w-fit items-center gap-2 font-bold text-[#1a1c1e]">
+                    <Phone className="w-4 h-4 text-[#707973]" />
                     {selectedPassenger.contact_number}
                   </span>
                 </div>
@@ -487,25 +486,25 @@ export default function PassengersPage() {
 
               <div>
                 <div className="flex items-center gap-2 mb-3">
-                  <div className="h-6 w-1 bg-blue-600 rounded-full"></div>
-                  <h4 className="font-bold text-slate-800 text-base">البيانات الإضافية (Extra Details)</h4>
+                  <div className="h-6 w-1 rounded-full bg-[#003422]"></div>
+                  <h4 className="text-base font-bold text-[#1a1c1e]">البيانات الإضافية (Extra Details)</h4>
                 </div>
 
                 {selectedPassenger.extra_details && Object.keys(selectedPassenger.extra_details).length > 0 ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-1 custom-scrollbar">
                     {Object.entries(selectedPassenger.extra_details).map(([k, v]) => (
-                      <div key={k} className="flex flex-col p-3 rounded-lg bg-white border border-slate-200 shadow-sm hover:border-blue-300 hover:shadow-md transition-all duration-200 group">
-                        <span className="text-xs font-medium text-slate-500 mb-1 group-hover:text-blue-600 transition-colors">{k}</span>
-                        <span className="text-slate-900 font-semibold text-sm">
+                      <div key={k} className="group flex flex-col rounded-lg border border-[#e2e2e5] bg-white p-3 shadow-enterprise transition-all duration-200 hover:border-[#99d3b6] hover:shadow-enterprise-hover">
+                        <span className="mb-1 text-xs font-medium text-[#707973] transition-colors group-hover:text-[#003422]">{k}</span>
+                        <span className="text-sm font-semibold text-[#1a1c1e]">
                           {Array.isArray(v) ? v.join("، ") : String(v)}
                         </span>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="flex flex-col items-center justify-center p-8 text-center bg-slate-50 rounded-xl border border-dashed border-slate-200">
-                    <FileText className="w-8 h-8 text-slate-300 mb-2" />
-                    <span className="text-sm font-medium text-slate-500">لا توجد بيانات إضافية مسجلة لهذا الراكب.</span>
+                  <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-[#c0c9c2] bg-[#f8faf9] p-8 text-center">
+                    <FileText className="mb-2 w-8 h-8 text-[#c0c9c2]" />
+                    <span className="text-sm font-medium text-[#707973]">لا توجد بيانات إضافية مسجلة لهذا الراكب.</span>
                   </div>
                 )}
               </div>

@@ -116,19 +116,19 @@ export default function FormResponsesPage({ params }: { params: Promise<{ id: st
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-4 rounded-2xl border border-transparent bg-white p-6 shadow-enterprise sm:flex-row sm:items-center sm:justify-between">
         <div>
           <Link
             href="/dashboard/forms"
-            className="inline-flex items-center text-xs font-semibold text-slate-500 hover:text-blue-600 mb-1"
+            className="mb-1 inline-flex items-center text-xs font-semibold text-[#707973] hover:text-[#003422]"
           >
             <ArrowRight className="w-3.5 h-3.5 ml-1" />
             العودة لقائمة النماذج
           </Link>
-          <h1 className="text-2xl font-extrabold text-slate-900">
+          <h1 className="text-2xl font-extrabold text-[#1a1c1e]">
             إجابات الاستمارة: {form?.title || "جاري التحميل..."}
           </h1>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-[#707973]">
             استعراض إجابات الركاب والطلاب وتصدير البيانات في ملف اكسل/CSV
           </p>
         </div>
@@ -136,7 +136,7 @@ export default function FormResponsesPage({ params }: { params: Promise<{ id: st
         <Button
           onClick={exportToCSV}
           disabled={responses.length === 0}
-          className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white"
+          className="gap-2 rounded-xl bg-[#003422] text-white shadow-enterprise hover:bg-[#0f4c36]"
         >
           <FileSpreadsheet className="w-4 h-4" />
           <span>تصدير CSV / Excel</span>
@@ -144,15 +144,15 @@ export default function FormResponsesPage({ params }: { params: Promise<{ id: st
       </div>
 
       {/* Stats and Filter */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between rounded-2xl border border-transparent bg-white p-4 shadow-enterprise">
         <div className="flex items-center gap-3">
-          <Badge variant="outline" className="px-3 py-1 text-sm bg-blue-50 text-blue-700 border-blue-200 font-bold">
+          <Badge variant="outline" className="px-3 py-1 text-sm bg-[#e7f8ef] text-[#005228] border-[#99d3b6] font-bold">
             إجمالي الإجابات: {responses.length}
           </Badge>
         </div>
 
         <div className="relative w-full sm:w-72">
-          <Search className="absolute right-3 top-2.5 h-4 w-4 text-slate-400" />
+          <Search className="absolute right-3 top-2.5 h-4 w-4 text-[#707973]" />
           <Input
             placeholder="بحث بالاسم أو رقم التواصل..."
             value={searchTerm}
@@ -163,15 +163,15 @@ export default function FormResponsesPage({ params }: { params: Promise<{ id: st
       </div>
 
       {/* Table */}
-      <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      <div className="overflow-hidden rounded-2xl border border-transparent bg-white shadow-enterprise">
         {loading ? (
-          <div className="py-12 text-center text-sm text-slate-500">جاري تحميل الاستجابات...</div>
+          <div className="py-12 text-center text-sm text-[#707973]">جاري تحميل الاستجابات...</div>
         ) : filteredResponses.length === 0 ? (
-          <div className="py-12 text-center text-sm text-slate-500">لا توجد إجابات مطابقة حتى الآن</div>
+          <div className="py-12 text-center text-sm text-[#707973]">لا توجد إجابات مطابقة حتى الآن</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-right text-sm">
-              <thead className="bg-slate-50 text-xs font-bold text-slate-700 border-b border-slate-200">
+              <thead className="bg-[#f3f3f6] text-xs font-bold text-[#404943] border-b border-[#e2e2e5]">
                 <tr>
                   {form?.purpose === "passenger_registration" && (
                     <>
@@ -182,13 +182,13 @@ export default function FormResponsesPage({ params }: { params: Promise<{ id: st
                   )}
                   <th className="p-4">تاريخ التعبئة</th>
                   {form?.form_fields?.map((f) => (
-                    <th key={f.id} className="p-4 bg-blue-50/50 text-blue-900">
+                    <th key={f.id} className="p-4 bg-[#e7f8ef]/50 text-[#003422]">
                       {f.field_label}
                     </th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-[#eeeef0]">
                 {filteredResponses.map((r) => {
                   const name = r.passenger?.full_name || r.response_data?.passenger_info?.full_name || "غير محدد";
                   const phone = r.passenger?.contact_number || r.response_data?.passenger_info?.contact_number || "غير محدد";
@@ -196,36 +196,36 @@ export default function FormResponsesPage({ params }: { params: Promise<{ id: st
                   const answers = r.response_data?.answers || {};
 
                   return (
-                    <tr key={r.id} className="hover:bg-slate-50">
+                    <tr key={r.id} className="hover:bg-[#f3f3f6]">
                       {form?.purpose === "passenger_registration" && (
                         <>
-                          <td className="p-4 font-bold text-slate-900 flex items-center gap-2">
-                            <User className="w-4 h-4 text-slate-400" />
+                          <td className="p-4 font-bold text-[#1a1c1e] flex items-center gap-2">
+                            <User className="w-4 h-4 text-[#707973]" />
                             {name}
                           </td>
-                          <td className="p-4 text-slate-700 dir-ltr text-right">
+                          <td className="p-4 text-[#404943] dir-ltr text-right">
                             <span className="inline-flex items-center gap-1">
-                              <Phone className="w-3.5 h-3.5 text-slate-400" />
+                              <Phone className="w-3.5 h-3.5 text-[#707973]" />
                               {phone}
                             </span>
                           </td>
                           <td className="p-4">
-                            <Badge variant="outline" className={gender === "male" ? "text-blue-600" : "text-pink-600"}>
+                            <Badge variant="outline" className={gender === "male" ? "text-[#003422]" : "text-pink-600"}>
                               {gender === "male" ? "ذكر" : "أنثى"}
                             </Badge>
                           </td>
                         </>
                       )}
-                      <td className="p-4 text-xs text-slate-500">
+                      <td className="p-4 text-xs text-[#707973]">
                         <span className="inline-flex items-center gap-1">
-                          <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                          <Calendar className="w-3.5 h-3.5 text-[#707973]" />
                           {new Date(r.submitted_at).toLocaleString("ar-SA")}
                         </span>
                       </td>
                       {form?.form_fields?.map((f) => {
                         const val = answers[f.field_label] || answers[f.id] || "-";
                         return (
-                          <td key={f.id} className="p-4 text-slate-800 bg-slate-50/20 font-medium">
+                          <td key={f.id} className="p-4 text-[#1a1c1e] bg-[#f3f3f6]/20 font-medium">
                             {Array.isArray(val) ? val.join("، ") : String(val)}
                           </td>
                         );

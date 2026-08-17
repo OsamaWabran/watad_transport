@@ -3,7 +3,7 @@
 import React from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
-import { Building2, Bell, CalendarDays, CircleGauge } from "lucide-react";
+import { Bell, CalendarDays, CircleGauge, Mail, Search } from "lucide-react";
 
 import { AppSidebar } from "@/components/app-sidebar";
 import { Badge } from "@/components/ui/badge";
@@ -60,8 +60,8 @@ export default function DashboardLayout({
 
   return (
     <SidebarProvider
-      className="min-h-screen bg-[radial-gradient(circle_at_top_right,#e0f2fe_0,#f8fafc_32rem,#eef7f5_100%)] font-arabic text-slate-900"
-      style={{ "--sidebar-width": "18.5rem" } as React.CSSProperties}
+      className="min-h-screen bg-[#f8faf9] font-arabic text-[#1a1c1e]"
+      style={{ "--sidebar-width": "16.25rem" } as React.CSSProperties}
     >
       <AppSidebar
         user={{
@@ -74,56 +74,73 @@ export default function DashboardLayout({
         onSignOut={handleSignOut}
       />
       <SidebarInset className="bg-transparent">
-        <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 px-4 backdrop-blur-xl sm:px-6">
-          <div className="mx-auto flex h-[4.5rem] max-w-7xl items-center justify-between gap-3">
-          <div className="flex min-w-0 items-center gap-3">
-            <SidebarTrigger className="h-9 w-9 rounded-lg border border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100" />
-            <Separator
-              orientation="vertical"
-              className="data-vertical:h-5 data-vertical:self-auto"
-            />
-            <div className="min-w-0">
-              <Breadcrumb>
-                <BreadcrumbList>
-                  <BreadcrumbItem>
-                    <BreadcrumbPage className="font-bold text-slate-900">
-                      {pageTitle}
-                    </BreadcrumbPage>
-                  </BreadcrumbItem>
-                </BreadcrumbList>
-              </Breadcrumb>
-              <div className="mt-1 hidden items-center gap-2 text-xs text-slate-500 sm:flex">
-                <CircleGauge className="h-3.5 w-3.5 text-teal-600" />
-                <span>مركز عمليات النقل والتعليم</span>
-                <span className="h-1 w-1 rounded-full bg-slate-300" />
-                <CalendarDays className="h-3.5 w-3.5 text-amber-600" />
-                <span>{new Date().toLocaleDateString("ar-SA")}</span>
+        <header className="sticky top-0 z-40 bg-[#f8faf9]/92 px-4 backdrop-blur-xl sm:px-6">
+          <div className="mx-auto flex h-[4.75rem] max-w-7xl items-center justify-between gap-4">
+            <div className="flex min-w-0 items-center gap-3">
+              <SidebarTrigger className="h-10 w-10 rounded-full border border-[#c0c9c2]/70 bg-white text-[#404943] shadow-enterprise hover:bg-[#f3f3f6]" />
+              <Separator
+                orientation="vertical"
+                className="data-vertical:h-6 data-vertical:self-auto bg-[#c0c9c2]"
+              />
+              <div className="min-w-0">
+                <Breadcrumb>
+                  <BreadcrumbList>
+                    <BreadcrumbItem>
+                      <BreadcrumbPage className="font-bold text-[#1a1c1e]">
+                        {pageTitle}
+                      </BreadcrumbPage>
+                    </BreadcrumbItem>
+                  </BreadcrumbList>
+                </Breadcrumb>
+                <div className="mt-1 hidden items-center gap-2 text-xs text-[#707973] sm:flex">
+                  <CircleGauge className="h-3.5 w-3.5 text-[#006d37]" />
+                  <span>مركز عمليات النقل والتعليم</span>
+                  <span className="h-1 w-1 rounded-full bg-[#c0c9c2]" />
+                  <CalendarDays className="h-3.5 w-3.5 text-[#0f4c36]" />
+                  <span>{new Date().toLocaleDateString("ar-SA")}</span>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="flex items-center gap-3">
-            <Badge
-              variant="blue"
-              shape="pill"
-              className="hidden gap-2 border-blue-200 bg-blue-50 text-blue-800 sm:flex"
-            >
-              <Building2 className="w-3.5 h-3.5 text-blue-600" />
-              <span>سياق المؤسسة:</span>
-              <span className="font-bold text-blue-700">{tenantLabel}</span>
-            </Badge>
+            <div className="hidden w-full max-w-xs items-center md:flex">
+              <div className="relative w-full">
+                <Search className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-[#707973]" />
+                <input
+                  className="h-11 w-full rounded-full border-0 bg-[#f1f3f2] pr-10 pl-4 text-sm text-[#1a1c1e] shadow-sm outline-none transition focus:bg-white focus:ring-2 focus:ring-[#003422]"
+                  placeholder="ابحث هنا..."
+                  type="search"
+                />
+              </div>
+            </div>
 
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              className="relative border-slate-200 bg-white text-slate-500 hover:bg-slate-50 hover:text-slate-700"
-              title="الإشعارات"
-            >
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-blue-600" />
-            </Button>
-          </div>
+            <div className="flex items-center gap-2">
+              <Badge
+                variant="secondary"
+                shape="pill"
+                className="hidden border-[#99d3b6]/70 bg-[#e7f8ef] text-[#005228] sm:flex"
+              >
+                {tenantLabel}
+              </Badge>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                className="relative h-10 w-10 rounded-full border-[#c0c9c2]/70 bg-white text-[#404943] shadow-enterprise hover:bg-[#f3f3f6]"
+                title="الرسائل"
+              >
+                <Mail className="w-5 h-5" />
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                className="relative h-10 w-10 rounded-full border-[#c0c9c2]/70 bg-white text-[#404943] shadow-enterprise hover:bg-[#f3f3f6]"
+                title="الإشعارات"
+              >
+                <Bell className="w-5 h-5" />
+                <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-[#006d37]" />
+              </Button>
+            </div>
           </div>
         </header>
 

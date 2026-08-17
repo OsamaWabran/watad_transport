@@ -97,45 +97,12 @@ export class FormService {
           // If Rejected, we can reuse it (update it) since contact_number is unique per tenant
         }
 
-        // 2. Check/Create User (for login later)
-        // User username is unique per tenant.
-        let user = await tx.user.findFirst({
-          where: { tenant_id, user_name: clean_contact },
-        });
-
-        if (!user) {
-          // Create dummy user (Post-MVP will send SMS with password)
-          const crypto = require("crypto");
-          const defaultPassword = crypto.randomBytes(4).toString("hex"); // e.g. 8 chars
-          // NOTE: Normally we would hash the password here using bcrypt, but for MVP keeping it simple or we can hash.
-          // Since we might not have bcrypt imported, we will just store it (assuming there's a user creation standard elsewhere)
-          // For now, let's create the user directly.
-          user = await tx.user.create({
-            data: {
-              tenant_id,
-              user_name: clean_contact,
-              full_name: full_name.trim(),
-              phone_number: clean_contact,
-              password: defaultPassword, // TODO: Hash password
-            }
-          });
-          // Assign role 'user'
-          await tx.userRoles.create({
-            data: {
-              user_id: user.id,
-              tenant_id,
-              role: "user"
-            }
-          });
-        }
-
-        // 3. Create or Update Passenger
+        // 2. Create or Update Passenger
         let passenger;
         if (existingPassenger) {
           passenger = await tx.passenger.update({
             where: { id: existingPassenger.id },
             data: {
-              user_id: user.id,
               full_name: full_name.trim(),
               gender,
               account_status: "Pending",
@@ -151,7 +118,6 @@ export class FormService {
           passenger = await tx.passenger.create({
             data: {
               tenant_id,
-              user_id: user.id,
               full_name: full_name.trim(),
               contact_number: clean_contact,
               gender,

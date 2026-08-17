@@ -92,29 +92,31 @@ export function AppSidebar({ user, onSignOut, ...props }: AppSidebarProps) {
   }, [filteredNavigation]);
 
   return (
-    <Sidebar side="right" collapsible="icon" variant="inset" className="bg-slate-900 text-slate-100" {...props}>
-      <SidebarHeader className="gap-3.5 border-b border-white/10 p-4">
+    <Sidebar side="right" collapsible="icon" variant="inset" className="border-l border-[#c0c9c2]/70 bg-white text-[#1a1c1e]" {...props}>
+      <SidebarHeader className="gap-5 border-b border-[#e2e2e5] p-4">
         <div className="flex w-full items-start justify-between gap-3">
           <div className="min-w-0">
-            <div className="flex items-center gap-2 text-base font-bold text-white">
-              <Bus className="h-5 w-5 text-teal-400" />
+            <div className="flex items-center gap-3 text-base font-bold text-[#003422]">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#003422] text-white shadow-enterprise">
+                <Bus className="h-5 w-5" />
+              </span>
               <span>مسارات SaaS</span>
             </div>
-            <p className="mt-1 truncate text-xs text-slate-400">
+            <p className="mt-2 truncate text-xs text-[#707973]">
               {user.tenantLabel}
             </p>
           </div>
-          <Badge variant="emerald" shape="pill" className="shrink-0 border-teal-300/30 bg-teal-400/10 text-teal-100">
+          <Badge variant="emerald" shape="pill" className="shrink-0 border-[#99d3b6]/70 bg-[#e7f8ef] text-[#005228]">
             {user.role}
           </Badge>
         </div>
         <div className="relative">
-          <Search className="pointer-events-none absolute right-2.5 top-1/2 size-4 -translate-y-1/2 text-slate-500" />
+          <Search className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-[#707973]" />
           <SidebarInput
             placeholder="بحث في القوائم..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="border-white/10 bg-slate-950/50 pr-8 text-slate-100 placeholder:text-slate-500"
+            className="h-10 rounded-full border-0 bg-[#f1f3f2] pr-9 text-[#1a1c1e] placeholder:text-[#707973] focus-visible:ring-[#003422]"
           />
         </div>
       </SidebarHeader>
@@ -122,7 +124,7 @@ export function AppSidebar({ user, onSignOut, ...props }: AppSidebarProps) {
       <SidebarContent>
         {Object.entries(groupedNavigation).map(([group, items]) => (
           <SidebarGroup key={group} className="px-3 py-3">
-            <div className="mb-2 px-2 text-xs font-bold text-slate-500">
+            <div className="mb-2 px-2 text-xs font-bold text-[#707973]">
               {group}
             </div>
             <SidebarGroupContent>
@@ -136,7 +138,7 @@ export function AppSidebar({ user, onSignOut, ...props }: AppSidebarProps) {
                       <SidebarMenuButton
                         isActive={isActive}
                         render={<Link href={item.href} />}
-                        className="h-10 rounded-lg text-right text-slate-300 hover:bg-white/10 hover:text-white data-active:bg-white data-active:text-slate-950"
+                        className="h-11 rounded-xl border-r-4 border-transparent text-right text-[#404943] hover:bg-[#f3f3f6] hover:text-[#003422] data-active:border-[#003422] data-active:bg-[#b4efd1]/55 data-active:text-[#005228]"
                       >
                         <Icon />
                         <span>{item.name}</span>
@@ -150,7 +152,15 @@ export function AppSidebar({ user, onSignOut, ...props }: AppSidebarProps) {
         ))}
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-white/10 p-2">
+      <div className="mx-4 mb-4 rounded-2xl bg-[#003422] p-4 text-white shadow-enterprise">
+        <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-lg bg-white/15">
+          <Bus className="h-4 w-4" />
+        </div>
+        <p className="text-sm font-bold">تطبيق الجوال</p>
+        <p className="mt-1 text-xs text-white/75">إدارة أسرع للرحلات والموافقات</p>
+      </div>
+
+      <SidebarFooter className="border-t border-[#e2e2e5] p-2">
         <NavUser user={user} onSignOut={onSignOut} />
       </SidebarFooter>
     </Sidebar>

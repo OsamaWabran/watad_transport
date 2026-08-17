@@ -96,13 +96,13 @@ export default function DriversPage() {
 
   return (
     <div className="space-y-6">
-      <Card className="flex flex-col gap-4 border-slate-200/80 p-6 sm:flex-row sm:items-center sm:justify-between">
+      <Card className="flex flex-col gap-4 rounded-2xl border-transparent bg-white p-6 shadow-enterprise sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <Users className="h-6 w-6 text-blue-600" />
-            <h1 className="text-xl font-bold text-slate-900">إدارة السائقين</h1>
+            <Users className="h-6 w-6 text-[#003422]" />
+            <h1 className="text-xl font-bold text-[#1a1c1e]">إدارة السائقين</h1>
           </div>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-[#707973]">
             متابعة رخص السائقين والورديات وتخصيص المركبات ضمن المؤسسة
           </p>
         </div>
@@ -110,7 +110,7 @@ export default function DriversPage() {
           <Button type="button" variant="outline" size="icon-lg" title="تحديث البيانات">
             <RefreshCw className="h-4 w-4" />
           </Button>
-          <Button type="button" onClick={() => setOpen(true)} className="bg-blue-600 text-white hover:bg-blue-700">
+          <Button type="button" onClick={() => setOpen(true)} className="bg-[#003422] text-white hover:bg-[#0f4c36]">
             <Plus className="h-4 w-4" />
             <span>إضافة سائق</span>
           </Button>
@@ -118,46 +118,46 @@ export default function DriversPage() {
       </Card>
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <Card className="flex items-center justify-between border-slate-200/80 p-5">
+        <Card className="flex items-center justify-between rounded-2xl border-transparent bg-white p-5 shadow-enterprise">
           <div>
-            <span className="block text-xs font-semibold text-slate-500">إجمالي السائقين</span>
-            <span className="mt-1 block text-2xl font-black text-slate-900">{drivers.length}</span>
+            <span className="block text-xs font-semibold text-[#707973]">إجمالي السائقين</span>
+            <span className="mt-1 block text-2xl font-black text-[#1a1c1e]">{drivers.length}</span>
           </div>
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-blue-100 bg-blue-50 text-blue-600">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#99d3b6] bg-[#e7f8ef] text-[#003422]">
             <UserRound className="h-5 w-5" />
           </div>
         </Card>
-        <Card className="flex items-center justify-between border-slate-200/80 p-5">
+        <Card className="flex items-center justify-between rounded-2xl border-transparent bg-white p-5 shadow-enterprise">
           <div>
-            <span className="block text-xs font-semibold text-slate-500">نشطون اليوم</span>
-            <span className="mt-1 block text-2xl font-black text-slate-900">{activeDrivers}</span>
+            <span className="block text-xs font-semibold text-[#707973]">نشطون اليوم</span>
+            <span className="mt-1 block text-2xl font-black text-[#1a1c1e]">{activeDrivers}</span>
           </div>
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-emerald-100 bg-emerald-50 text-emerald-600">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#99d3b6] bg-[#e7f8ef] text-[#005228]">
             <BadgeCheck className="h-5 w-5" />
           </div>
         </Card>
-        <Card className="flex items-center justify-between border-slate-200/80 p-5">
+        <Card className="flex items-center justify-between rounded-2xl border-transparent bg-white p-5 shadow-enterprise">
           <div>
-            <span className="block text-xs font-semibold text-slate-500">تخصيصات مركبات</span>
-            <span className="mt-1 block text-2xl font-black text-slate-900">{assignedDrivers}</span>
+            <span className="block text-xs font-semibold text-[#707973]">تخصيصات مركبات</span>
+            <span className="mt-1 block text-2xl font-black text-[#1a1c1e]">{assignedDrivers}</span>
           </div>
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-indigo-100 bg-indigo-50 text-indigo-600">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#c0c9c2] bg-[#eeeef0] text-[#404943]">
             <CalendarClock className="h-5 w-5" />
           </div>
         </Card>
       </div>
 
-      <Card className="flex flex-col items-center justify-between gap-3 border-slate-200/80 p-4 sm:flex-row">
+      <Card className="flex flex-col items-center justify-between gap-3 rounded-2xl border-transparent bg-white p-4 shadow-enterprise sm:flex-row">
         <div className="relative w-full sm:w-96">
-          <Search className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          <Search className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#707973]" />
           <Input
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="بحث باسم السائق أو الجوال أو رقم الرخصة..."
-            className="bg-slate-50 pr-9"
+            className="bg-[#f3f3f6] pr-9"
           />
         </div>
-        <Select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)} className="w-full bg-slate-50 sm:w-52">
+        <Select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)} className="w-full bg-[#f3f3f6] sm:w-52">
           <option value="all">كل الحالات</option>
           <option value="available">متاح</option>
           <option value="on_trip">قيد الرحلة</option>
@@ -165,11 +165,11 @@ export default function DriversPage() {
         </Select>
       </Card>
 
-      <Card className="overflow-hidden border-slate-200/80">
+      <Card className="overflow-hidden rounded-2xl border-transparent bg-white shadow-enterprise">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="bg-slate-50">
+              <TableRow className="bg-[#f3f3f6]">
                 <TableHead>السائق</TableHead>
                 <TableHead>رقم التواصل</TableHead>
                 <TableHead>رقم الرخصة</TableHead>
@@ -183,26 +183,26 @@ export default function DriversPage() {
                 const status = statusLabels[driver.status as keyof typeof statusLabels];
                 return (
                   <TableRow key={driver.id}>
-                    <TableCell className="font-bold text-slate-900">
+                    <TableCell className="font-bold text-[#1a1c1e]">
                       <span className="inline-flex items-center gap-2">
-                        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-700">
+                        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#b4efd1] text-xs font-bold text-[#005228]">
                           {driver.name.charAt(0)}
                         </span>
                         {driver.name}
                       </span>
                     </TableCell>
-                    <TableCell className="font-mono text-xs text-slate-600">{driver.phone}</TableCell>
+                    <TableCell className="font-mono text-xs text-[#404943]">{driver.phone}</TableCell>
                     <TableCell>
-                      <span className="inline-flex items-center gap-1 font-mono text-xs font-semibold text-slate-700">
-                        <IdCard className="h-3.5 w-3.5 text-slate-400" />
+                      <span className="inline-flex items-center gap-1 font-mono text-xs font-semibold text-[#404943]">
+                        <IdCard className="h-3.5 w-3.5 text-[#707973]" />
                         {driver.license_number}
                       </span>
                     </TableCell>
                     <TableCell>
                       <Badge variant={status.variant} shape="pill">{status.label}</Badge>
                     </TableCell>
-                    <TableCell className="text-xs text-slate-600">{driver.shift}</TableCell>
-                    <TableCell className="text-xs font-semibold text-slate-700">{driver.assigned_vehicle}</TableCell>
+                    <TableCell className="text-xs text-[#404943]">{driver.shift}</TableCell>
+                    <TableCell className="text-xs font-semibold text-[#404943]">{driver.assigned_vehicle}</TableCell>
                   </TableRow>
                 );
               })}
@@ -240,7 +240,7 @@ export default function DriversPage() {
           </div>
           <DialogFooter className="px-6 pb-6">
             <Button type="button" variant="ghost" onClick={() => setOpen(false)}>إلغاء</Button>
-            <Button type="button" className="bg-blue-600 text-white hover:bg-blue-700">حفظ</Button>
+            <Button type="button" className="bg-[#003422] text-white hover:bg-[#0f4c36]">حفظ</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

@@ -4,10 +4,10 @@ import { AppError, handleApiError, successResponse } from "@/lib/api-response";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { hash: string } }
+  { params }: { params: Promise<{ hash: string }> }
 ) {
   try {
-    const { hash } = params;
+    const { hash } = await params;
     if (!hash) throw new AppError("رابط النموذج غير صحيح", 400);
 
     const form = await FormModel.findByHash(hash);

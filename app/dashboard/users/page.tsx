@@ -327,13 +327,13 @@ export default function UsersPage() {
       {/* Tenant – only for create */}
       {!isEdit && (
         <div>
-          <Label className="mb-1 block text-slate-700">المؤسسة التابع لها *</Label>
+          <Label className="mb-1 block text-[#404943]">المؤسسة التابع لها *</Label>
           {tenants.length > 0 ? (
             <Select
               required
               value={formData.tenant_id}
               onChange={(e) => setFormData({ ...formData, tenant_id: e.target.value })}
-              className="bg-slate-50"
+              className="bg-[#f3f3f6]"
             >
               <option value="">-- اختر المؤسسة --</option>
               {tenants.map((t) => (
@@ -343,7 +343,7 @@ export default function UsersPage() {
               ))}
             </Select>
           ) : (
-            <div className="p-2.5 rounded-lg bg-slate-100 border border-slate-200 text-xs text-slate-600 font-medium">
+            <div className="p-2.5 rounded-lg bg-[#eeeef0] border border-[#e2e2e5] text-xs text-[#404943] font-medium">
               سيتم استخدام المؤسسة الحالية تلقائياً
             </div>
           )}
@@ -353,47 +353,47 @@ export default function UsersPage() {
       {/* Username – only for create */}
       {!isEdit && (
         <div>
-          <Label className="mb-1 block text-slate-700">اسم المستخدم (Username) *</Label>
+          <Label className="mb-1 block text-[#404943]">اسم المستخدم (Username) *</Label>
           <Input
             type="text"
             required
             placeholder="مثال: ksu_admin"
             value={formData.user_name}
             onChange={(e) => setFormData({ ...formData, user_name: e.target.value })}
-            className="bg-slate-50"
+            className="bg-[#f3f3f6]"
           />
         </div>
       )}
 
       {/* Full Name */}
       <div>
-        <Label className="mb-1 block text-slate-700">الاسم الكامل *</Label>
+        <Label className="mb-1 block text-[#404943]">الاسم الكامل *</Label>
         <Input
           type="text"
           required
           placeholder="مثال: محمد عبدالله السلمان"
           value={formData.full_name}
           onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-          className="bg-slate-50"
+          className="bg-[#f3f3f6]"
         />
       </div>
 
       {/* Phone */}
       <div>
-        <Label className="mb-1 block text-slate-700">رقم الهاتف *</Label>
+        <Label className="mb-1 block text-[#404943]">رقم الهاتف *</Label>
         <Input
           type="tel"
           required
           placeholder="0501234567"
           value={formData.phone_number}
           onChange={(e) => setFormData({ ...formData, phone_number: e.target.value })}
-          className="bg-slate-50 font-mono"
+          className="bg-[#f3f3f6] font-mono"
         />
       </div>
 
       {/* Password */}
       <div>
-        <Label className="mb-1 block text-slate-700">
+        <Label className="mb-1 block text-[#404943]">
           {isEdit ? "كلمة المرور الجديدة (اتركها فارغة للإبقاء عليها)" : "كلمة المرور *"}
         </Label>
         <Input
@@ -402,18 +402,18 @@ export default function UsersPage() {
           placeholder="••••••••"
           value={formData.password}
           onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-          className="bg-slate-50"
+          className="bg-[#f3f3f6]"
         />
       </div>
 
       {/* Role – only for create */}
       {!isEdit && (
         <div>
-          <Label className="mb-1 block text-slate-700">الصلاحية / الدور *</Label>
+          <Label className="mb-1 block text-[#404943]">الصلاحية / الدور *</Label>
           <Select
             value={formData.role}
             onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-            className="bg-slate-50"
+            className="bg-[#f3f3f6]"
           >
             <option value="admin">مدير مؤسسة (Admin)</option>
             <option value="driver">سائق حافلة (Driver)</option>
@@ -427,13 +427,13 @@ export default function UsersPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="flex flex-col gap-4 border-slate-200/80 p-6 sm:flex-row sm:items-center sm:justify-between">
+      <Card className="flex flex-col gap-4 rounded-2xl border-transparent bg-white p-6 shadow-enterprise sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <Users className="w-6 h-6 text-blue-600" />
-            <h1 className="text-xl font-bold text-slate-900">إدارة المستخدمين والأدوار (IAM)</h1>
+            <Users className="w-6 h-6 text-[#003422]" />
+            <h1 className="text-xl font-bold text-[#1a1c1e]">إدارة المستخدمين والأدوار (IAM)</h1>
           </div>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-[#707973]">
             إضافة وتعيين الصلاحيات للحسابات الإدارية والموظفين تحت سياق المؤسسة
           </p>
         </div>
@@ -443,7 +443,7 @@ export default function UsersPage() {
             variant="outline"
             size="icon-lg"
             onClick={loadData}
-            className="border-slate-200 text-slate-600 hover:bg-slate-100"
+            className="border-[#e2e2e5] text-[#404943] hover:bg-[#eeeef0]"
             title="تحديث البيانات"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
@@ -451,7 +451,7 @@ export default function UsersPage() {
           <Button
             type="button"
             onClick={openCreate}
-            className="bg-blue-600 text-white shadow-md shadow-blue-500/20 hover:bg-blue-700"
+            className="bg-[#003422] text-white shadow-enterprise hover:bg-[#0f4c36]"
           >
             <UserPlus className="w-4 h-4" />
             <span>إضافة مستخدم جديد</span>
@@ -479,9 +479,9 @@ export default function UsersPage() {
       )}
 
       {/* Filters */}
-      <Card className="flex flex-col items-center justify-between gap-3 border-slate-200/80 p-4 sm:flex-row">
+      <Card className="flex flex-col items-center justify-between gap-3 rounded-2xl border-transparent bg-white p-4 shadow-enterprise sm:flex-row">
         <div className="relative w-full sm:w-80">
-          <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400">
+          <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-[#707973]">
             <Search className="w-4 h-4" />
           </div>
           <Input
@@ -489,11 +489,11 @@ export default function UsersPage() {
             placeholder="البحث باسم المستخدم أو الهاتف..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="bg-slate-50 pr-9"
+            className="bg-[#f3f3f6] pr-9"
           />
         </div>
         <div className="flex items-center gap-2 w-full sm:w-auto overflow-x-auto">
-          <span className="text-xs font-semibold text-slate-500 shrink-0">الصلاحية:</span>
+          <span className="text-xs font-semibold text-[#707973] shrink-0">الصلاحية:</span>
           {["ALL", "admin", "driver", "user"].map((roleKey) => (
             <Button
               type="button"
@@ -503,8 +503,8 @@ export default function UsersPage() {
               onClick={() => setRoleFilter(roleKey)}
               className={`h-8 text-xs ${
                 roleFilter === roleKey
-                  ? "bg-blue-600 text-white"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                  ? "bg-[#003422] text-white hover:bg-[#0f4c36]"
+                  : "bg-[#eeeef0] text-[#404943] hover:bg-[#e2e2e5]"
               }`}
             >
               {roleKey === "ALL" && "الكل"}
@@ -517,17 +517,17 @@ export default function UsersPage() {
       </Card>
 
       {/* Table */}
-      <Card className="overflow-hidden border-slate-200/80">
+      <Card className="overflow-hidden rounded-2xl border-transparent bg-white shadow-enterprise">
         {loading ? (
-          <div className="p-12 text-center text-slate-400 space-y-3">
-            <RefreshCw className="w-8 h-8 animate-spin mx-auto text-blue-600" />
+          <div className="p-12 text-center text-[#707973] space-y-3">
+            <RefreshCw className="w-8 h-8 animate-spin mx-auto text-[#003422]" />
             <p className="text-sm">جاري تحميل قائمة المستخدمين...</p>
           </div>
         ) : filteredUsers.length === 0 ? (
-          <div className="p-12 text-center text-slate-500 space-y-3">
-            <Users className="w-12 h-12 mx-auto text-slate-300" />
-            <h3 className="font-bold text-slate-800 text-base">لا يوجد مستخدمون مسجلون</h3>
-            <p className="text-xs text-slate-400 max-w-sm mx-auto">
+          <div className="p-12 text-center text-[#707973] space-y-3">
+            <Users className="w-12 h-12 mx-auto text-[#c0c9c2]" />
+            <h3 className="font-bold text-[#1a1c1e] text-base">لا يوجد مستخدمون مسجلون</h3>
+            <p className="text-xs text-[#707973] max-w-sm mx-auto">
               اضغط على زر &quot;إضافة مستخدم جديد&quot; لإنشاء أول حساب مدير أو سائق.
             </p>
           </div>
@@ -535,7 +535,7 @@ export default function UsersPage() {
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
-                <TableRow className="bg-slate-50">
+                <TableRow className="bg-[#f3f3f6]">
                   <TableHead>الاسم الكامل</TableHead>
                   <TableHead>اسم المستخدم</TableHead>
                   <TableHead>رقم الهاتف</TableHead>
@@ -547,22 +547,22 @@ export default function UsersPage() {
               <TableBody>
                 {filteredUsers.map((u) => (
                   <TableRow key={u.id}>
-                    <TableCell className="font-bold text-slate-900">
+                    <TableCell className="font-bold text-[#1a1c1e]">
                       <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs">
+                        <div className="w-8 h-8 rounded-full bg-[#b4efd1] text-[#005228] flex items-center justify-center font-bold text-xs">
                           {u.full_name.charAt(0)}
                         </div>
                         <span>{u.full_name}</span>
                       </div>
                     </TableCell>
-                    <TableCell className="font-mono text-xs font-semibold text-slate-700">
+                    <TableCell className="font-mono text-xs font-semibold text-[#404943]">
                       @{u.user_name}
                     </TableCell>
-                    <TableCell className="font-mono text-xs text-slate-600">
+                    <TableCell className="font-mono text-xs text-[#404943]">
                       {u.phone_number || "غير محدد"}
                     </TableCell>
                     <TableCell>{getRoleBadge(u.roles)}</TableCell>
-                    <TableCell className="text-xs text-slate-500">
+                    <TableCell className="text-xs text-[#707973]">
                       {new Date(u.created_at).toLocaleDateString("ar-SA")}
                     </TableCell>
                     <TableCell>
@@ -572,7 +572,7 @@ export default function UsersPage() {
                           variant="ghost"
                           size="icon-sm"
                           onClick={() => openEdit(u)}
-                          className="text-slate-500 hover:text-blue-600 hover:bg-blue-50"
+                          className="text-[#707973] hover:text-[#003422] hover:bg-[#e7f8ef]"
                           title="تعديل"
                         >
                           <Pencil className="w-4 h-4" />
@@ -582,7 +582,7 @@ export default function UsersPage() {
                           variant="ghost"
                           size="icon-sm"
                           onClick={() => openDelete(u)}
-                          className="text-slate-500 hover:text-red-600 hover:bg-red-50"
+                          className="text-[#707973] hover:text-red-600 hover:bg-red-50"
                           title="حذف"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -602,7 +602,7 @@ export default function UsersPage() {
         <DialogContent>
           <DialogHeader className="flex-row items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <div className="p-2 rounded-xl bg-blue-600 text-white">
+              <div className="p-2 rounded-xl bg-[#003422] text-white">
                 <UserPlus className="w-5 h-5" />
               </div>
               <div>
@@ -615,7 +615,7 @@ export default function UsersPage() {
               variant="ghost"
               size="icon-sm"
               onClick={closeModal}
-              className="text-slate-400 hover:bg-slate-200"
+              className="text-[#707973] hover:bg-[#e2e2e5]"
             >
               <X className="w-5 h-5" />
             </Button>
@@ -623,13 +623,13 @@ export default function UsersPage() {
           <form onSubmit={handleCreate}>
             {renderFormFields(false)}
             <DialogFooter className="px-6 pb-6">
-              <Button type="button" variant="ghost" onClick={closeModal} className="text-slate-600">
+              <Button type="button" variant="ghost" onClick={closeModal} className="text-[#404943]">
                 إلغاء
               </Button>
               <Button
                 type="submit"
                 disabled={submitting}
-                className="bg-blue-600 text-white shadow-md shadow-blue-500/20 hover:bg-blue-700 disabled:opacity-60"
+                className="bg-[#003422] text-white shadow-enterprise hover:bg-[#0f4c36] disabled:opacity-60"
               >
                 {submitting ? "جاري الإضافة..." : "حفظ المستخدم"}
               </Button>
@@ -658,7 +658,7 @@ export default function UsersPage() {
               variant="ghost"
               size="icon-sm"
               onClick={closeModal}
-              className="text-slate-400 hover:bg-slate-200"
+              className="text-[#707973] hover:bg-[#e2e2e5]"
             >
               <X className="w-5 h-5" />
             </Button>
@@ -666,13 +666,13 @@ export default function UsersPage() {
           <form onSubmit={handleUpdate}>
             {renderFormFields(true)}
             <DialogFooter className="px-6 pb-6">
-              <Button type="button" variant="ghost" onClick={closeModal} className="text-slate-600">
+              <Button type="button" variant="ghost" onClick={closeModal} className="text-[#404943]">
                 إلغاء
               </Button>
               <Button
                 type="submit"
                 disabled={submitting}
-                className="bg-amber-500 text-white shadow-md shadow-amber-500/20 hover:bg-amber-600 disabled:opacity-60"
+                className="bg-amber-500 text-white shadow-enterprise-hover shadow-amber-500/20 hover:bg-amber-600 disabled:opacity-60"
               >
                 {submitting ? "جاري الحفظ..." : "حفظ التعديلات"}
               </Button>
@@ -699,30 +699,30 @@ export default function UsersPage() {
               variant="ghost"
               size="icon-sm"
               onClick={closeModal}
-              className="text-slate-400 hover:bg-slate-200"
+              className="text-[#707973] hover:bg-[#e2e2e5]"
             >
               <X className="w-5 h-5" />
             </Button>
           </DialogHeader>
           <div className="px-6 py-4">
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-[#404943]">
               هل أنت متأكد من حذف المستخدم{" "}
-              <span className="font-bold text-slate-900">{selectedUser?.full_name}</span>؟
+              <span className="font-bold text-[#1a1c1e]">{selectedUser?.full_name}</span>؟
               <br />
-              <span className="text-xs text-slate-400">
+              <span className="text-xs text-[#707973]">
                 سيتم حذف جميع صلاحياته وبياناته بشكل نهائي.
               </span>
             </p>
           </div>
           <DialogFooter className="px-6 pb-6">
-            <Button type="button" variant="ghost" onClick={closeModal} className="text-slate-600">
+            <Button type="button" variant="ghost" onClick={closeModal} className="text-[#404943]">
               إلغاء
             </Button>
             <Button
               type="button"
               disabled={submitting}
               onClick={handleDelete}
-              className="bg-red-600 text-white shadow-md shadow-red-500/20 hover:bg-red-700 disabled:opacity-60"
+              className="bg-red-600 text-white shadow-enterprise-hover shadow-red-500/20 hover:bg-red-700 disabled:opacity-60"
             >
               {submitting ? "جاري الحذف..." : "نعم، احذف المستخدم"}
             </Button>

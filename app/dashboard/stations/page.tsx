@@ -150,24 +150,24 @@ export default function StationsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-4 rounded-2xl border border-transparent bg-white p-6 shadow-enterprise sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-extrabold text-slate-900">إدارة المحطات</h1>
-          <p className="mt-1 text-sm text-slate-500">
+          <h1 className="text-2xl font-extrabold text-[#1a1c1e]">إدارة المحطات</h1>
+          <p className="mt-1 text-sm text-[#707973]">
             أماكن صعود ونزول الطلاب والمركبات
           </p>
         </div>
 
-        <Button onClick={handleOpenCreate} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
+        <Button onClick={handleOpenCreate} className="gap-2 rounded-xl bg-[#003422] text-white shadow-enterprise hover:bg-[#0f4c36]">
           <Plus className="w-4 h-4" />
           <span>إضافة محطة جديدة</span>
         </Button>
       </div>
 
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between rounded-2xl border border-transparent bg-white p-4 shadow-enterprise">
         <form onSubmit={handleSearch} className="flex items-center gap-2 flex-1 max-w-md">
           <div className="relative flex-1">
-            <Search className="absolute right-3 top-2.5 h-4 w-4 text-slate-400" />
+            <Search className="absolute right-3 top-2.5 h-4 w-4 text-[#707973]" />
             <Input
               placeholder="بحث بالاسم..."
               value={searchTerm}
@@ -178,15 +178,15 @@ export default function StationsPage() {
         </form>
       </div>
 
-      <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      <div className="overflow-hidden rounded-2xl border border-transparent bg-white shadow-enterprise">
         {loading ? (
-          <div className="py-12 text-center text-sm text-slate-500">جاري تحميل المحطات...</div>
+          <div className="py-12 text-center text-sm text-[#707973]">جاري تحميل المحطات...</div>
         ) : filteredStations.length === 0 ? (
-          <div className="py-12 text-center text-sm text-slate-500">لا توجد محطات مسجلة حالياً</div>
+          <div className="py-12 text-center text-sm text-[#707973]">لا توجد محطات مسجلة حالياً</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-right text-sm">
-              <thead className="bg-slate-50 text-xs font-bold text-slate-700 border-b border-slate-200">
+              <thead className="bg-[#f3f3f6] text-xs font-bold text-[#404943] border-b border-[#e2e2e5]">
                 <tr>
                   <th className="p-4">اسم المحطة</th>
                   <th className="p-4">النوع</th>
@@ -195,29 +195,29 @@ export default function StationsPage() {
                   <th className="p-4 text-left">الإجراءات</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-[#eeeef0]">
                 {filteredStations.map((s) => (
-                  <tr key={s.id} className="hover:bg-slate-50">
-                    <td className="p-4 font-bold text-slate-900 flex items-center gap-2">
-                      <MapPin className="w-4 h-4 text-emerald-600" />
+                  <tr key={s.id} className="hover:bg-[#f3f3f6]">
+                    <td className="p-4 font-bold text-[#1a1c1e] flex items-center gap-2">
+                      <MapPin className="w-4 h-4 text-[#003422]" />
                       {s.name}
                     </td>
                     <td className="p-4">
-                      <Badge variant="outline" className={s.type === 'pickup' ? 'text-blue-600 border-blue-200 bg-blue-50' : s.type === 'dropoff' ? 'text-red-600 border-red-200 bg-red-50' : 'text-purple-600 border-purple-200 bg-purple-50'}>
+                      <Badge variant="outline" className={s.type === 'pickup' ? 'text-[#003422] border-[#99d3b6] bg-[#e7f8ef]' : s.type === 'dropoff' ? 'text-red-600 border-red-200 bg-red-50' : 'text-[#404943] border-[#c0c9c2] bg-[#eeeef0]'}>
                         {s.type === 'pickup' ? 'انطلاق فقط' : s.type === 'dropoff' ? 'وصول فقط' : 'انطلاق ووصول'}
                       </Badge>
                     </td>
-                    <td className="p-4 text-slate-600 dir-ltr text-right">
+                    <td className="p-4 text-[#404943] dir-ltr text-right">
                       {s.location_lat}, {s.location_lng}
                     </td>
                     <td className="p-4">
                       {s.tenant_id === null ? (
-                        <Badge variant="secondary" className="bg-indigo-100 text-indigo-700 gap-1 border-indigo-200">
+                        <Badge variant="secondary" className="bg-[#e7f8ef] text-[#005228] gap-1 border-[#99d3b6]">
                           <Globe className="w-3 h-3" />
                           عالمية
                         </Badge>
                       ) : (
-                        <Badge variant="secondary" className="bg-slate-100 text-slate-700 gap-1 border-slate-200">
+                        <Badge variant="secondary" className="bg-[#eeeef0] text-[#404943] gap-1 border-[#e2e2e5]">
                           <Shield className="w-3 h-3" />
                           خاصة
                         </Badge>
@@ -225,14 +225,14 @@ export default function StationsPage() {
                     </td>
                     <td className="p-4 text-left">
                       {(!s.tenant_id && !isSuperAdmin) ? (
-                        <span className="text-xs text-slate-400">للقراءة فقط</span>
+                        <span className="text-xs text-[#707973]">للقراءة فقط</span>
                       ) : (
                         <div className="flex items-center justify-end gap-1">
                           <Button
                             variant="ghost"
                             size="sm"
                             onClick={() => handleOpenEdit(s)}
-                            className="p-1.5 text-slate-600 hover:text-emerald-600"
+                            className="p-1.5 text-[#404943] hover:bg-[#e7f8ef] hover:text-[#003422]"
                           >
                             <Edit className="w-4 h-4" />
                           </Button>
@@ -240,7 +240,7 @@ export default function StationsPage() {
                             variant="ghost"
                             size="sm"
                             onClick={() => handleDeleteStation(s.id)}
-                            className="p-1.5 text-slate-600 hover:text-red-600"
+                            className="p-1.5 text-[#404943] hover:text-red-600"
                           >
                             <Trash2 className="w-4 h-4" />
                           </Button>
@@ -305,7 +305,7 @@ export default function StationsPage() {
             <div className="space-y-2">
               <Label>نوع المحطة *</Label>
               <select
-                className="w-full rounded-md border border-slate-300 p-2 text-sm focus:outline-none"
+                className="w-full rounded-lg border border-[#c0c9c2] bg-white p-2 text-sm outline-none focus:ring-2 focus:ring-[#003422]"
                 value={formData.type}
                 onChange={(e) => setFormData({ ...formData, type: e.target.value as any })}
                 required
@@ -322,7 +322,7 @@ export default function StationsPage() {
               <Button type="button" variant="outline" onClick={() => setFormModalOpen(false)}>
                 إلغاء
               </Button>
-              <Button type="submit" className="bg-emerald-600 hover:bg-emerald-700 text-white">
+              <Button type="submit" className="bg-[#003422] text-white hover:bg-[#0f4c36]">
                 حفظ
               </Button>
             </DialogFooter>

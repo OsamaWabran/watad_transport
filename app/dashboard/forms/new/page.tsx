@@ -154,19 +154,19 @@ export default function NewFormPage() {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 rounded-2xl border border-transparent bg-white p-6 shadow-enterprise sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
-          <Button variant="ghost" size="sm" onClick={() => router.back()} className="text-slate-600">
+          <Button variant="ghost" size="sm" onClick={() => router.back()} className="text-[#404943] hover:bg-[#f3f3f6]">
             <ArrowRight className="w-4 h-4 ml-1" />
             عودة للنماذج
           </Button>
-          <h1 className="text-2xl font-extrabold text-slate-900">باني النماذج الديناميكية</h1>
+          <h1 className="text-2xl font-extrabold text-[#1a1c1e]">باني النماذج الديناميكية</h1>
         </div>
 
         <Button
           onClick={handleSubmit}
           disabled={loading}
-          className="gap-2 bg-blue-600 hover:bg-blue-700 text-white shadow-sm"
+          className="gap-2 rounded-xl bg-[#003422] text-white shadow-enterprise hover:bg-[#0f4c36]"
         >
           <Save className="w-4 h-4" />
           <span>{loading ? "جاري الحفظ..." : "حفظ ونشر النموذج"}</span>
@@ -175,14 +175,14 @@ export default function NewFormPage() {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Form Details Card */}
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
-          <div className="flex items-center gap-2 pb-3 border-b border-slate-100 font-bold text-slate-800">
-            <FileText className="w-5 h-5 text-blue-600" />
+        <div className="rounded-2xl border border-transparent bg-white p-6 shadow-enterprise space-y-4">
+          <div className="flex items-center gap-2 pb-3 border-b border-[#eeeef0] font-bold text-[#1a1c1e]">
+            <FileText className="w-5 h-5 text-[#003422]" />
             بيانات النموذج الأساسية
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="title" className="font-semibold text-slate-800">
+            <Label htmlFor="title" className="font-semibold text-[#1a1c1e]">
               عنوان النموذج / الاستمارة *
             </Label>
             <Input
@@ -195,13 +195,13 @@ export default function NewFormPage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description" className="font-semibold text-slate-800">
+            <Label htmlFor="description" className="font-semibold text-[#1a1c1e]">
               وصف الاستمارة والتعليمات (اختياري)
             </Label>
             <textarea
               id="description"
               rows={3}
-              className="w-full rounded-md border border-slate-300 p-3 text-sm focus:border-blue-500 focus:outline-none"
+              className="w-full rounded-lg border-0 bg-[#f3f3f6] p-3 text-sm outline-none focus:ring-2 focus:ring-[#003422]"
               placeholder="أدخل وصفاً توضيحياً أو إرشادات للطلاب والركاب أثناء تعبئة الاستمارة..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -209,14 +209,14 @@ export default function NewFormPage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="purpose" className="font-semibold text-slate-800">
+            <Label htmlFor="purpose" className="font-semibold text-[#1a1c1e]">
               الغرض من النموذج
             </Label>
             <select 
               id="purpose"
               value={purposeType}
               onChange={(e) => setPurposeType(e.target.value)}
-              className="flex h-10 w-full rounded-md border border-slate-300 bg-background px-3 py-2 text-sm focus:border-blue-500 focus:outline-none mb-2"
+              className="mb-2 flex h-10 w-full rounded-lg border-0 bg-[#f3f3f6] px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#003422]"
             >
               <option value="passenger_registration">نموذج تسجيل ركاب (مع بيانات أساسية)</option>
               <option value="other">نموذج مخصص (أغراض أخرى)</option>
@@ -237,20 +237,20 @@ export default function NewFormPage() {
               id="is_active"
               checked={isActive}
               onChange={(e) => setIsActive(e.target.checked)}
-              className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+              className="w-4 h-4 rounded border-[#c0c9c2] text-[#003422] focus:ring-[#003422]"
             />
-            <Label htmlFor="is_active" className="cursor-pointer text-sm font-semibold text-slate-700">
+            <Label htmlFor="is_active" className="cursor-pointer text-sm font-semibold text-[#404943]">
               تفعيل النموذج فوراً لتلقي الإجابات العامة
             </Label>
           </div>
         </div>
 
         {/* Dynamic Fields Builder */}
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm space-y-6">
-          <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div className="rounded-2xl border border-transparent bg-white p-6 shadow-enterprise space-y-6">
+          <div className="flex items-center justify-between pb-3 border-b border-[#eeeef0]">
             <div>
-              <h3 className="font-bold text-slate-800 text-lg">الحقول الديناميكية الإضافية</h3>
-              <p className="text-xs text-slate-500">
+              <h3 className="font-bold text-[#1a1c1e] text-lg">الحقول الديناميكية الإضافية</h3>
+              <p className="text-xs text-[#707973]">
                 (ملاحظة: حقول اسم الطالب، رقم التواصل، الجنس، والمحطات مدمجة تلقائياً في رابط التعبئة العامة)
               </p>
             </div>
@@ -259,7 +259,7 @@ export default function NewFormPage() {
               onClick={addField}
               variant="outline"
               size="sm"
-              className="gap-1.5 text-blue-600 border-blue-200 hover:bg-blue-50"
+              className="gap-1.5 text-[#003422] border-[#99d3b6] hover:bg-[#e7f8ef]"
             >
               <Plus className="w-4 h-4" />
               إضافة حقل جديد
@@ -270,11 +270,11 @@ export default function NewFormPage() {
             {fields.map((field, idx) => (
               <div
                 key={idx}
-                className="flex flex-col gap-4 p-4 rounded-lg border border-slate-200 bg-slate-50/50 sm:flex-row sm:items-center sm:justify-between"
+                className="flex flex-col gap-4 p-4 rounded-lg border border-[#e2e2e5] bg-[#f3f3f6]/50 sm:flex-row sm:items-center sm:justify-between"
               >
                 <div className="grid grid-cols-1 gap-3 flex-1 sm:grid-cols-12">
                   <div className="sm:col-span-4">
-                    <Label className="text-xs text-slate-600 font-semibold mb-1 block">
+                    <Label className="text-xs text-[#404943] font-semibold mb-1 block">
                       اسم الحقل (Field Label)
                     </Label>
                     <Input
@@ -285,9 +285,9 @@ export default function NewFormPage() {
                   </div>
 
                   <div className="sm:col-span-3">
-                    <Label className="text-xs text-slate-600 font-semibold mb-1 block">نوع الحقل</Label>
+                    <Label className="text-xs text-[#404943] font-semibold mb-1 block">نوع الحقل</Label>
                     <select
-                      className="w-full h-10 rounded-md border border-slate-300 px-3 py-1.5 text-sm focus:border-blue-500 focus:outline-none bg-white"
+                      className="h-10 w-full rounded-lg border-0 bg-white px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-[#003422]"
                       value={field.field_type}
                       onChange={(e) => updateField(idx, "field_type", e.target.value as any)}
                     >
@@ -300,11 +300,11 @@ export default function NewFormPage() {
 
                   {(field.field_type === "select" || field.field_type === "multiselect") && (
                     <div className="sm:col-span-5">
-                      <Label className="text-xs text-slate-600 font-semibold mb-1 block">
+                      <Label className="text-xs text-[#404943] font-semibold mb-1 block">
                         ربط بالقائمة المرجعية (Lookup Category)
                       </Label>
                       <select
-                        className="w-full h-10 rounded-md border border-slate-300 px-3 py-1.5 text-sm focus:border-blue-500 focus:outline-none bg-white"
+                        className="h-10 w-full rounded-lg border-0 bg-white px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-[#003422]"
                         value={field.lookup_type_id}
                         onChange={(e) => updateField(idx, "lookup_type_id", e.target.value)}
                       >
@@ -324,22 +324,22 @@ export default function NewFormPage() {
                       id={`req_${idx}`}
                       checked={field.is_required}
                       onChange={(e) => updateField(idx, "is_required", e.target.checked)}
-                      className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                      className="w-4 h-4 rounded border-[#c0c9c2] text-[#003422] focus:ring-[#003422]"
                     />
-                    <Label htmlFor={`req_${idx}`} className="cursor-pointer text-xs font-medium text-slate-600">
+                    <Label htmlFor={`req_${idx}`} className="cursor-pointer text-xs font-medium text-[#404943]">
                       حقل إجباري التعبئة
                     </Label>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-1 border-t sm:border-t-0 sm:border-r border-slate-200 pt-3 sm:pt-0 sm:pr-3 justify-end">
+                <div className="flex items-center gap-1 border-t sm:border-t-0 sm:border-r border-[#e2e2e5] pt-3 sm:pt-0 sm:pr-3 justify-end">
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
                     onClick={() => moveField(idx, "up")}
                     disabled={idx === 0}
-                    className="p-1 text-slate-400 hover:text-slate-700"
+                    className="p-1 text-[#707973] hover:text-[#404943]"
                   >
                     <MoveUp className="w-4 h-4" />
                   </Button>
@@ -349,7 +349,7 @@ export default function NewFormPage() {
                     size="sm"
                     onClick={() => moveField(idx, "down")}
                     disabled={idx === fields.length - 1}
-                    className="p-1 text-slate-400 hover:text-slate-700"
+                    className="p-1 text-[#707973] hover:text-[#404943]"
                   >
                     <MoveDown className="w-4 h-4" />
                   </Button>

@@ -49,38 +49,38 @@
 }
 
 :root {
-  --background: oklch(0.982 0.012 210);
-  --foreground: oklch(0.18 0.03 245);
+  --background: #f8faf9;
+  --foreground: #1a1c1e;
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: #1a1c1e;
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.52 0.14 230);
-  --primary-foreground: oklch(0.99 0.004 210);
-  --secondary: oklch(0.955 0.018 210);
-  --secondary-foreground: oklch(0.24 0.04 245);
-  --muted: oklch(0.95 0.014 230);
-  --muted-foreground: oklch(0.48 0.035 245);
-  --accent: oklch(0.94 0.045 175);
-  --accent-foreground: oklch(0.28 0.08 180);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.64 0.12 230);
-  --chart-1: oklch(0.61 0.16 230);
-  --chart-2: oklch(0.65 0.12 170);
-  --chart-3: oklch(0.72 0.16 75);
-  --chart-4: oklch(0.62 0.18 20);
-  --chart-5: oklch(0.56 0.12 285);
-  --radius: 0.5rem;
-  --sidebar: oklch(0.22 0.05 245);
-  --sidebar-foreground: oklch(0.94 0.012 230);
-  --sidebar-primary: oklch(0.62 0.14 185);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.31 0.06 245);
-  --sidebar-accent-foreground: oklch(0.99 0.004 210);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.68 0.12 185);
+  --popover-foreground: #1a1c1e;
+  --primary: #003422;
+  --primary-foreground: #ffffff;
+  --secondary: #b4efd1;
+  --secondary-foreground: #002114;
+  --muted: #f3f3f6;
+  --muted-foreground: #707973;
+  --accent: #6bfe9c;
+  --accent-foreground: #005228;
+  --destructive: #ba1a1a;
+  --border: #dfe6e1;
+  --input: #e8e8ea;
+  --ring: #316951;
+  --chart-1: #003422;
+  --chart-2: #0f4c36;
+  --chart-3: #4ae183;
+  --chart-4: #99d3b6;
+  --chart-5: #c4c7c6;
+  --radius: 0.875rem;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #1a1c1e;
+  --sidebar-primary: #003422;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e7f8ef;
+  --sidebar-accent-foreground: #005228;
+  --sidebar-border: #dfe6e1;
+  --sidebar-ring: #316951;
 }
 
 .dark {
@@ -136,4 +136,14 @@
 /* RTL / Arabic utilities */
 [dir="rtl"] {
   font-family: var(--font-arabic), var(--font-geist-sans), system-ui, sans-serif;
+}
+
+@layer utilities {
+  .shadow-enterprise {
+    box-shadow: 0 4px 20px rgb(0 75 54 / 0.05);
+  }
+
+  .shadow-enterprise-hover {
+    box-shadow: 0 8px 30px rgb(0 75 54 / 0.1);
+  }
 }

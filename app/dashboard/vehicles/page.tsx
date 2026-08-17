@@ -96,13 +96,13 @@ export default function VehiclesPage() {
 
   return (
     <div className="space-y-6">
-      <Card className="flex flex-col gap-4 border-slate-200/80 p-6 sm:flex-row sm:items-center sm:justify-between">
+      <Card className="flex flex-col gap-4 rounded-2xl border-transparent bg-white p-6 shadow-enterprise sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <Bus className="h-6 w-6 text-blue-600" />
-            <h1 className="text-xl font-bold text-slate-900">إدارة المركبات</h1>
+            <Bus className="h-6 w-6 text-[#003422]" />
+            <h1 className="text-xl font-bold text-[#1a1c1e]">إدارة المركبات</h1>
           </div>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-[#707973]">
             متابعة أسطول الحافلات والمقاعد المتاحة وحالة التشغيل والصيانة
           </p>
         </div>
@@ -110,7 +110,7 @@ export default function VehiclesPage() {
           <Button type="button" variant="outline" size="icon-lg" title="تحديث البيانات">
             <RefreshCw className="h-4 w-4" />
           </Button>
-          <Button type="button" onClick={() => setOpen(true)} className="bg-blue-600 text-white hover:bg-blue-700">
+          <Button type="button" onClick={() => setOpen(true)} className="bg-[#003422] text-white hover:bg-[#0f4c36]">
             <Plus className="h-4 w-4" />
             <span>إضافة مركبة</span>
           </Button>
@@ -118,37 +118,37 @@ export default function VehiclesPage() {
       </Card>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Card className="flex items-center justify-between border-slate-200/80 p-5">
+        <Card className="flex items-center justify-between rounded-2xl border-transparent bg-white p-5 shadow-enterprise">
           <div>
-            <span className="block text-xs font-semibold text-slate-500">إجمالي المركبات</span>
-            <span className="mt-1 block text-2xl font-black text-slate-900">{vehicles.length}</span>
+            <span className="block text-xs font-semibold text-[#707973]">إجمالي المركبات</span>
+            <span className="mt-1 block text-2xl font-black text-[#1a1c1e]">{vehicles.length}</span>
           </div>
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-blue-100 bg-blue-50 text-blue-600">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#99d3b6] bg-[#e7f8ef] text-[#003422]">
             <Bus className="h-5 w-5" />
           </div>
         </Card>
-        <Card className="flex items-center justify-between border-slate-200/80 p-5">
+        <Card className="flex items-center justify-between rounded-2xl border-transparent bg-white p-5 shadow-enterprise">
           <div>
-            <span className="block text-xs font-semibold text-slate-500">السعة التشغيلية</span>
-            <span className="mt-1 block text-2xl font-black text-slate-900">{totalCapacity}</span>
+            <span className="block text-xs font-semibold text-[#707973]">السعة التشغيلية</span>
+            <span className="mt-1 block text-2xl font-black text-[#1a1c1e]">{totalCapacity}</span>
           </div>
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-indigo-100 bg-indigo-50 text-indigo-600">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#c0c9c2] bg-[#eeeef0] text-[#404943]">
             <Users className="h-5 w-5" />
           </div>
         </Card>
-        <Card className="flex items-center justify-between border-slate-200/80 p-5">
+        <Card className="flex items-center justify-between rounded-2xl border-transparent bg-white p-5 shadow-enterprise">
           <div>
-            <span className="block text-xs font-semibold text-slate-500">جاهزة للتخصيص</span>
-            <span className="mt-1 block text-2xl font-black text-slate-900">{availableCount}</span>
+            <span className="block text-xs font-semibold text-[#707973]">جاهزة للتخصيص</span>
+            <span className="mt-1 block text-2xl font-black text-[#1a1c1e]">{availableCount}</span>
           </div>
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-emerald-100 bg-emerald-50 text-emerald-600">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#99d3b6] bg-[#e7f8ef] text-[#005228]">
             <ShieldCheck className="h-5 w-5" />
           </div>
         </Card>
-        <Card className="flex items-center justify-between border-slate-200/80 p-5">
+        <Card className="flex items-center justify-between rounded-2xl border-transparent bg-white p-5 shadow-enterprise">
           <div>
-            <span className="block text-xs font-semibold text-slate-500">تحت الصيانة</span>
-            <span className="mt-1 block text-2xl font-black text-slate-900">{maintenanceCount}</span>
+            <span className="block text-xs font-semibold text-[#707973]">تحت الصيانة</span>
+            <span className="mt-1 block text-2xl font-black text-[#1a1c1e]">{maintenanceCount}</span>
           </div>
           <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-amber-100 bg-amber-50 text-amber-600">
             <Wrench className="h-5 w-5" />
@@ -156,17 +156,17 @@ export default function VehiclesPage() {
         </Card>
       </div>
 
-      <Card className="flex flex-col items-center justify-between gap-3 border-slate-200/80 p-4 sm:flex-row">
+      <Card className="flex flex-col items-center justify-between gap-3 rounded-2xl border-transparent bg-white p-4 shadow-enterprise sm:flex-row">
         <div className="relative w-full sm:w-96">
-          <Search className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          <Search className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#707973]" />
           <Input
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="بحث برقم اللوحة أو النوع أو المسار..."
-            className="bg-slate-50 pr-9"
+            className="bg-[#f3f3f6] pr-9"
           />
         </div>
-        <Select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)} className="w-full bg-slate-50 sm:w-52">
+        <Select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)} className="w-full bg-[#f3f3f6] sm:w-52">
           <option value="all">كل الحالات</option>
           <option value="available">متاحة</option>
           <option value="in_service">قيد التشغيل</option>
@@ -174,11 +174,11 @@ export default function VehiclesPage() {
         </Select>
       </Card>
 
-      <Card className="overflow-hidden border-slate-200/80">
+      <Card className="overflow-hidden rounded-2xl border-transparent bg-white shadow-enterprise">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="bg-slate-50">
+              <TableRow className="bg-[#f3f3f6]">
                 <TableHead>رقم اللوحة</TableHead>
                 <TableHead>نوع المركبة</TableHead>
                 <TableHead>السعة</TableHead>
@@ -192,19 +192,19 @@ export default function VehiclesPage() {
                 const status = statusLabels[vehicle.status as keyof typeof statusLabels];
                 return (
                   <TableRow key={vehicle.id}>
-                    <TableCell className="font-bold text-slate-900">{vehicle.plate_number}</TableCell>
+                    <TableCell className="font-bold text-[#1a1c1e]">{vehicle.plate_number}</TableCell>
                     <TableCell>{vehicle.type}</TableCell>
                     <TableCell>
-                      <span className="inline-flex items-center gap-1 font-mono text-xs font-semibold text-slate-700">
-                        <Gauge className="h-3.5 w-3.5 text-slate-400" />
+                      <span className="inline-flex items-center gap-1 font-mono text-xs font-semibold text-[#404943]">
+                        <Gauge className="h-3.5 w-3.5 text-[#707973]" />
                         {vehicle.capacity} مقعد
                       </span>
                     </TableCell>
                     <TableCell>
                       <Badge variant={status.variant} shape="pill">{status.label}</Badge>
                     </TableCell>
-                    <TableCell className="text-xs text-slate-600">{vehicle.assigned_route}</TableCell>
-                    <TableCell className="font-mono text-xs text-slate-500">
+                    <TableCell className="text-xs text-[#404943]">{vehicle.assigned_route}</TableCell>
+                    <TableCell className="font-mono text-xs text-[#707973]">
                       {new Date(vehicle.last_check).toLocaleDateString("ar-SA")}
                     </TableCell>
                   </TableRow>
@@ -237,7 +237,7 @@ export default function VehiclesPage() {
           </div>
           <DialogFooter className="px-6 pb-6">
             <Button type="button" variant="ghost" onClick={() => setOpen(false)}>إلغاء</Button>
-            <Button type="button" className="bg-blue-600 text-white hover:bg-blue-700">حفظ</Button>
+            <Button type="button" className="bg-[#003422] text-white hover:bg-[#0f4c36]">حفظ</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

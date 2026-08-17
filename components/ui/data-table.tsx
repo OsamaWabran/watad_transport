@@ -88,15 +88,17 @@ export function DataTable<TData, TValue>({
           />
         </div>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-9 border-slate-200 bg-white text-slate-800 hover:bg-slate-50 font-medium text-xs gap-1.5 shadow-none rounded-md px-3"
-            >
+          <DropdownMenuTrigger
+            render={
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-9 border-slate-200 bg-white text-slate-800 hover:bg-slate-50 font-medium text-xs gap-1.5 shadow-none rounded-md px-3"
+              />
+            }
+          >
               Columns
               <ChevronDown className="h-3.5 w-3.5 text-slate-500" />
-            </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-44 bg-white border-slate-200">
             {table

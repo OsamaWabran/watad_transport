@@ -225,19 +225,19 @@ export default function TenantsPage() {
 
   return (
     <div className="space-y-6">
-      <Card className="flex flex-col gap-4 border-slate-200/80 p-6 sm:flex-row sm:items-center sm:justify-between">
+      <Card className="flex flex-col gap-4 rounded-2xl border-transparent bg-white p-6 shadow-enterprise sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <Building2 className="w-6 h-6 text-blue-600" />
-            <h1 className="text-xl font-bold text-slate-900">إدارة المؤسسات التابعة</h1>
+            <Building2 className="w-6 h-6 text-[#003422]" />
+            <h1 className="text-xl font-bold text-[#1a1c1e]">إدارة المؤسسات التابعة</h1>
           </div>
-          <p className="text-xs text-slate-500">عرض وإضافة وتعديل وتفعيل وحذف المؤسسات</p>
+          <p className="text-xs text-[#707973]">عرض وإضافة وتعديل وتفعيل وحذف المؤسسات</p>
         </div>
         <div className="flex items-center gap-2">
           <Button type="button" variant="outline" size="icon-lg" onClick={fetchTenants} title="تحديث">
             <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
           </Button>
-          <Button type="button" onClick={openCreateForm} className="bg-blue-600 text-white hover:bg-blue-700">
+          <Button type="button" onClick={openCreateForm} className="bg-[#003422] text-white hover:bg-[#0f4c36]">
             <Plus className="w-4 h-4" />
             <span>إضافة مؤسسة</span>
           </Button>
@@ -256,37 +256,37 @@ export default function TenantsPage() {
         </div>
       )}
 
-      <Card className="flex flex-col items-center justify-between gap-3 border-slate-200/80 p-4 sm:flex-row">
+      <Card className="flex flex-col items-center justify-between gap-3 rounded-2xl border-transparent bg-white p-4 shadow-enterprise sm:flex-row">
         <div className="relative w-full sm:w-80">
-          <Search className="pointer-events-none absolute right-3 top-1/2 w-4 h-4 -translate-y-1/2 text-slate-400" />
-          <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="البحث باسم أو كود المؤسسة..." className="bg-slate-50 pr-9" />
+          <Search className="pointer-events-none absolute right-3 top-1/2 w-4 h-4 -translate-y-1/2 text-[#707973]" />
+          <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="البحث باسم أو كود المؤسسة..." className="bg-[#f3f3f6] pr-9" />
         </div>
         <div className="flex w-full items-center gap-2 overflow-x-auto sm:w-auto">
-          <Filter className="w-4 h-4 text-slate-400" />
+          <Filter className="w-4 h-4 text-[#707973]" />
           {["ALL", "university", "company", "hospital", "other"].map((typeKey) => (
-            <Button key={typeKey} type="button" variant={typeFilter === typeKey ? "default" : "secondary"} size="sm" onClick={() => setTypeFilter(typeKey)} className={typeFilter === typeKey ? "bg-blue-600 text-white" : ""}>
+            <Button key={typeKey} type="button" variant={typeFilter === typeKey ? "default" : "secondary"} size="sm" onClick={() => setTypeFilter(typeKey)} className={typeFilter === typeKey ? "bg-[#003422] text-white hover:bg-[#0f4c36]" : "bg-[#eeeef0] text-[#404943] hover:bg-[#e2e2e5]"}>
               {typeKey === "ALL" ? "الكل" : typeKey === "university" ? "جامعات" : typeKey === "company" ? "شركات" : typeKey === "hospital" ? "مستشفيات" : "أخرى"}
             </Button>
           ))}
         </div>
       </Card>
 
-      <Card className="overflow-hidden border-slate-200/80">
+      <Card className="overflow-hidden rounded-2xl border-transparent bg-white shadow-enterprise">
         {loading ? (
-          <div className="p-12 text-center text-slate-400">
-            <RefreshCw className="mx-auto mb-3 w-8 h-8 animate-spin text-blue-600" />
+          <div className="p-12 text-center text-[#707973]">
+            <RefreshCw className="mx-auto mb-3 w-8 h-8 animate-spin text-[#003422]" />
             <p className="text-sm">جاري تحميل المؤسسات...</p>
           </div>
         ) : filteredTenants.length === 0 ? (
-          <div className="p-12 text-center text-slate-500">
-            <Building2 className="mx-auto mb-3 w-12 h-12 text-slate-300" />
-            <h3 className="text-base font-bold text-slate-800">لا توجد مؤسسات</h3>
+          <div className="p-12 text-center text-[#707973]">
+            <Building2 className="mx-auto mb-3 w-12 h-12 text-[#c0c9c2]" />
+            <h3 className="text-base font-bold text-[#1a1c1e]">لا توجد مؤسسات</h3>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
-                <TableRow className="bg-slate-50">
+                <TableRow className="bg-[#f3f3f6]">
                   <TableHead>الكود</TableHead>
                   <TableHead>اسم المؤسسة</TableHead>
                   <TableHead>النوع</TableHead>
@@ -298,8 +298,8 @@ export default function TenantsPage() {
               <TableBody>
                 {filteredTenants.map((tenant) => (
                   <TableRow key={tenant.id}>
-                    <TableCell className="font-mono font-bold text-blue-700">{tenant.code}</TableCell>
-                    <TableCell className="font-bold text-slate-900">{tenant.name}</TableCell>
+                    <TableCell className="font-mono font-bold text-[#005228]">{tenant.code}</TableCell>
+                    <TableCell className="font-bold text-[#1a1c1e]">{tenant.name}</TableCell>
                     <TableCell>{getTypeBadge(tenant.type)}</TableCell>
                     <TableCell>
                       <Badge variant={tenant.is_active ? "emerald" : "destructive"} shape="pill">
@@ -307,7 +307,7 @@ export default function TenantsPage() {
                         <span>{tenant.is_active ? "مفعلة" : "معطلة"}</span>
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-xs text-slate-500">{new Date(tenant.created_at).toLocaleDateString("ar-SA")}</TableCell>
+                    <TableCell className="text-xs text-[#707973]">{new Date(tenant.created_at).toLocaleDateString("ar-SA")}</TableCell>
                     <TableCell>
                       <div className="flex justify-end gap-2">
                         <Button type="button" variant="outline" size="sm" onClick={() => handleToggleStatus(tenant)}>
@@ -364,7 +364,7 @@ export default function TenantsPage() {
             </div>
             <DialogFooter>
               <Button type="button" variant="ghost" onClick={closeForm}>إلغاء</Button>
-              <Button type="submit" disabled={submitting} className="bg-blue-600 text-white hover:bg-blue-700">
+              <Button type="submit" disabled={submitting} className="bg-[#003422] text-white hover:bg-[#0f4c36]">
                 {submitting ? "جاري الحفظ..." : "حفظ"}
               </Button>
             </DialogFooter>
@@ -378,7 +378,7 @@ export default function TenantsPage() {
             <DialogTitle>حذف المؤسسة</DialogTitle>
             <DialogDescription>سيتم حذف المؤسسة المحددة إذا لم تكن مرتبطة بسجلات تمنع الحذف.</DialogDescription>
           </DialogHeader>
-          <div className="p-6 text-sm text-slate-700">
+          <div className="p-6 text-sm text-[#404943]">
             تأكيد حذف: <span className="font-bold">{deletingTenant?.name}</span>
           </div>
           <DialogFooter className="mx-6 mb-6">

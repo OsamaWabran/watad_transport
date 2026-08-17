@@ -165,19 +165,19 @@ export default function PublicFormSubmissionPage({
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4" dir="rtl">
-        <div className="text-slate-500 font-semibold text-sm">جاري تحميل الاستمارة...</div>
+      <div className="flex min-h-screen items-center justify-center bg-[#f8faf9] p-4" dir="rtl">
+        <div className="rounded-2xl bg-white px-6 py-4 text-sm font-semibold text-[#707973] shadow-enterprise">جاري تحميل الاستمارة...</div>
       </div>
     );
   }
 
   if (errorMsg && !form) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4" dir="rtl">
-        <div className="max-w-md w-full rounded-2xl border border-red-200 bg-white p-6 text-center shadow-sm space-y-4">
+      <div className="flex min-h-screen items-center justify-center bg-[#f8faf9] p-4" dir="rtl">
+        <div className="w-full max-w-md space-y-4 rounded-2xl border border-red-200 bg-white p-6 text-center shadow-enterprise">
           <AlertCircle className="w-12 h-12 text-red-500 mx-auto" />
-          <h2 className="text-xl font-bold text-slate-900">عذراً</h2>
-          <p className="text-sm text-slate-600">{errorMsg}</p>
+          <h2 className="text-xl font-bold text-[#1a1c1e]">عذراً</h2>
+          <p className="text-sm text-[#404943]">{errorMsg}</p>
         </div>
       </div>
     );
@@ -185,11 +185,11 @@ export default function PublicFormSubmissionPage({
 
   if (form && !form.is_active) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4" dir="rtl">
-        <div className="max-w-md w-full rounded-2xl border border-amber-200 bg-white p-6 text-center shadow-sm space-y-4">
+      <div className="flex min-h-screen items-center justify-center bg-[#f8faf9] p-4" dir="rtl">
+        <div className="w-full max-w-md space-y-4 rounded-2xl border border-amber-200 bg-white p-6 text-center shadow-enterprise">
           <AlertCircle className="w-12 h-12 text-amber-500 mx-auto" />
-          <h2 className="text-xl font-bold text-slate-900">النموذج مغلق حالياً</h2>
-          <p className="text-sm text-slate-600">
+          <h2 className="text-xl font-bold text-[#1a1c1e]">النموذج مغلق حالياً</h2>
+          <p className="text-sm text-[#404943]">
             تم إيقاف هذه الاستمارة مؤقتاً من قبل الإدارة ولا تقبل إجابات جديدة حالياً.
           </p>
         </div>
@@ -199,13 +199,13 @@ export default function PublicFormSubmissionPage({
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4" dir="rtl">
-        <div className="max-w-md w-full rounded-2xl border border-emerald-100 bg-white p-8 text-center shadow-lg space-y-4">
-          <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
+      <div className="flex min-h-screen items-center justify-center bg-[#f8faf9] p-4" dir="rtl">
+        <div className="w-full max-w-md space-y-4 rounded-2xl border border-[#99d3b6] bg-white p-8 text-center shadow-enterprise">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#b4efd1] text-[#005228]">
             <CheckCircle className="w-10 h-10" />
           </div>
-          <h2 className="text-2xl font-black text-slate-900">تم إرسال إجابتك بنجاح!</h2>
-          <p className="text-sm text-slate-600 leading-relaxed">
+          <h2 className="text-2xl font-black text-[#1a1c1e]">تم إرسال إجابتك بنجاح!</h2>
+          <p className="text-sm leading-relaxed text-[#404943]">
             شكراً لك، تم حفظ بياناتك وتسجيل حجز النقل الخاص بك بالنظام بنجاح.
           </p>
           <button
@@ -217,7 +217,7 @@ export default function PublicFormSubmissionPage({
               setEndStation("");
               setAnswers({});
             }}
-            className="mt-4 text-xs font-bold text-blue-600 hover:underline"
+            className="mt-4 text-xs font-bold text-[#003422] hover:underline"
           >
             تعبئة رد آخر
           </button>
@@ -227,28 +227,29 @@ export default function PublicFormSubmissionPage({
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 py-10 px-4 font-arabic text-slate-900" dir="rtl">
-      <div className="max-w-2xl mx-auto space-y-6">
+    <div className="min-h-screen bg-[#f8faf9] px-4 py-10 font-arabic text-[#1a1c1e]" dir="rtl">
+      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_85%_8%,rgb(153_211_182_/_0.22),transparent_26rem),radial-gradient(circle_at_10%_92%,rgb(74_225_131_/_0.14),transparent_24rem)]" />
+      <div className="relative mx-auto max-w-2xl space-y-6">
         {/* Header Branding Card */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm border-t-8 border-t-blue-600">
+        <div className="overflow-hidden rounded-[24px] border border-[#c0c9c2]/40 bg-white p-6 shadow-enterprise">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-sm">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#003422] text-white shadow-enterprise">
               <Bus className="w-6 h-6" />
             </div>
             <div>
-              <span className="text-xs font-bold text-blue-600">نظام مسارات لنقل الطلاب SaaS</span>
-              <h1 className="text-2xl font-black text-slate-900">{form?.title}</h1>
+              <span className="text-xs font-bold text-[#005228]">نظام مسارات لنقل الطلاب SaaS</span>
+              <h1 className="text-2xl font-black text-[#1a1c1e]">{form?.title}</h1>
             </div>
           </div>
           {form?.description && (
-            <p className="mt-3 text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
+            <p className="mt-3 border-t border-[#eeeef0] pt-3 text-sm leading-relaxed text-[#404943]">
               {form.description}
             </p>
           )}
         </div>
 
         {errorMsg && (
-          <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm font-semibold flex items-center gap-2">
+          <div className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 p-4 text-sm font-semibold text-red-700">
             <AlertCircle className="w-5 h-5 shrink-0" />
             <span>{errorMsg}</span>
           </div>
@@ -258,8 +259,8 @@ export default function PublicFormSubmissionPage({
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Base Passenger Section */}
           {form?.purpose === "passenger_registration" && (
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
-              <h3 className="font-extrabold text-slate-900 text-base border-b border-slate-100 pb-2">
+            <div className="space-y-4 rounded-2xl border border-transparent bg-white p-6 shadow-enterprise">
+              <h3 className="border-b border-[#eeeef0] pb-2 text-base font-extrabold text-[#1a1c1e]">
                 البيانات الشخصية للطالب / الراكب
               </h3>
 
@@ -270,7 +271,7 @@ export default function PublicFormSubmissionPage({
             )}
 
             <div className="space-y-1.5">
-              <label className="block text-xs font-bold text-slate-700">
+              <label className="block text-xs font-bold text-[#404943]">
                 الاسم الثلاثي للطالب / الراكب *
               </label>
               <input
@@ -278,13 +279,13 @@ export default function PublicFormSubmissionPage({
                 placeholder="أدخل الاسم الثلاثي بالكامل..."
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                className="w-full h-11 rounded-lg border border-slate-300 px-3.5 text-sm focus:border-blue-600 focus:outline-none"
+                className="h-11 w-full rounded-lg border-0 bg-[#f3f3f6] px-3.5 text-sm outline-none focus:ring-2 focus:ring-[#003422]"
                 required
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="block text-xs font-bold text-slate-700">
+              <label className="block text-xs font-bold text-[#404943]">
                 رقم الجوال / التواصل *
               </label>
               <input
@@ -292,47 +293,47 @@ export default function PublicFormSubmissionPage({
                 placeholder="05xxxxxxxx"
                 value={contactNumber}
                 onChange={(e) => setContactNumber(e.target.value)}
-                className="w-full h-11 rounded-lg border border-slate-300 px-3.5 text-sm focus:border-blue-600 focus:outline-none dir-ltr text-right"
+                className="dir-ltr h-11 w-full rounded-lg border-0 bg-[#f3f3f6] px-3.5 text-right text-sm outline-none focus:ring-2 focus:ring-[#003422]"
                 required
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="block text-xs font-bold text-slate-700">الجنس *</label>
+              <label className="block text-xs font-bold text-[#404943]">الجنس *</label>
               <div className="flex items-center gap-6 pt-1">
-                <label className="flex items-center gap-2 text-sm font-semibold text-slate-800 cursor-pointer">
+                <label className="flex cursor-pointer items-center gap-2 text-sm font-semibold text-[#1a1c1e]">
                   <input
                     type="radio"
                     name="gender"
                     value="male"
                     checked={gender === "male"}
                     onChange={() => setGender("male")}
-                    className="w-4 h-4 text-blue-600"
+                    className="h-4 w-4 accent-[#003422]"
                   />
                   ذكر
                 </label>
-                <label className="flex items-center gap-2 text-sm font-semibold text-slate-800 cursor-pointer">
+                <label className="flex cursor-pointer items-center gap-2 text-sm font-semibold text-[#1a1c1e]">
                   <input
                     type="radio"
                     name="gender"
                     value="female"
                     checked={gender === "female"}
                     onChange={() => setGender("female")}
-                    className="w-4 h-4 text-blue-600"
+                    className="h-4 w-4 accent-[#003422]"
                   />
                   أنثى
                 </label>
               </div>
             </div>
 
-            <div className="space-y-1.5 pt-2 border-t border-slate-100">
-              <label className="block text-xs font-bold text-slate-700">
+            <div className="space-y-1.5 border-t border-[#eeeef0] pt-2">
+              <label className="block text-xs font-bold text-[#404943]">
                 محطة الانطلاق (اختياري)
               </label>
               <select
                 value={startStation}
                 onChange={(e) => setStartStation(e.target.value)}
-                className="w-full h-11 rounded-lg border border-slate-300 px-3.5 text-sm focus:border-blue-600 focus:outline-none bg-white"
+                className="h-11 w-full rounded-lg border-0 bg-[#f3f3f6] px-3.5 text-sm outline-none focus:ring-2 focus:ring-[#003422]"
               >
                 <option value="">-- اختر المحطة --</option>
                 {stations
@@ -346,13 +347,13 @@ export default function PublicFormSubmissionPage({
             </div>
 
             <div className="space-y-1.5">
-              <label className="block text-xs font-bold text-slate-700">
+              <label className="block text-xs font-bold text-[#404943]">
                 محطة الوصول (اختياري)
               </label>
               <select
                 value={endStation}
                 onChange={(e) => setEndStation(e.target.value)}
-                className="w-full h-11 rounded-lg border border-slate-300 px-3.5 text-sm focus:border-blue-600 focus:outline-none bg-white"
+                className="h-11 w-full rounded-lg border-0 bg-[#f3f3f6] px-3.5 text-sm outline-none focus:ring-2 focus:ring-[#003422]"
               >
                 <option value="">-- اختر المحطة --</option>
                 {stations
@@ -369,8 +370,8 @@ export default function PublicFormSubmissionPage({
 
           {/* Dynamic Fields Section */}
           {form?.form_fields && form.form_fields.length > 0 && (
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-5">
-              <h3 className="font-extrabold text-slate-900 text-base border-b border-slate-100 pb-2">
+            <div className="space-y-5 rounded-2xl border border-transparent bg-white p-6 shadow-enterprise">
+              <h3 className="border-b border-[#eeeef0] pb-2 text-base font-extrabold text-[#1a1c1e]">
                 بيانات حصر النقل والتعليمات
               </h3>
 
@@ -380,7 +381,7 @@ export default function PublicFormSubmissionPage({
 
                 return (
                   <div key={field.id} className="space-y-2">
-                    <label className="block text-xs font-bold text-slate-700">
+                    <label className="block text-xs font-bold text-[#404943]">
                       {field.field_label} {isReq && <span className="text-red-500">*</span>}
                     </label>
 
@@ -391,7 +392,7 @@ export default function PublicFormSubmissionPage({
                         placeholder={`أدخل ${field.field_label}...`}
                         value={answers[field.field_label] || ""}
                         onChange={(e) => handleAnswerChange(field.field_label, e.target.value)}
-                        className="w-full h-11 rounded-lg border border-slate-300 px-3.5 text-sm focus:border-blue-600 focus:outline-none"
+                        className="h-11 w-full rounded-lg border-0 bg-[#f3f3f6] px-3.5 text-sm outline-none focus:ring-2 focus:ring-[#003422]"
                         required={isReq}
                       />
                     )}
@@ -403,7 +404,7 @@ export default function PublicFormSubmissionPage({
                         placeholder="0"
                         value={answers[field.field_label] || ""}
                         onChange={(e) => handleAnswerChange(field.field_label, e.target.value)}
-                        className="w-full h-11 rounded-lg border border-slate-300 px-3.5 text-sm focus:border-blue-600 focus:outline-none"
+                        className="h-11 w-full rounded-lg border-0 bg-[#f3f3f6] px-3.5 text-sm outline-none focus:ring-2 focus:ring-[#003422]"
                         required={isReq}
                       />
                     )}
@@ -413,7 +414,7 @@ export default function PublicFormSubmissionPage({
                       <select
                         value={answers[field.field_label] || ""}
                         onChange={(e) => handleAnswerChange(field.field_label, e.target.value)}
-                        className="w-full h-11 rounded-lg border border-slate-300 px-3.5 text-sm focus:border-blue-600 focus:outline-none bg-white"
+                        className="h-11 w-full rounded-lg border-0 bg-[#f3f3f6] px-3.5 text-sm outline-none focus:ring-2 focus:ring-[#003422]"
                         required={isReq}
                       >
                         <option value="">-- اختر خياراً --</option>
@@ -427,19 +428,19 @@ export default function PublicFormSubmissionPage({
 
                     {/* MultiSelect field */}
                     {field.field_type === "multiselect" && (
-                      <div className="space-y-2 pt-1 border border-slate-200 rounded-lg p-3 bg-slate-50">
+                      <div className="space-y-2 rounded-lg border border-[#e2e2e5] bg-[#f8faf9] p-3 pt-1">
                         {options.length === 0 ? (
-                          <span className="text-xs text-slate-400">لا توجد خيارات مرتبطة بهذه القائمة</span>
+                          <span className="text-xs text-[#707973]">لا توجد خيارات مرتبطة بهذه القائمة</span>
                         ) : (
                           options.map((opt) => {
                             const isChecked = (answers[field.field_label] || []).includes(opt.value_name);
                             return (
-                              <label key={opt.id} className="flex items-center gap-2 text-sm text-slate-800 cursor-pointer">
+                              <label key={opt.id} className="flex cursor-pointer items-center gap-2 text-sm text-[#1a1c1e]">
                                 <input
                                   type="checkbox"
                                   checked={isChecked}
                                   onChange={() => handleMultiSelectToggle(field.field_label, opt.value_name)}
-                                  className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                                  className="h-4 w-4 rounded border-[#c0c9c2] accent-[#003422]"
                                 />
                                 <span>{opt.value_name}</span>
                               </label>
@@ -458,7 +459,7 @@ export default function PublicFormSubmissionPage({
           <button
             type="submit"
             disabled={submitting}
-            className="w-full h-12 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-base shadow-md flex items-center justify-center gap-2 transition-all"
+            className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#003422] text-base font-bold text-white shadow-enterprise transition-all hover:-translate-y-0.5 hover:bg-[#0f4c36]"
           >
             <Send className="w-5 h-5" />
             <span>{submitting ? "جاري الإرسال..." : "إرسال وتأكيد الطلب"}</span>
