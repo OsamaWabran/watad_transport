@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation";
 import { ArrowRight, Plus, Trash2, MoveUp, MoveDown, Save, FileText, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Select } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { CheckboxField, FormField, FormSection } from "@/components/ui/form-layout";
 
 function getApiErrorMessage(response: any, fallback: string) {
   return response?.error?.message || response?.message || fallback;
@@ -175,16 +177,15 @@ export default function NewFormPage() {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Form Details Card */}
-        <div className="rounded-2xl border border-transparent bg-white p-6 shadow-enterprise space-y-4">
-          <div className="flex items-center gap-2 pb-3 border-b border-[#eeeef0] font-bold text-[#1a1c1e]">
-            <FileText className="w-5 h-5 text-[#003422]" />
-            بيانات النموذج الأساسية
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="title" className="font-semibold text-[#1a1c1e]">
-              عنوان النموذج / الاستمارة *
-            </Label>
+        <FormSection
+          title={
+            <span className="flex items-center gap-2">
+              <FileText className="w-5 h-5 text-[#003422]" />
+              بيانات النموذج الأساسية
+            </span>
+          }
+        >
+          <FormField label="عنوان النموذج / الاستمارة" htmlFor="title" required>
             <Input
               id="title"
               placeholder="مثال: استمارة حصر طلاب النقل الجامعي - الفصل الأول"
@@ -192,35 +193,27 @@ export default function NewFormPage() {
               onChange={(e) => setTitle(e.target.value)}
               required
             />
-          </div>
+          </FormField>
 
-          <div className="space-y-2">
-            <Label htmlFor="description" className="font-semibold text-[#1a1c1e]">
-              وصف الاستمارة والتعليمات (اختياري)
-            </Label>
-            <textarea
+          <FormField label="وصف الاستمارة والتعليمات" htmlFor="description">
+            <Textarea
               id="description"
               rows={3}
-              className="w-full rounded-lg border-0 bg-[#f3f3f6] p-3 text-sm outline-none focus:ring-2 focus:ring-[#003422]"
               placeholder="أدخل وصفاً توضيحياً أو إرشادات للطلاب والركاب أثناء تعبئة الاستمارة..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
-          </div>
+          </FormField>
 
-          <div className="space-y-2">
-            <Label htmlFor="purpose" className="font-semibold text-[#1a1c1e]">
-              الغرض من النموذج
-            </Label>
-            <select 
+          <FormField label="الغرض من النموذج" htmlFor="purpose">
+            <Select
               id="purpose"
               value={purposeType}
               onChange={(e) => setPurposeType(e.target.value)}
-              className="mb-2 flex h-10 w-full rounded-lg border-0 bg-[#f3f3f6] px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#003422]"
             >
               <option value="passenger_registration">نموذج تسجيل ركاب (مع بيانات أساسية)</option>
               <option value="other">نموذج مخصص (أغراض أخرى)</option>
-            </select>
+            </Select>
             {purposeType === "other" && (
               <Input 
                 value={customPurpose}
@@ -229,9 +222,9 @@ export default function NewFormPage() {
                 className="mt-2"
               />
             )}
-          </div>
+          </FormField>
 
-          <div className="flex items-center gap-3 pt-2">
+          <CheckboxField label="تفعيل النموذج فوراً لتلقي الإجابات العامة">
             <input
               type="checkbox"
               id="is_active"
@@ -239,14 +232,11 @@ export default function NewFormPage() {
               onChange={(e) => setIsActive(e.target.checked)}
               className="w-4 h-4 rounded border-[#c0c9c2] text-[#003422] focus:ring-[#003422]"
             />
-            <Label htmlFor="is_active" className="cursor-pointer text-sm font-semibold text-[#404943]">
-              تفعيل النموذج فوراً لتلقي الإجابات العامة
-            </Label>
-          </div>
-        </div>
+          </CheckboxField>
+        </FormSection>
 
         {/* Dynamic Fields Builder */}
-        <div className="rounded-2xl border border-transparent bg-white p-6 shadow-enterprise space-y-6">
+        <FormSection className="space-y-6">
           <div className="flex items-center justify-between pb-3 border-b border-[#eeeef0]">
             <div>
               <h3 className="font-bold text-[#1a1c1e] text-lg">الحقول الديناميكية الإضافية</h3>
@@ -273,21 +263,17 @@ export default function NewFormPage() {
                 className="flex flex-col gap-4 p-4 rounded-lg border border-[#e2e2e5] bg-[#f3f3f6]/50 sm:flex-row sm:items-center sm:justify-between"
               >
                 <div className="grid grid-cols-1 gap-3 flex-1 sm:grid-cols-12">
-                  <div className="sm:col-span-4">
-                    <Label className="text-xs text-[#404943] font-semibold mb-1 block">
-                      اسم الحقل (Field Label)
-                    </Label>
+                  <FormField label="اسم الحقل (Field Label)" className="sm:col-span-4">
                     <Input
                       placeholder="مثال: رقم القيد / الكلية"
                       value={field.field_label}
                       onChange={(e) => updateField(idx, "field_label", e.target.value)}
                     />
-                  </div>
+                  </FormField>
 
-                  <div className="sm:col-span-3">
-                    <Label className="text-xs text-[#404943] font-semibold mb-1 block">نوع الحقل</Label>
-                    <select
-                      className="h-10 w-full rounded-lg border-0 bg-white px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-[#003422]"
+                  <FormField label="نوع الحقل" className="sm:col-span-3">
+                    <Select
+                      className="bg-white"
                       value={field.field_type}
                       onChange={(e) => updateField(idx, "field_type", e.target.value as any)}
                     >
@@ -295,16 +281,13 @@ export default function NewFormPage() {
                       <option value="number">رقم (Number)</option>
                       <option value="select">قائمة منسدلة (Single Select)</option>
                       <option value="multiselect">خيارات متعددة (Multi Select)</option>
-                    </select>
-                  </div>
+                    </Select>
+                  </FormField>
 
                   {(field.field_type === "select" || field.field_type === "multiselect") && (
-                    <div className="sm:col-span-5">
-                      <Label className="text-xs text-[#404943] font-semibold mb-1 block">
-                        ربط بالقائمة المرجعية (Lookup Category)
-                      </Label>
-                      <select
-                        className="h-10 w-full rounded-lg border-0 bg-white px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-[#003422]"
+                    <FormField label="ربط بالقائمة المرجعية (Lookup Category)" className="sm:col-span-5">
+                      <Select
+                        className="bg-white"
                         value={field.lookup_type_id}
                         onChange={(e) => updateField(idx, "lookup_type_id", e.target.value)}
                       >
@@ -314,11 +297,11 @@ export default function NewFormPage() {
                             {t.category_code}
                           </option>
                         ))}
-                      </select>
-                    </div>
+                      </Select>
+                    </FormField>
                   )}
 
-                  <div className="sm:col-span-12 flex items-center gap-2 pt-1">
+                  <CheckboxField label="حقل إجباري التعبئة" className="sm:col-span-12">
                     <input
                       type="checkbox"
                       id={`req_${idx}`}
@@ -326,10 +309,7 @@ export default function NewFormPage() {
                       onChange={(e) => updateField(idx, "is_required", e.target.checked)}
                       className="w-4 h-4 rounded border-[#c0c9c2] text-[#003422] focus:ring-[#003422]"
                     />
-                    <Label htmlFor={`req_${idx}`} className="cursor-pointer text-xs font-medium text-[#404943]">
-                      حقل إجباري التعبئة
-                    </Label>
-                  </div>
+                  </CheckboxField>
                 </div>
 
                 <div className="flex items-center gap-1 border-t sm:border-t-0 sm:border-r border-[#e2e2e5] pt-3 sm:pt-0 sm:pr-3 justify-end">
@@ -366,7 +346,7 @@ export default function NewFormPage() {
               </div>
             ))}
           </div>
-        </div>
+        </FormSection>
       </form>
     </div>
   );

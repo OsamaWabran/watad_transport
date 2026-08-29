@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Select } from "@/components/ui/select";
+import { CheckboxField, FormField } from "@/components/ui/form-layout";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
 export default function FormBuilderPage() {
@@ -89,24 +90,20 @@ export default function FormBuilderPage() {
           <CardDescription>المعلومات الأساسية للنموذج</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label>عنوان النموذج</Label>
+          <FormField label="عنوان النموذج">
             <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="مثال: استمارة تسجيل الركاب 2026" />
-          </div>
-          <div className="space-y-2">
-            <Label>الوصف (اختياري)</Label>
+          </FormField>
+          <FormField label="الوصف">
             <Input value={description} onChange={(e) => setDescription(e.target.value)} placeholder="وصف قصير للنموذج" />
-          </div>
-          <div className="space-y-2">
-            <Label>الغرض من النموذج</Label>
-            <select
+          </FormField>
+          <FormField label="الغرض من النموذج">
+            <Select
               value={purposeType}
               onChange={(e) => setPurposeType(e.target.value)}
-              className="mb-2 flex h-10 w-full rounded-lg border-0 bg-[#f3f3f6] px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#003422]"
             >
               <option value="passenger_registration">نموذج تسجيل ركاب (مع بيانات أساسية)</option>
               <option value="other">نموذج مخصص (أغراض أخرى)</option>
-            </select>
+            </Select>
             {purposeType === "other" && (
               <Input 
                 value={customPurpose}
@@ -114,16 +111,16 @@ export default function FormBuilderPage() {
                 placeholder="أدخل الغرض من النموذج (مثال: تقييم خدمة، تسجيل سائق، إلخ...)"
               />
             )}
-          </div>
-          <div className="flex items-center space-x-2 space-x-reverse pt-2">
+          </FormField>
+          <CheckboxField label="النموذج مفعل" hint="يستقبل الاستجابات العامة فور إصدار الرابط.">
             <input 
               type="checkbox" 
               checked={isActive}
               onChange={(e) => setIsActive(e.target.checked)}
               id="form-active"
+              className="h-4 w-4 accent-[#003422]"
             />
-            <Label htmlFor="form-active">النموذج مفعل (يستقبل الاستجابات)</Label>
-          </div>
+          </CheckboxField>
         </CardContent>
       </Card>
 
@@ -146,54 +143,50 @@ export default function FormBuilderPage() {
               <h3 className="font-semibold text-[#404943]">حقل #{idx + 1}</h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>نص السؤال</Label>
+                <FormField label="نص السؤال">
                   <Input value={field.field_label} onChange={e => updateField(field.id, "field_label", e.target.value)} placeholder="مثال: ما هو تخصصك؟" />
-                </div>
+                </FormField>
                 
-                <div className="space-y-2">
-                  <Label>نوع الحقل</Label>
-                  <select 
+                <FormField label="نوع الحقل">
+                  <Select 
                     value={field.field_type}
                     onChange={e => updateField(field.id, "field_type", e.target.value)}
-                    className="flex h-10 w-full rounded-lg border-0 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#003422]"
+                    className="bg-white"
                   >
                     <option value="text">نص قصير</option>
                     <option value="number">رقم</option>
                     <option value="select">قائمة منسدلة (اختيار من متعدد)</option>
-                  </select>
-                </div>
+                  </Select>
+                </FormField>
 
-                <div className="space-y-2">
-                  <Label>المفتاح البرمجي (JSON Key)</Label>
+                <FormField label="المفتاح البرمجي (JSON Key)">
                   <Input value={field.json_key_mapping} onChange={e => updateField(field.id, "json_key_mapping", e.target.value)} placeholder="مثال: major_id" />
-                </div>
+                </FormField>
 
                 {field.field_type === "select" && (
-                  <div className="space-y-2">
-                    <Label>مصدر القائمة (Lookup Type)</Label>
-                    <select 
+                  <FormField label="مصدر القائمة (Lookup Type)">
+                    <Select 
                       value={field.lookup_type_id}
                       onChange={e => updateField(field.id, "lookup_type_id", e.target.value)}
-                      className="flex h-10 w-full rounded-lg border-0 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#003422]"
+                      className="bg-white"
                     >
                       <option value="">اختر مصدر البيانات...</option>
                       {lookupTypes.map((lt: any) => (
                         <option key={lt.id} value={lt.id}>{lt.category_name}</option>
                       ))}
-                    </select>
-                  </div>
+                    </Select>
+                  </FormField>
                 )}
 
-                <div className="flex items-center space-x-2 space-x-reverse pt-8">
+                <CheckboxField label="حقل إلزامي">
                   <input 
                     type="checkbox" 
                     checked={field.is_required}
                     onChange={e => updateField(field.id, "is_required", e.target.checked)}
                     id={`req-${field.id}`}
+                    className="h-4 w-4 accent-[#003422]"
                   />
-                  <Label htmlFor={`req-${field.id}`}>حقل إلزامي</Label>
-                </div>
+                </CheckboxField>
               </div>
             </div>
           ))}

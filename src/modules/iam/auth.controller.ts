@@ -4,6 +4,18 @@ import { successResponse, handleApiError, AppError } from "@/lib/api-response";
 import { getTenantIdFromRequest, requireTenantId } from "@/lib/tenant";
 
 export class AuthController {
+  private static getIsSuperAdmin(request: NextRequest): boolean {
+    const rolesHeader = request.headers.get("x-user-roles");
+    if (!rolesHeader) return false;
+
+    try {
+      const roles = JSON.parse(rolesHeader);
+      return Array.isArray(roles) && roles.includes("super_admin");
+    } catch {
+      return false;
+    }
+  }
+
   /**
    * POST /api/v1/auth/login
    */
@@ -24,11 +36,14 @@ export class AuthController {
     try {
       const body = await request.json();
       const headerTenantId = getTenantIdFromRequest(request);
+      const isSuperAdmin = this.getIsSuperAdmin(request);
 
       const isValidUuid = (id: any) => typeof id === "string" && id.trim().length === 36;
 
       let tenantId: string | null = null;
-      if (isValidUuid(body.tenant_id)) {
+      if (!isSuperAdmin && isValidUuid(headerTenantId)) {
+        tenantId = headerTenantId;
+      } else if (isSuperAdmin && isValidUuid(body.tenant_id)) {
         tenantId = body.tenant_id.trim();
       } else if (isValidUuid(headerTenantId)) {
         tenantId = headerTenantId;
@@ -56,17 +71,7 @@ export class AuthController {
     try {
       const url = new URL(request.url);
       const queryTenantId = url.searchParams.get("tenant_id");
-      const rolesHeader = request.headers.get("x-user-roles");
-
-      let isSuperAdmin = false;
-      if (rolesHeader) {
-        try {
-          const roles = JSON.parse(rolesHeader);
-          if (Array.isArray(roles) && roles.includes("super_admin")) {
-            isSuperAdmin = true;
-          }
-        } catch {}
-      }
+      const isSuperAdmin = this.getIsSuperAdmin(request);
 
       const isValidUuid = (id: any) => typeof id === "string" && id.trim().length === 36;
 
@@ -110,7 +115,8 @@ export class AuthController {
   static async updateUser(request: NextRequest, userId: string) {
     try {
       const body = await request.json();
-      const tenantId = body.tenant_id || getTenantIdFromRequest(request);
+      const isSuperAdmin = this.getIsSuperAdmin(request);
+      const tenantId = isSuperAdmin ? body.tenant_id || getTenantIdFromRequest(request) : getTenantIdFromRequest(request);
       if (!tenantId) throw new Error("سياق المؤسسة مطلوب");
 
       const updated = await AuthService.updateUser(userId, tenantId, body);
@@ -126,7 +132,8 @@ export class AuthController {
   static async deleteUser(request: NextRequest, userId: string) {
     try {
       const body = await request.json().catch(() => ({}));
-      const tenantId = body.tenant_id || getTenantIdFromRequest(request);
+      const isSuperAdmin = this.getIsSuperAdmin(request);
+      const tenantId = isSuperAdmin ? body.tenant_id || getTenantIdFromRequest(request) : getTenantIdFromRequest(request);
       if (!tenantId) throw new Error("سياق المؤسسة مطلوب");
 
       await AuthService.deleteUser(userId, tenantId);

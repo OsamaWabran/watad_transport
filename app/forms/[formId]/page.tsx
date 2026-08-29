@@ -2,6 +2,9 @@
 
 import { use, useEffect, useState } from "react";
 import { CheckCircle, Send, Bus, AlertCircle } from "lucide-react";
+import { CheckboxField, FormField } from "@/components/ui/form-layout";
+import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
 
 interface LookupValueItem {
   id: string;
@@ -270,36 +273,28 @@ export default function PublicFormSubmissionPage({
               </div>
             )}
 
-            <div className="space-y-1.5">
-              <label className="block text-xs font-bold text-[#404943]">
-                الاسم الثلاثي للطالب / الراكب *
-              </label>
-              <input
+            <FormField label="الاسم الثلاثي للطالب / الراكب" required>
+              <Input
                 type="text"
                 placeholder="أدخل الاسم الثلاثي بالكامل..."
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                className="h-11 w-full rounded-lg border-0 bg-[#f3f3f6] px-3.5 text-sm outline-none focus:ring-2 focus:ring-[#003422]"
                 required
               />
-            </div>
+            </FormField>
 
-            <div className="space-y-1.5">
-              <label className="block text-xs font-bold text-[#404943]">
-                رقم الجوال / التواصل *
-              </label>
-              <input
+            <FormField label="رقم الجوال / التواصل" required>
+              <Input
                 type="tel"
                 placeholder="05xxxxxxxx"
                 value={contactNumber}
                 onChange={(e) => setContactNumber(e.target.value)}
-                className="dir-ltr h-11 w-full rounded-lg border-0 bg-[#f3f3f6] px-3.5 text-right text-sm outline-none focus:ring-2 focus:ring-[#003422]"
+                className="dir-ltr text-right"
                 required
               />
-            </div>
+            </FormField>
 
-            <div className="space-y-1.5">
-              <label className="block text-xs font-bold text-[#404943]">الجنس *</label>
+            <FormField label="الجنس" required>
               <div className="flex items-center gap-6 pt-1">
                 <label className="flex cursor-pointer items-center gap-2 text-sm font-semibold text-[#1a1c1e]">
                   <input
@@ -324,16 +319,12 @@ export default function PublicFormSubmissionPage({
                   أنثى
                 </label>
               </div>
-            </div>
+            </FormField>
 
-            <div className="space-y-1.5 border-t border-[#eeeef0] pt-2">
-              <label className="block text-xs font-bold text-[#404943]">
-                محطة الانطلاق (اختياري)
-              </label>
-              <select
+            <FormField label="محطة الانطلاق" className="border-t border-[#eeeef0] pt-4">
+              <Select
                 value={startStation}
                 onChange={(e) => setStartStation(e.target.value)}
-                className="h-11 w-full rounded-lg border-0 bg-[#f3f3f6] px-3.5 text-sm outline-none focus:ring-2 focus:ring-[#003422]"
               >
                 <option value="">-- اختر المحطة --</option>
                 {stations
@@ -343,17 +334,13 @@ export default function PublicFormSubmissionPage({
                     {st.name}
                   </option>
                 ))}
-              </select>
-            </div>
+              </Select>
+            </FormField>
 
-            <div className="space-y-1.5">
-              <label className="block text-xs font-bold text-[#404943]">
-                محطة الوصول (اختياري)
-              </label>
-              <select
+            <FormField label="محطة الوصول">
+              <Select
                 value={endStation}
                 onChange={(e) => setEndStation(e.target.value)}
-                className="h-11 w-full rounded-lg border-0 bg-[#f3f3f6] px-3.5 text-sm outline-none focus:ring-2 focus:ring-[#003422]"
               >
                 <option value="">-- اختر المحطة --</option>
                 {stations
@@ -363,8 +350,8 @@ export default function PublicFormSubmissionPage({
                     {st.name}
                   </option>
                 ))}
-              </select>
-            </div>
+              </Select>
+            </FormField>
           </div>
           )}
 
@@ -380,41 +367,35 @@ export default function PublicFormSubmissionPage({
                 const options = field.lookup_type?.lookup_values || [];
 
                 return (
-                  <div key={field.id} className="space-y-2">
-                    <label className="block text-xs font-bold text-[#404943]">
-                      {field.field_label} {isReq && <span className="text-red-500">*</span>}
-                    </label>
+                  <FormField key={field.id} label={field.field_label} required={isReq}>
 
                     {/* Text field */}
                     {field.field_type === "text" && (
-                      <input
+                      <Input
                         type="text"
                         placeholder={`أدخل ${field.field_label}...`}
                         value={answers[field.field_label] || ""}
                         onChange={(e) => handleAnswerChange(field.field_label, e.target.value)}
-                        className="h-11 w-full rounded-lg border-0 bg-[#f3f3f6] px-3.5 text-sm outline-none focus:ring-2 focus:ring-[#003422]"
                         required={isReq}
                       />
                     )}
 
                     {/* Number field */}
                     {field.field_type === "number" && (
-                      <input
+                      <Input
                         type="number"
                         placeholder="0"
                         value={answers[field.field_label] || ""}
                         onChange={(e) => handleAnswerChange(field.field_label, e.target.value)}
-                        className="h-11 w-full rounded-lg border-0 bg-[#f3f3f6] px-3.5 text-sm outline-none focus:ring-2 focus:ring-[#003422]"
                         required={isReq}
                       />
                     )}
 
                     {/* Select field */}
                     {field.field_type === "select" && (
-                      <select
+                      <Select
                         value={answers[field.field_label] || ""}
                         onChange={(e) => handleAnswerChange(field.field_label, e.target.value)}
-                        className="h-11 w-full rounded-lg border-0 bg-[#f3f3f6] px-3.5 text-sm outline-none focus:ring-2 focus:ring-[#003422]"
                         required={isReq}
                       >
                         <option value="">-- اختر خياراً --</option>
@@ -423,7 +404,7 @@ export default function PublicFormSubmissionPage({
                             {opt.value_name}
                           </option>
                         ))}
-                      </select>
+                      </Select>
                     )}
 
                     {/* MultiSelect field */}
@@ -435,21 +416,20 @@ export default function PublicFormSubmissionPage({
                           options.map((opt) => {
                             const isChecked = (answers[field.field_label] || []).includes(opt.value_name);
                             return (
-                              <label key={opt.id} className="flex cursor-pointer items-center gap-2 text-sm text-[#1a1c1e]">
+                              <CheckboxField key={opt.id} label={opt.value_name}>
                                 <input
                                   type="checkbox"
                                   checked={isChecked}
                                   onChange={() => handleMultiSelectToggle(field.field_label, opt.value_name)}
                                   className="h-4 w-4 rounded border-[#c0c9c2] accent-[#003422]"
                                 />
-                                <span>{opt.value_name}</span>
-                              </label>
+                              </CheckboxField>
                             );
                           })
                         )}
                       </div>
                     )}
-                  </div>
+                  </FormField>
                 );
               })}
             </div>

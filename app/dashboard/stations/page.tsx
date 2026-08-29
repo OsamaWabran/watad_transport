@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import { Plus, Search, MapPin, Edit, Trash2, Shield, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Select } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { FormBody, FormField, FormGrid } from "@/components/ui/form-layout";
 import {
   Dialog,
   DialogContent,
@@ -261,9 +262,9 @@ export default function StationsPage() {
             <DialogTitle>{editId ? "تعديل بيانات المحطة" : "إضافة محطة جديدة"}</DialogTitle>
           </DialogHeader>
 
-          <form onSubmit={handleSaveStation} className="space-y-4 py-2">
-            <div className="space-y-2">
-              <Label htmlFor="name">اسم المحطة *</Label>
+          <form onSubmit={handleSaveStation}>
+            <FormBody>
+              <FormField label="اسم المحطة" htmlFor="name" required>
               <Input
                 id="name"
                 placeholder="أدخل اسم المحطة..."
@@ -271,11 +272,10 @@ export default function StationsPage() {
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 required
               />
-            </div>
+              </FormField>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="lat">خط العرض (Lat) *</Label>
+              <FormGrid>
+                <FormField label="خط العرض (Lat)" htmlFor="lat" required>
                 <Input
                   id="lat"
                   type="number"
@@ -286,9 +286,8 @@ export default function StationsPage() {
                   required
                   className="dir-ltr text-right"
                 />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="lng">خط الطول (Lng) *</Label>
+                </FormField>
+                <FormField label="خط الطول (Lng)" htmlFor="lng" required>
                 <Input
                   id="lng"
                   type="number"
@@ -299,13 +298,11 @@ export default function StationsPage() {
                   required
                   className="dir-ltr text-right"
                 />
-              </div>
-            </div>
+                </FormField>
+              </FormGrid>
 
-            <div className="space-y-2">
-              <Label>نوع المحطة *</Label>
-              <select
-                className="w-full rounded-lg border border-[#c0c9c2] bg-white p-2 text-sm outline-none focus:ring-2 focus:ring-[#003422]"
+              <FormField label="نوع المحطة" required>
+              <Select
                 value={formData.type}
                 onChange={(e) => setFormData({ ...formData, type: e.target.value as any })}
                 required
@@ -313,12 +310,11 @@ export default function StationsPage() {
                 <option value="both">انطلاق ووصول</option>
                 <option value="pickup">انطلاق فقط</option>
                 <option value="dropoff">وصول فقط</option>
-              </select>
-            </div>
+              </Select>
+              </FormField>
+            </FormBody>
 
-
-
-            <DialogFooter className="mt-4 gap-2">
+            <DialogFooter className="px-6 pb-6">
               <Button type="button" variant="outline" onClick={() => setFormModalOpen(false)}>
                 إلغاء
               </Button>

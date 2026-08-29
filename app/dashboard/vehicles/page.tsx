@@ -24,8 +24,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
+import { FormBody, FormField } from "@/components/ui/form-layout";
 import {
   Table,
   TableBody,
@@ -221,20 +221,17 @@ export default function VehiclesPage() {
             <DialogTitle>إضافة مركبة</DialogTitle>
             <DialogDescription>واجهة الإدخال جاهزة للربط مع API المركبات عند تفعيله.</DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 p-6">
-            <div>
-              <Label className="mb-1 block">رقم اللوحة</Label>
+          <FormBody>
+            <FormField label="رقم اللوحة">
               <Input placeholder="مثال: أ ب ج 2147" />
-            </div>
-            <div>
-              <Label className="mb-1 block">نوع المركبة</Label>
+            </FormField>
+            <FormField label="نوع المركبة">
               <Input placeholder="حافلة كبيرة، متوسطة، مركبة صغيرة..." />
-            </div>
-            <div>
-              <Label className="mb-1 block">السعة</Label>
+            </FormField>
+            <FormField label="السعة">
               <Input type="number" min={1} placeholder="48" />
-            </div>
-          </div>
+            </FormField>
+          </FormBody>
           <DialogFooter className="px-6 pb-6">
             <Button type="button" variant="ghost" onClick={() => setOpen(false)}>إلغاء</Button>
             <Button type="button" className="bg-[#003422] text-white hover:bg-[#0f4c36]">حفظ</Button>

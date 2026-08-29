@@ -29,8 +29,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
+import { FormBody, FormField, FormGrid } from "@/components/ui/form-layout";
 import {
   Table,
   TableBody,
@@ -62,6 +62,8 @@ type ModalMode = "create" | "edit" | "delete" | null;
 export default function UsersPage() {
   const { data: session } = useSession();
   const sessionTenantId = session?.user?.tenant_id;
+  const userRoles = ((session?.user as any)?.roles as string[]) || [];
+  const isSuperAdmin = userRoles.includes("super_admin");
 
   const [users, setUsers] = useState<UserItem[]>([]);
   const [tenants, setTenants] = useState<TenantItem[]>([]);
@@ -88,17 +90,23 @@ export default function UsersPage() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [tenantsRes, usersRes] = await Promise.allSettled([
-        fetch("/api/v1/tenants").then((r) => r.json()),
-        fetch("/api/v1/users").then((r) => r.json()),
-      ]);
+      const usersRequest = fetch("/api/v1/users").then((r) => r.json());
+      const tenantsRequest = isSuperAdmin
+        ? fetch("/api/v1/tenants").then((r) => r.json())
+        : Promise.resolve({ success: true, data: [] });
 
-      if (
-        tenantsRes.status === "fulfilled" &&
-        tenantsRes.value?.success &&
-        Array.isArray(tenantsRes.value.data)
-      ) {
-        setTenants(tenantsRes.value.data);
+      const [tenantsRes, usersRes] = await Promise.allSettled([tenantsRequest, usersRequest]);
+
+      if (isSuperAdmin) {
+        if (
+          tenantsRes.status === "fulfilled" &&
+          tenantsRes.value?.success &&
+          Array.isArray(tenantsRes.value.data)
+        ) {
+          setTenants(tenantsRes.value.data);
+        } else {
+          setTenants([]);
+        }
       } else {
         setTenants([]);
       }
@@ -121,7 +129,7 @@ export default function UsersPage() {
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [isSuperAdmin]);
 
   // ─── Open Modals ─────────────────────────────────────────────
   const openCreate = () => {
@@ -316,7 +324,7 @@ export default function UsersPage() {
 
   // ─── Shared Form Fields ───────────────────────────────────────
   const renderFormFields = (isEdit = false) => (
-    <div className="p-6 space-y-4">
+    <FormBody>
       {errorMsg && (
         <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2">
           <AlertCircle className="w-4 h-4 shrink-0" />
@@ -324,16 +332,14 @@ export default function UsersPage() {
         </div>
       )}
 
-      {/* Tenant – only for create */}
-      {!isEdit && (
-        <div>
-          <Label className="mb-1 block text-[#404943]">المؤسسة التابع لها *</Label>
-          {tenants.length > 0 ? (
+      <FormGrid>
+        {/* Tenant – only for create */}
+        {!isEdit && isSuperAdmin && (
+          <FormField label="المؤسسة التابع لها" required className="sm:col-span-2">
             <Select
               required
               value={formData.tenant_id}
               onChange={(e) => setFormData({ ...formData, tenant_id: e.target.value })}
-              className="bg-[#f3f3f6]"
             >
               <option value="">-- اختر المؤسسة --</option>
               {tenants.map((t) => (
@@ -342,86 +348,76 @@ export default function UsersPage() {
                 </option>
               ))}
             </Select>
-          ) : (
-            <div className="p-2.5 rounded-lg bg-[#eeeef0] border border-[#e2e2e5] text-xs text-[#404943] font-medium">
-              سيتم استخدام المؤسسة الحالية تلقائياً
-            </div>
-          )}
-        </div>
-      )}
+          </FormField>
+        )}
 
-      {/* Username – only for create */}
-      {!isEdit && (
-        <div>
-          <Label className="mb-1 block text-[#404943]">اسم المستخدم (Username) *</Label>
+        {/* Username – only for create */}
+        {!isEdit && (
+          <FormField label="اسم المستخدم (Username)" required>
           <Input
             type="text"
             required
             placeholder="مثال: ksu_admin"
             value={formData.user_name}
             onChange={(e) => setFormData({ ...formData, user_name: e.target.value })}
-            className="bg-[#f3f3f6]"
           />
-        </div>
-      )}
+          </FormField>
+        )}
 
-      {/* Full Name */}
-      <div>
-        <Label className="mb-1 block text-[#404943]">الاسم الكامل *</Label>
+        {/* Full Name */}
+        <FormField label="الاسم الكامل" required>
         <Input
           type="text"
           required
           placeholder="مثال: محمد عبدالله السلمان"
           value={formData.full_name}
           onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-          className="bg-[#f3f3f6]"
         />
-      </div>
+        </FormField>
 
-      {/* Phone */}
-      <div>
-        <Label className="mb-1 block text-[#404943]">رقم الهاتف *</Label>
+        {/* Phone */}
+        <FormField label="رقم الهاتف" required>
         <Input
           type="tel"
           required
           placeholder="0501234567"
           value={formData.phone_number}
           onChange={(e) => setFormData({ ...formData, phone_number: e.target.value })}
-          className="bg-[#f3f3f6] font-mono"
+          className="font-mono"
         />
-      </div>
+        </FormField>
 
-      {/* Password */}
-      <div>
-        <Label className="mb-1 block text-[#404943]">
-          {isEdit ? "كلمة المرور الجديدة (اتركها فارغة للإبقاء عليها)" : "كلمة المرور *"}
-        </Label>
+        {/* Password */}
+        <FormField
+          label={isEdit ? "كلمة المرور الجديدة" : "كلمة المرور"}
+          required={!isEdit}
+          hint={isEdit ? "اتركها فارغة للإبقاء على كلمة المرور الحالية." : undefined}
+          className={isEdit ? "sm:col-span-2" : undefined}
+        >
         <Input
           type="password"
           required={!isEdit}
           placeholder="••••••••"
           value={formData.password}
           onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-          className="bg-[#f3f3f6]"
         />
-      </div>
+        </FormField>
 
-      {/* Role – only for create */}
-      {!isEdit && (
-        <div>
-          <Label className="mb-1 block text-[#404943]">الصلاحية / الدور *</Label>
+        {/* Role – only for create */}
+        {!isEdit && (
+          <FormField label="الصلاحية / الدور" required>
           <Select
             value={formData.role}
             onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-            className="bg-[#f3f3f6]"
           >
             <option value="admin">مدير مؤسسة (Admin)</option>
             <option value="driver">سائق حافلة (Driver)</option>
             <option value="user">مستخدم عادي (User)</option>
           </Select>
-        </div>
-      )}
-    </div>
+          </FormField>
+        )}
+      </FormGrid>
+    </FormBody>
   );
 
   return (

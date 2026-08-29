@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import {
   Bus,
   Building2,
-  CircleDot,
   FileText,
   LayoutDashboard,
   MapPin,
@@ -29,7 +28,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar,
 } from "@/components/ui/sidebar";
 
 const superAdminNavigation = [
@@ -42,7 +40,7 @@ const superAdminNavigation = [
 ];
 
 const tenantAdminNavigation = [
-  { name: "مركز التحكم", href: "/dashboard", icon: LayoutDashboard, group: "نظرة عامة" },
+  { name: "إدارة المستخدمين", href: "/dashboard/users", icon: Users, group: "إدارة المؤسسة" },
   { name: "الركاب والطلاب", href: "/dashboard/passengers", icon: UserCheck, group: "تشغيل النقل" },
   { name: "الطلبات المعلقة", href: "/dashboard/passengers/requests", icon: Users, group: "تشغيل النقل" },
   { name: "أسطول المركبات", href: "/dashboard/vehicles", icon: Bus, group: "تشغيل النقل" },
@@ -65,7 +63,6 @@ type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
 
 export function AppSidebar({ user, onSignOut, ...props }: AppSidebarProps) {
   const pathname = usePathname();
-  const { setOpen } = useSidebar();
   const [searchQuery, setSearchQuery] = React.useState("");
 
   const currentNavigation = user.isSuperAdmin ? superAdminNavigation : tenantAdminNavigation;
@@ -93,24 +90,24 @@ export function AppSidebar({ user, onSignOut, ...props }: AppSidebarProps) {
 
   return (
     <Sidebar side="right" collapsible="icon" variant="inset" className="border-l border-[#c0c9c2]/70 bg-white text-[#1a1c1e]" {...props}>
-      <SidebarHeader className="gap-5 border-b border-[#e2e2e5] p-4">
-        <div className="flex w-full items-start justify-between gap-3">
+      <SidebarHeader className="gap-5 border-b border-[#e2e2e5] p-4 group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:gap-3 group-data-[collapsible=icon]:px-2 group-data-[collapsible=icon]:py-3">
+        <div className="flex w-full items-start justify-between gap-3 group-data-[collapsible=icon]:justify-center">
           <div className="min-w-0">
-            <div className="flex items-center gap-3 text-base font-bold text-[#003422]">
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#003422] text-white shadow-enterprise">
+            <div className="flex items-center gap-3 text-base font-bold text-[#003422] group-data-[collapsible=icon]:justify-center">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#003422] text-white shadow-enterprise group-data-[collapsible=icon]:h-9 group-data-[collapsible=icon]:w-9">
                 <Bus className="h-5 w-5" />
               </span>
-              <span>مسارات SaaS</span>
+              <span className="group-data-[collapsible=icon]:hidden">مسارات SaaS</span>
             </div>
-            <p className="mt-2 truncate text-xs text-[#707973]">
+            <p className="mt-2 truncate text-xs text-[#707973] group-data-[collapsible=icon]:hidden">
               {user.tenantLabel}
             </p>
           </div>
-          <Badge variant="emerald" shape="pill" className="shrink-0 border-[#99d3b6]/70 bg-[#e7f8ef] text-[#005228]">
+          <Badge variant="emerald" shape="pill" className="shrink-0 border-[#99d3b6]/70 bg-[#e7f8ef] text-[#005228] group-data-[collapsible=icon]:hidden">
             {user.role}
           </Badge>
         </div>
-        <div className="relative">
+        <div className="relative group-data-[collapsible=icon]:hidden">
           <Search className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-[#707973]" />
           <SidebarInput
             placeholder="بحث في القوائم..."
@@ -123,12 +120,12 @@ export function AppSidebar({ user, onSignOut, ...props }: AppSidebarProps) {
 
       <SidebarContent>
         {Object.entries(groupedNavigation).map(([group, items]) => (
-          <SidebarGroup key={group} className="px-3 py-3">
-            <div className="mb-2 px-2 text-xs font-bold text-[#707973]">
+          <SidebarGroup key={group} className="px-3 py-3 group-data-[collapsible=icon]:px-2 group-data-[collapsible=icon]:py-1">
+            <div className="mb-2 px-2 text-xs font-bold text-[#707973] group-data-[collapsible=icon]:hidden">
               {group}
             </div>
             <SidebarGroupContent>
-              <SidebarMenu className="gap-1">
+              <SidebarMenu className="gap-1 group-data-[collapsible=icon]:items-center">
                 {items.map((item) => {
                   const isActive = activeItem.href === item.href;
                   const Icon = item.icon;
@@ -137,8 +134,9 @@ export function AppSidebar({ user, onSignOut, ...props }: AppSidebarProps) {
                     <SidebarMenuItem key={item.href}>
                       <SidebarMenuButton
                         isActive={isActive}
+                        tooltip={{ children: item.name, side: "left" }}
                         render={<Link href={item.href} />}
-                        className="h-11 rounded-xl border-r-4 border-transparent text-right text-[#404943] hover:bg-[#f3f3f6] hover:text-[#003422] data-active:border-[#003422] data-active:bg-[#b4efd1]/55 data-active:text-[#005228]"
+                        className="h-11 rounded-xl border-r-4 border-transparent text-right text-[#404943] hover:bg-[#f3f3f6] hover:text-[#003422] data-active:border-[#003422] data-active:bg-[#b4efd1]/55 data-active:text-[#005228] group-data-[collapsible=icon]:h-9! group-data-[collapsible=icon]:w-9! group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:border-r-0"
                       >
                         <Icon />
                         <span>{item.name}</span>
@@ -152,15 +150,15 @@ export function AppSidebar({ user, onSignOut, ...props }: AppSidebarProps) {
         ))}
       </SidebarContent>
 
-      <div className="mx-4 mb-4 rounded-2xl bg-[#003422] p-4 text-white shadow-enterprise">
-        <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-lg bg-white/15">
+      <div className="mx-4 mb-4 rounded-2xl bg-[#003422] p-4 text-white shadow-enterprise group-data-[collapsible=icon]:mx-2 group-data-[collapsible=icon]:mb-3 group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:h-9 group-data-[collapsible=icon]:w-9 group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:rounded-xl group-data-[collapsible=icon]:p-0">
+        <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-lg bg-white/15 group-data-[collapsible=icon]:mb-0 group-data-[collapsible=icon]:bg-transparent">
           <Bus className="h-4 w-4" />
         </div>
-        <p className="text-sm font-bold">تطبيق الجوال</p>
-        <p className="mt-1 text-xs text-white/75">إدارة أسرع للرحلات والموافقات</p>
+        <p className="text-sm font-bold group-data-[collapsible=icon]:hidden">تطبيق الجوال</p>
+        <p className="mt-1 text-xs text-white/75 group-data-[collapsible=icon]:hidden">إدارة أسرع للرحلات والموافقات</p>
       </div>
 
-      <SidebarFooter className="border-t border-[#e2e2e5] p-2">
+      <SidebarFooter className="border-t border-[#e2e2e5] p-2 group-data-[collapsible=icon]:items-center">
         <NavUser user={user} onSignOut={onSignOut} />
       </SidebarFooter>
     </Sidebar>

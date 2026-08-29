@@ -6,7 +6,8 @@ import { AlertCircle, Bus, CheckCircle2, Send } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Select } from "@/components/ui/select";
+import { FormField, FormSection } from "@/components/ui/form-layout";
 
 export default function PublicFormPage() {
   const params = useParams();
@@ -137,63 +138,41 @@ export default function PublicFormPage() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {form?.purpose === "passenger_registration" && (
-            <section className="space-y-4 rounded-2xl border border-transparent bg-white p-6 shadow-enterprise">
-              <h2 className="border-b border-[#eeeef0] pb-2 text-base font-extrabold text-[#1a1c1e]">
-                البيانات الأساسية
-              </h2>
-              <div className="space-y-2">
-                <Label className="text-[#404943]">
-                  الاسم الرباعي <span className="text-red-500">*</span>
-                </Label>
+            <FormSection title="البيانات الأساسية">
+              <FormField label="الاسم الرباعي" required>
                 <Input
                   required
                   value={formData.full_name}
                   onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-                  className="border-0 bg-[#f3f3f6] focus-visible:ring-[#003422]"
                 />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-[#404943]">
-                  رقم الجوال <span className="text-red-500">*</span>
-                </Label>
+              </FormField>
+              <FormField label="رقم الجوال" required>
                 <Input
                   required
                   type="tel"
                   value={formData.contact_number}
                   onChange={(e) => setFormData({ ...formData, contact_number: e.target.value })}
-                  className="border-0 bg-[#f3f3f6] focus-visible:ring-[#003422]"
                 />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-[#404943]">
-                  الجنس <span className="text-red-500">*</span>
-                </Label>
-                <select
-                  className="h-10 w-full rounded-lg border-0 bg-[#f3f3f6] px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#003422]"
+              </FormField>
+              <FormField label="الجنس" required>
+                <Select
                   value={formData.gender}
                   onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
                 >
                   <option value="male">ذكر</option>
                   <option value="female">أنثى</option>
-                </select>
-              </div>
-            </section>
+                </Select>
+              </FormField>
+            </FormSection>
           )}
 
           {form?.form_fields?.length > 0 && (
-            <section className="space-y-4 rounded-2xl border border-transparent bg-white p-6 shadow-enterprise">
-              <h2 className="border-b border-[#eeeef0] pb-2 text-base font-extrabold text-[#1a1c1e]">
-                تفاصيل إضافية
-              </h2>
+            <FormSection title="تفاصيل إضافية" className="space-y-4">
               {form.form_fields.map((field: any) => (
-                <div key={field.id} className="space-y-2">
-                  <Label className="text-[#404943]">
-                    {field.field_label} {field.is_required && <span className="text-red-500">*</span>}
-                  </Label>
+                <FormField key={field.id} label={field.field_label} required={field.is_required}>
                   {field.field_type === "text" && (
                     <Input
                       required={field.is_required}
-                      className="border-0 bg-[#f3f3f6] focus-visible:ring-[#003422]"
                       onChange={(e) => setDynamicData({ ...dynamicData, [field.json_key_mapping]: e.target.value })}
                     />
                   )}
@@ -201,14 +180,12 @@ export default function PublicFormPage() {
                     <Input
                       type="number"
                       required={field.is_required}
-                      className="border-0 bg-[#f3f3f6] focus-visible:ring-[#003422]"
                       onChange={(e) => setDynamicData({ ...dynamicData, [field.json_key_mapping]: Number(e.target.value) })}
                     />
                   )}
                   {field.field_type === "select" && (
-                    <select
+                    <Select
                       required={field.is_required}
-                      className="h-10 w-full rounded-lg border-0 bg-[#f3f3f6] px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#003422]"
                       onChange={(e) => setDynamicData({ ...dynamicData, [field.json_key_mapping]: e.target.value })}
                     >
                       <option value="">اختر...</option>
@@ -217,11 +194,11 @@ export default function PublicFormPage() {
                           {val.value_name}
                         </option>
                       ))}
-                    </select>
+                    </Select>
                   )}
-                </div>
+                </FormField>
               ))}
-            </section>
+            </FormSection>
           )}
 
           <Button type="submit" className="h-12 w-full rounded-xl bg-[#003422] text-base font-bold text-white shadow-enterprise hover:bg-[#0f4c36]">

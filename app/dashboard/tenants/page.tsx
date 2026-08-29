@@ -30,8 +30,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
+import { FormBody, FormField, FormGrid } from "@/components/ui/form-layout";
 import {
   Table,
   TableBody,
@@ -340,29 +340,29 @@ export default function TenantsPage() {
               <X className="w-5 h-5" />
             </Button>
           </DialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-4 p-6">
-            <div>
-              <Label className="mb-1 block">اسم المؤسسة *</Label>
+          <form onSubmit={handleSubmit}>
+            <FormBody>
+              <FormGrid>
+                <FormField label="اسم المؤسسة" required>
               <Input required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
-            </div>
-            <div>
-              <Label className="mb-1 block">كود المؤسسة *</Label>
+                </FormField>
+                <FormField label="كود المؤسسة" required>
               <Input required disabled={Boolean(editingTenant)} value={formData.code} onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })} className="font-mono" />
-            </div>
-            <div>
-              <Label className="mb-1 block">نوع المؤسسة *</Label>
+                </FormField>
+                <FormField label="نوع المؤسسة" required>
               <Select value={formData.type} onChange={(e) => setFormData({ ...formData, type: e.target.value as TenantType })}>
                 <option value="university">جامعة / أكاديمية</option>
                 <option value="company">شركة / مؤسسة خاصة</option>
                 <option value="hospital">مستشفى / قطاع صحي</option>
                 <option value="other">أخرى</option>
               </Select>
-            </div>
-            <div>
-              <Label className="mb-1 block">رابط الشعار</Label>
+                </FormField>
+                <FormField label="رابط الشعار">
               <Input type="url" value={formData.logo} onChange={(e) => setFormData({ ...formData, logo: e.target.value })} />
-            </div>
-            <DialogFooter>
+                </FormField>
+              </FormGrid>
+            </FormBody>
+            <DialogFooter className="px-6 pb-6">
               <Button type="button" variant="ghost" onClick={closeForm}>إلغاء</Button>
               <Button type="submit" disabled={submitting} className="bg-[#003422] text-white hover:bg-[#0f4c36]">
                 {submitting ? "جاري الحفظ..." : "حفظ"}

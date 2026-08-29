@@ -39,26 +39,28 @@ export function NavUser({
   onSignOut: () => void
   compact?: boolean
 }) {
-  const { isMobile } = useSidebar()
+  const { isMobile, state } = useSidebar()
+  const isCollapsed = state === "collapsed" && !isMobile
 
   return (
-    <SidebarMenu>
+    <SidebarMenu className="group-data-[collapsible=icon]:items-center">
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger
             render={
               <SidebarMenuButton
                 size="lg"
-                className="rounded-xl text-[#404943] data-open:bg-[#e7f8ef] data-open:text-[#005228] hover:bg-[#f3f3f6]"
+                tooltip={{ children: user.name, side: "left" }}
+                className="rounded-xl text-[#404943] data-open:bg-[#e7f8ef] data-open:text-[#005228] hover:bg-[#f3f3f6] group-data-[collapsible=icon]:h-9! group-data-[collapsible=icon]:w-9! group-data-[collapsible=icon]:justify-center"
               />
             }
           >
-            <Avatar className="h-8 w-8 rounded-lg border border-[#99d3b6] bg-[#b4efd1] text-[#005228]">
+            <Avatar className="h-8 w-8 shrink-0 rounded-lg border border-[#99d3b6] bg-[#b4efd1] text-[#005228] group-data-[collapsible=icon]:h-9 group-data-[collapsible=icon]:w-9">
               <AvatarFallback className="rounded-lg bg-[#b4efd1] text-xs font-bold text-[#005228]">
                 {user.avatarFallback}
               </AvatarFallback>
             </Avatar>
-            {!compact && (
+            {!compact && !isCollapsed && (
               <div className="grid flex-1 text-right text-sm leading-tight">
                 <span className="truncate font-medium">{user.name}</span>
                 <span className="truncate text-xs text-muted-foreground">{user.role}</span>

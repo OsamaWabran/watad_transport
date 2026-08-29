@@ -25,8 +25,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
+import { FormBody, FormField } from "@/components/ui/form-layout";
 import {
   Table,
   TableBody,
@@ -224,20 +224,17 @@ export default function DriversPage() {
             <DialogTitle>إضافة سائق</DialogTitle>
             <DialogDescription>أدخل بيانات السائق الأساسية ورقم الرخصة.</DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 p-6">
-            <div>
-              <Label className="mb-1 block">اسم السائق</Label>
+          <FormBody>
+            <FormField label="اسم السائق">
               <Input placeholder="مثال: سالم عبدالله الحربي" />
-            </div>
-            <div>
-              <Label className="mb-1 block">رقم التواصل</Label>
+            </FormField>
+            <FormField label="رقم التواصل">
               <Input placeholder="05xxxxxxxx" />
-            </div>
-            <div>
-              <Label className="mb-1 block">رقم الرخصة</Label>
+            </FormField>
+            <FormField label="رقم الرخصة">
               <Input placeholder="KSA-883421" />
-            </div>
-          </div>
+            </FormField>
+          </FormBody>
           <DialogFooter className="px-6 pb-6">
             <Button type="button" variant="ghost" onClick={() => setOpen(false)}>إلغاء</Button>
             <Button type="button" className="bg-[#003422] text-white hover:bg-[#0f4c36]">حفظ</Button>

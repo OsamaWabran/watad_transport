@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import { Plus, Tag, Layers, Trash2, Edit, FolderPlus, CheckCircle, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Select } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { FormBody, FormField } from "@/components/ui/form-layout";
 import {
   Dialog,
   DialogContent,
@@ -433,9 +434,14 @@ export default function LookupsPage() {
               {typeEditId ? "تعديل الفئة المرجعية" : "إضافة فئة مرجعية جديدة"}
             </DialogTitle>
           </DialogHeader>
-          <form onSubmit={handleSaveType} className="space-y-4 py-2">
-            <div className="space-y-2">
-              <Label htmlFor="category_code">رمز الفئة (رمز اللغات/الوحدات/الكليات...)</Label>
+          <form onSubmit={handleSaveType}>
+            <FormBody>
+              <FormField
+                label="رمز الفئة"
+                htmlFor="category_code"
+                hint="مثل: COLLEGE, MAJOR, ACADEMIC_LEVEL"
+                required
+              >
               <Input
                 id="category_code"
                 placeholder="مثال: COLLEGE, MAJOR, ACADEMIC_LEVEL"
@@ -448,9 +454,8 @@ export default function LookupsPage() {
                 }
                 required
               />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="category_name">اسم الفئة الظاهر</Label>
+              </FormField>
+              <FormField label="اسم الفئة الظاهر" htmlFor="category_name" required>
               <Input
                 id="category_name"
                 placeholder="مثال: الكليات، التخصصات، المستويات الدراسية"
@@ -458,8 +463,9 @@ export default function LookupsPage() {
                 onChange={(e) => setTypeForm({ ...typeForm, category_name: e.target.value })}
                 required
               />
-            </div>
-            <DialogFooter className="mt-4 gap-2">
+              </FormField>
+            </FormBody>
+            <DialogFooter className="px-6 pb-6">
               <Button type="button" variant="outline" onClick={() => setTypeModalOpen(false)}>
                 إلغاء
               </Button>
@@ -479,9 +485,9 @@ export default function LookupsPage() {
               {valueEditId ? "تعديل القيمة المرجعية" : `إضافة قيمة لـ (${selectedType?.category_code})`}
             </DialogTitle>
           </DialogHeader>
-          <form onSubmit={handleSaveValue} className="space-y-4 py-2">
-            <div className="space-y-2">
-              <Label htmlFor="value_name">اسم القيمة المرجعية</Label>
+          <form onSubmit={handleSaveValue}>
+            <FormBody>
+              <FormField label="اسم القيمة المرجعية" htmlFor="value_name" required>
               <Input
                 id="value_name"
                 placeholder="مثال: كلية الهندسة / الظهران..."
@@ -489,13 +495,15 @@ export default function LookupsPage() {
                 onChange={(e) => setValueForm({ ...valueForm, value_name: e.target.value })}
                 required
               />
-            </div>
+              </FormField>
 
-            <div className="space-y-2">
-              <Label htmlFor="parent_value_id">القيمة الأب (اختياري للقوائم المتسلسلة)</Label>
-              <select
+              <FormField
+                label="القيمة الأب"
+                htmlFor="parent_value_id"
+                hint='مثال: اجعل تخصص "تقنية المعلومات" تابعاً لقيمة "كلية الحاسبات".'
+              >
+              <Select
                 id="parent_value_id"
-                className="w-full rounded-md border border-[#c0c9c2] p-2 text-sm focus:border-[#003422] focus:outline-none"
                 value={valueForm.parent_value_id}
                 onChange={(e) => setValueForm({ ...valueForm, parent_value_id: e.target.value })}
               >
@@ -507,13 +515,11 @@ export default function LookupsPage() {
                       {v.value_name} - {v.lookup_type?.category_name || v.lookup_type?.category_code}
                     </option>
                   ))}
-              </select>
-              <p className="text-xs text-[#707973]">
-                مثال: اجعل تخصص "تقنية المعلومات" تابعاً لقيمة "كلية الحاسبات".
-              </p>
-            </div>
+              </Select>
+              </FormField>
+            </FormBody>
 
-            <DialogFooter className="mt-4 gap-2">
+            <DialogFooter className="px-6 pb-6">
               <Button type="button" variant="outline" onClick={() => setValueModalOpen(false)}>
                 إلغاء
               </Button>

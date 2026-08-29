@@ -59,12 +59,15 @@ export async function middleware(request: NextRequest) {
   const isSuperAdmin = userRoles.includes("super_admin");
   const tenantId = token.tenant_id as string | undefined;
 
+  if (pathname === "/dashboard" && !isSuperAdmin) {
+    const target = tenantId ? "/dashboard/users" : "/login";
+    return NextResponse.redirect(new URL(target, request.url));
+  }
+
   // Protect Tenant Management (Super Admin only)
   const isSuperAdminRoute =
     pathname.startsWith("/dashboard/tenants") ||
-    pathname.startsWith("/api/v1/tenants") ||
-    pathname.startsWith("/dashboard/users") ||
-    pathname.startsWith("/api/v1/users");
+    pathname.startsWith("/api/v1/tenants");
 
   if (isSuperAdminRoute && !isSuperAdmin) {
     if (isApiRoute) {
@@ -80,6 +83,27 @@ export async function middleware(request: NextRequest) {
       );
     }
     return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
+
+  // Users management is available to Super Admin globally and tenant admins within their tenant.
+  const isUsersManagementRoute =
+    pathname.startsWith("/dashboard/users") ||
+    pathname.startsWith("/api/v1/users");
+
+  if (isUsersManagementRoute && !isSuperAdmin && !tenantId) {
+    if (isApiRoute) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "FORBIDDEN",
+            message: "هذا الإجراء يتطلب سياق مؤسسة صالح.",
+          },
+        },
+        { status: 403 }
+      );
+    }
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
   // Protect Tenant Admin Routes (Operational)

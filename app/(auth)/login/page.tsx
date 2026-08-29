@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { signIn } from "next-auth/react";
+import { getSession, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Bus, Building2, User, Lock, ArrowLeft, ShieldAlert, Sparkles, ShieldCheck, Route } from "lucide-react";
 
@@ -40,7 +40,10 @@ export default function LoginPage() {
       if (res?.error) {
         setError(res.error || "بيانات الدخول غير صحيحة، يرجى المحاولة مرة أخرى.");
       } else {
-        router.push("/dashboard");
+        const session = await getSession();
+        const roles = ((session?.user as any)?.roles as string[]) || [];
+        const nextPath = roles.includes("super_admin") ? "/dashboard" : "/dashboard/users";
+        router.push(nextPath);
         router.refresh();
       }
     } catch (err: any) {

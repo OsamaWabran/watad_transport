@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import { Plus, Search, UserCheck, Phone, MapPin, Eye, Edit, Trash2, Filter, FileText, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Select } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { FormBody, FormField, FormGrid } from "@/components/ui/form-layout";
 import {
   Dialog,
   DialogContent,
@@ -337,14 +338,15 @@ export default function PassengersPage() {
             <DialogTitle>{editId ? "تعديل بيانات الراكب" : "إضافة راكب / طالب جديد"}</DialogTitle>
           </DialogHeader>
 
-          <form onSubmit={handleSavePassenger} className="space-y-4 py-2">
+          <form onSubmit={handleSavePassenger}>
+            <FormBody>
             {formData.default_start_station_id && formData.default_end_station_id && formData.default_start_station_id === formData.default_end_station_id && (
               <div className="rounded-md border border-amber-200 bg-amber-50 p-3 text-xs font-semibold text-amber-800">
                 تحذير: محطة الطلوع ومحطة النزول متطابقتان، يرجى التأكد من دقة الاختيار.
               </div>
             )}
-            <div className="space-y-2">
-              <Label htmlFor="full_name">اسم الراكب بالكامل *</Label>
+            <FormGrid>
+              <FormField label="اسم الراكب بالكامل" htmlFor="full_name" required>
               <Input
                 id="full_name"
                 placeholder="أدخل الاسم الثلاثي..."
@@ -352,10 +354,9 @@ export default function PassengersPage() {
                 onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
                 required
               />
-            </div>
+              </FormField>
 
-            <div className="space-y-2">
-              <Label htmlFor="contact_number">رقم التواصل / الجوال *</Label>
+              <FormField label="رقم التواصل / الجوال" htmlFor="contact_number" required>
               <Input
                 id="contact_number"
                 placeholder="05xxxxxxxx"
@@ -363,10 +364,10 @@ export default function PassengersPage() {
                 onChange={(e) => setFormData({ ...formData, contact_number: e.target.value })}
                 required
               />
-            </div>
+              </FormField>
+            </FormGrid>
 
-            <div className="space-y-2">
-              <Label>الجنس *</Label>
+            <FormField label="الجنس" required>
               <div className="flex items-center gap-4 pt-1">
                 <label className="flex items-center gap-2 text-sm cursor-pointer">
                   <input
@@ -389,18 +390,17 @@ export default function PassengersPage() {
                   أنثى
                 </label>
               </div>
-            </div>
+            </FormField>
 
             {stationsUnavailable && (
               <div className="rounded-md border border-amber-200 bg-amber-50 p-3 text-xs font-semibold text-amber-800">
                 إدارة المحطات ستتوفر بعد تنفيذ مرحلة المحطات. يمكن حفظ الراكب الآن بدون محطة افتراضية.
               </div>
             )}
-            <div className="space-y-2">
-              <Label htmlFor="start_st">محطة الانطلاق الافتراضية</Label>
-              <select
+            <FormGrid>
+              <FormField label="محطة الانطلاق الافتراضية" htmlFor="start_st">
+              <Select
                 id="start_st"
-                className="w-full rounded-lg border border-[#c0c9c2] bg-white p-2 text-sm outline-none focus:ring-2 focus:ring-[#003422]"
                 value={formData.default_start_station_id}
                 onChange={(e) => setFormData({ ...formData, default_start_station_id: e.target.value })}
                 disabled={stationsUnavailable}
@@ -413,14 +413,12 @@ export default function PassengersPage() {
                     {st.name}
                   </option>
                 ))}
-              </select>
-            </div>
+              </Select>
+              </FormField>
 
-            <div className="space-y-2">
-              <Label htmlFor="end_st">محطة الوصول الافتراضية</Label>
-              <select
+              <FormField label="محطة الوصول الافتراضية" htmlFor="end_st">
+              <Select
                 id="end_st"
-                className="w-full rounded-lg border border-[#c0c9c2] bg-white p-2 text-sm outline-none focus:ring-2 focus:ring-[#003422]"
                 value={formData.default_end_station_id}
                 onChange={(e) => setFormData({ ...formData, default_end_station_id: e.target.value })}
                 disabled={stationsUnavailable}
@@ -433,10 +431,12 @@ export default function PassengersPage() {
                     {st.name}
                   </option>
                 ))}
-              </select>
-            </div>
+              </Select>
+              </FormField>
+            </FormGrid>
+            </FormBody>
 
-            <DialogFooter className="mt-4 gap-2">
+            <DialogFooter className="px-6 pb-6">
               <Button type="button" variant="outline" onClick={() => setFormModalOpen(false)}>
                 إلغاء
               </Button>

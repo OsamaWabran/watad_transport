@@ -24,7 +24,7 @@ import {
 const pageTitles: Record<string, string> = {
   "/dashboard": "الرئيسية",
   "/dashboard/tenants": "المؤسسات",
-  "/dashboard/users": "المستخدمين والأدوار",
+  "/dashboard/users": "إدارة المستخدمين",
   "/dashboard/passengers": "الركاب والطلاب",
   "/dashboard/vehicles": "أسطول المركبات",
   "/dashboard/drivers": "السائقين والورديات",
