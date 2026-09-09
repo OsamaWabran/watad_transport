@@ -6,8 +6,16 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
+# Force development environment during deps installation so devDependencies (TypeScript, Tailwind, etc.) are always installed
+ENV NODE_ENV=development
+
 COPY package.json package-lock.json ./
-RUN npm ci
+
+# Configure npm network retries for network resilience
+RUN npm config set fetch-retries 5 && \
+    npm config set fetch-retry-mintimeout 20000 && \
+    npm config set fetch-retry-maxtimeout 120000 && \
+    npm ci
 
 # Step 3: Builder
 FROM base AS builder
