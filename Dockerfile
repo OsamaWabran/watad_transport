@@ -10,6 +10,7 @@ WORKDIR /app
 ENV NODE_ENV=development
 
 COPY package.json package-lock.json ./
+COPY prisma ./prisma
 
 # Configure npm network retries for network resilience
 RUN npm config set fetch-retries 5 && \
