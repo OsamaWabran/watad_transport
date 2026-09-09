@@ -1,0 +1,11 @@
+Dockerfile
+.dockerignore
+node_modules
+.next
+.git
+.gitignore
+.env
+.env*.local
+*.log
+README.md
+PROJECT_STRUCTURE.md
