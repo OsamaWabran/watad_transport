@@ -185,7 +185,7 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => handleDemoFill("KSU", "ksu_admin", "admin123")}
+                    onClick={() => handleDemoFill("KSU", "ksu_admin", "ksu123")}
                     className="h-9 rounded-lg border-[#99d3b6] bg-[#e7f8ef] text-xs text-[#005228] hover:bg-[#b4efd1]/70"
                   >
                     مدير جامعة KSU
@@ -194,7 +194,7 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => handleDemoFill("SYSTEM", "superadmin", "admin123")}
+                    onClick={() => handleDemoFill("SYS", "superadmin", "admin123")}
                     className="h-9 rounded-lg border-[#c0c9c2] bg-white text-xs text-[#003422] hover:bg-[#f3f3f6]"
                   >
                     Super Admin
